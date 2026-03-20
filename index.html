@@ -180,8 +180,18 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .footer-r{font-size:11px;color:var(--t3)}
 
 /* ═══ SCROLL REVEAL ═══ */
-.sr{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s ease}
+.sr{opacity:0;transform:translateY(20px);transition:opacity .5s cubic-bezier(.16,1,.3,1),transform .5s cubic-bezier(.16,1,.3,1)}
 .sr.visible{opacity:1;transform:translateY(0)}
+/* Stagger children */
+.pgrid .sr:nth-child(2){transition-delay:.06s}
+.pgrid .sr:nth-child(3){transition-delay:.12s}
+.pgrid .sr:nth-child(4){transition-delay:.18s}
+.pgrid .sr:nth-child(5){transition-delay:.24s}
+.pgrid .sr:nth-child(6){transition-delay:.30s}
+.bento .sr:nth-child(2){transition-delay:.05s}
+.bento .sr:nth-child(3){transition-delay:.10s}
+.bento .sr:nth-child(4){transition-delay:.15s}
+.bento .sr:nth-child(5){transition-delay:.20s}
 
 @media(max-width:900px){.pgrid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:768px){
@@ -374,7 +384,7 @@ const lenis=new Lenis({lerp:.07,smoothWheel:true});
 gsap.ticker.add(t=>lenis.raf(t*1000));gsap.ticker.lagSmoothing(0);
 
 /* ── Scroll reveals (IntersectionObserver — visible by default) ── */
-const obs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:0.12});
+const obs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:0.05,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.sr').forEach(el=>obs.observe(el));
 
 /* ── Nav anchors ── */
@@ -413,14 +423,7 @@ timer=setInterval(()=>goTo(cur+1),4500);
 document.querySelector('.showcase-screen').addEventListener('click',()=>{window.location.href=slides[cur].dataset.href});
 document.querySelector('.showcase-screen').style.cursor='pointer';
 
-/* ── GSAP scroll enhancements ── */
 gsap.registerPlugin(ScrollTrigger);
-gsap.utils.toArray('.pc').forEach((c,i)=>{
-  gsap.from(c,{y:30,opacity:0,duration:.5,delay:(i%3)*.06,ease:'power2.out',scrollTrigger:{trigger:c,start:'top 90%'}});
-});
-gsap.utils.toArray('.bcell').forEach((c,i)=>{
-  gsap.from(c,{y:20,opacity:0,duration:.4,delay:(i%3)*.05,ease:'power2.out',scrollTrigger:{trigger:c,start:'top 90%'}});
-});
 
 /* ── Chat ── */
 const CHAT_API='https://n8n-upwork-w6ty.onrender.com/webhook/rag-v5/chat?action=sendMessage';
