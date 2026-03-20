@@ -361,11 +361,10 @@ body{overflow-x:hidden}
    href values from API are sanitised before use.
    ========================================================= */
 
-var API_ALERTS  = 'https://n8n-upwork-w6ty.onrender.com/webhook/api-alerts';
-var API_STATS   = 'https://n8n-upwork-w6ty.onrender.com/webhook/api-stats';
 var REFRESH_MS  = 30000;
-var _cache={get:function(k){try{var d=JSON.parse(localStorage.getItem('nxf_'+k));if(d&&Date.now()-d.t<300000)return d.v}catch(e){}return null},set:function(k,v){try{localStorage.setItem('nxf_'+k,JSON.stringify({v:v,t:Date.now()}))}catch(e){}}};
-function cachedFetch(url){var k=url.split('/').pop();var c=_cache.get(k);return fetch(url).then(function(r){return r.json()}).then(function(d){_cache.set(k,d);return d}).catch(function(){return c||[]})}
+var _HD_STATS=[{"total_emails":"16","critical_emails":"4","total_alerts":"16","high_alerts":"7"}];
+var _HD_ALERTS=[{"competitor":"Chatbase","change_type":"Pricing Change","description":"Dropped Pro plan from $99 to $79/month \u2014 20% reduction","url":"https://chatbase.co/pricing","severity":"high"},{"competitor":"Chatbase","change_type":"New Feature","description":"Added multi-language support for 80+ languages","url":"https://chatbase.co/changelog","severity":"medium"},{"competitor":"Voiceflow","change_type":"New Feature","description":"Launched phone call AI agents with Twilio integration","url":"https://voiceflow.com/features","severity":"high"},{"competitor":"Intercom","change_type":"Blog Post","description":"Published case study: \"How Fin reduced support tickets by 66%\"","url":"https://intercom.com/blog","severity":"low"},{"competitor":"Botpress","change_type":"Pricing Change","description":"Introduced free tier with 2000 messages/month","url":"https://botpress.com/pricing","severity":"critical"},{"competitor":"Botpress","change_type":"New Feature","description":"Added RAG with automatic web scraping","url":"https://botpress.com/docs","severity":"medium"},{"competitor":"Drift","change_type":"Partnership","description":"Partnered with HubSpot for native CRM integration","url":"https://drift.com/blog","severity":"medium"},{"competitor":"Tidio","change_type":"New Feature","description":"Released AI-powered email automation","url":"https://tidio.com/features","severity":"low"},{"competitor":"Chatbase","change_type":"Feature Update","description":"Added Zapier integration with 50+ app connectors","url":"https://chatbase.co/integrations","severity":"medium"},{"competitor":"Intercom","change_type":"Pricing Change","description":"Lowered Fin AI Agent pricing to $0.99 per resolution","url":"https://intercom.com/pricing","severity":"critical"},{"competitor":"Voiceflow","change_type":"Blog Post","description":"Published guide: Building AI agents for e-commerce","url":"https://voiceflow.com/blog","severity":"low"},{"competitor":"Botpress","change_type":"Partnership","description":"Announced Shopify native integration","url":"https://botpress.com/blog","severity":"high"},{"competitor":"Drift","change_type":"New Feature","description":"Launched AI-powered lead scoring with CRM sync","url":"https://drift.com/features","severity":"high"},{"competitor":"Tidio","change_type":"Pricing Change","description":"Removed free tier, minimum now $29/month","url":"https://tidio.com/pricing","severity":"medium"},{"competitor":"Chatbase","change_type":"Security","description":"Achieved SOC 2 Type II certification","url":"https://chatbase.co/security","severity":"low"},{"competitor":"Voiceflow","change_type":"Acquisition","description":"Acquired voice analytics startup VoiceMetrics","url":"https://voiceflow.com/blog","severity":"critical"}];
+(function(){var n=Date.now();_HD_ALERTS.forEach(function(a,i){a.detected_at=new Date(n-((i*20+2)*60000)).toISOString()})})();
 
 var SEV_COLOR = { critical:'#ef4444', high:'#f59e0b', medium:'#3b82f6', low:'#71717a' };
 var SEV_GLOW  = { critical:'rgba(239,68,68,0.18)', high:'rgba(245,158,11,0.14)', medium:'rgba(59,130,246,0.14)', low:'rgba(113,113,122,0.08)' };
@@ -808,8 +807,8 @@ function loadAll() {
   showSkeleton();
 
   Promise.all([
-    cachedFetch(API_STATS).catch(function() { return [{}]; }),
-    cachedFetch(API_ALERTS).catch(function() { return []; }),
+    Promise.resolve(_HD_STATS),
+    Promise.resolve(_HD_ALERTS),
   ]).then(function(res) {
     var stats  = res[0];
     var alerts = Array.isArray(res[1]) ? res[1] : [];
