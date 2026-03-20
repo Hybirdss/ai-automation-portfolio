@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>nexframe — We build systems that think</title>
-<meta name="description" content="AI automation studio. We design and ship intelligent workflows running on live infrastructure.">
+<meta name="description" content="AI automation studio. We ship intelligent workflows that replace manual work — live on production infrastructure.">
 <link rel="icon" href="logo.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -13,15 +13,15 @@
   --bg:#06060a;--bg-2:#0c0c12;--bg-3:#12121a;
   --surface:#16161e;--border:rgba(255,255,255,0.05);--border-h:rgba(255,255,255,0.10);
   --t1:#ededef;--t2:#8b8b96;--t3:#55555e;
-  --accent:#4f8ff7;--accent-2:#7c6cfc;--green:#3dd68c;
+  --accent:#4f8ff7;--accent-2:#7c6cfc;--green:#3dd68c;--red:#f87171;--amber:#fbbf24;
   --font:'Inter',-apple-system,sans-serif;--mono:'JetBrains Mono',monospace;
 }
 html{scroll-behavior:auto}
 body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 
-.dot-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(circle,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:32px 32px}
-.dot-grid::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(79,143,247,0.07),transparent 70%)}
+.dot-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(circle,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:32px 32px}
+.dot-grid::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(79,143,247,0.06),transparent 70%)}
 
 .w{max-width:1120px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
 .sl{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);margin-bottom:16px}
@@ -40,32 +40,34 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .nav-cta:hover{background:#fff;transform:translateY(-1px);box-shadow:0 4px 12px rgba(255,255,255,0.15)}
 
 /* ═══ HERO ═══ */
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:120px 24px 80px;position:relative}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:100px;background:rgba(61,214,140,0.06);border:1px solid rgba(61,214,140,0.12);font-size:12px;font-weight:500;color:var(--green);letter-spacing:.02em;margin-bottom:32px}
-.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.hero h1{font-size:clamp(40px,6.5vw,72px);font-weight:800;letter-spacing:-.045em;line-height:1.0;margin-bottom:24px;max-width:780px}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:120px 24px 80px}
+.hero h1{font-size:clamp(42px,7vw,76px);font-weight:800;letter-spacing:-.05em;line-height:.95;margin-bottom:28px;max-width:800px}
 .hero h1 .shine{background:linear-gradient(135deg,var(--t1) 0%,var(--accent) 50%,var(--accent-2) 100%);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shineShift 6s ease infinite}
 @keyframes shineShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-.hero-sub{font-size:clamp(16px,1.6vw,19px);color:var(--t2);max-width:520px;line-height:1.65;margin-bottom:40px;font-weight:300}
+.hero-sub{font-size:clamp(16px,1.5vw,18px);color:var(--t2);max-width:480px;line-height:1.65;margin-bottom:40px;font-weight:300}
 .hero-cta-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
-.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:10px;background:var(--accent);color:#fff;font-size:14px;font-weight:600;transition:all .25s;border:none;cursor:pointer}
-.btn-primary:hover{background:#6aa3f9;transform:translateY(-2px);box-shadow:0 8px 24px rgba(79,143,247,0.25)}
-.btn-ghost{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:10px;background:transparent;color:var(--t2);font-size:14px;font-weight:500;transition:all .25s;border:1px solid var(--border)}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:13px 30px;border-radius:10px;background:var(--accent);color:#fff;font-size:14px;font-weight:600;transition:all .25s;border:none;cursor:pointer}
+.btn-primary:hover{background:#6aa3f9;transform:translateY(-2px);box-shadow:0 8px 24px rgba(79,143,247,0.3)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;padding:13px 30px;border-radius:10px;background:transparent;color:var(--t2);font-size:14px;font-weight:500;transition:all .25s;border:1px solid var(--border)}
 .btn-ghost:hover{color:var(--t1);border-color:var(--border-h)}
+.hero-trust{margin-top:56px;font-size:12px;color:var(--t3);display:flex;align-items:center;gap:8px}
+.hero-trust .live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* ═══ LIVE TICKER ═══ */
-.live-ticker{margin-top:56px;display:flex;gap:32px;flex-wrap:wrap;justify-content:center}
-.tick{text-align:center;min-width:100px}
-.tick-val{font-size:28px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-.tick-label{font-size:11px;color:var(--t3);margin-top:4px;font-weight:400}
-.tick-loading{color:var(--t3);animation:tickPulse 1.5s ease infinite}
-@keyframes tickPulse{0%,100%{opacity:.3}50%{opacity:.8}}
+/* ═══ PAIN → GAIN ═══ */
+.pain-gain{padding:100px 0;border-top:1px solid var(--border)}
+.pg-grid{display:grid;grid-template-columns:1fr 40px 1fr;gap:24px;align-items:start}
+.pg-col h3{font-size:14px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:8px}
+.pg-item{padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;line-height:1.5;color:var(--t2)}
+.pg-item strong{color:var(--t1);font-weight:500}
+.pain-col h3{color:var(--red)}
+.gain-col h3{color:var(--green)}
+.pg-arrow{display:flex;align-items:center;justify-content:center;padding-top:60px;color:var(--t3);font-size:24px}
 
 /* ═══ PRODUCTS ═══ */
-.products{padding:120px 0}
-.products-header{max-width:560px;margin-bottom:64px}
-.products-header h2{font-size:clamp(28px,4vw,42px);font-weight:700;letter-spacing:-.04em;line-height:1.15;margin-bottom:16px}
+.products{padding:120px 0;border-top:1px solid var(--border)}
+.products-header{text-align:center;max-width:600px;margin:0 auto 64px}
+.products-header h2{font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-.04em;line-height:1.1;margin-bottom:16px}
 .products-header p{font-size:16px;color:var(--t2);line-height:1.6;font-weight:300}
 .products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}
 
@@ -82,23 +84,38 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .pcard-tag .dot{width:5px;height:5px;border-radius:50%}
 .pcard h3{font-size:19px;font-weight:600;letter-spacing:-.02em;margin-bottom:8px}
 .pcard p{font-size:13.5px;color:var(--t2);line-height:1.55;font-weight:300}
+.pcard-stat{margin-top:16px;font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:500;display:flex;align-items:center;gap:6px}
 .pcard-arrow{position:absolute;top:20px;right:20px;width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;opacity:0;transform:translate(-4px,4px);transition:all .25s;color:var(--t2);z-index:3}
 
-/* ═══ SOCIAL PROOF ═══ */
-.proof{padding:80px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.proof-inner{display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap}
-.proof-item{text-align:center}
-.proof-num{font-size:36px;font-weight:800;letter-spacing:-.03em;background:linear-gradient(180deg,var(--t1),var(--t2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.proof-label{font-size:12px;color:var(--t3);margin-top:4px}
+/* ═══ BENTO: WHY US ═══ */
+.bento{padding:120px 0;border-top:1px solid var(--border)}
+.bento h2{font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-.04em;line-height:1.1;margin-bottom:48px;text-align:center}
+.bento-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:16px;overflow:hidden;border:1px solid var(--border)}
+.bento-cell{background:var(--bg-2);padding:36px 28px}
+.bento-cell.wide{grid-column:span 2}
+.bento-cell h3{font-size:16px;font-weight:600;margin-bottom:8px;letter-spacing:-.01em}
+.bento-cell p{font-size:13.5px;color:var(--t2);line-height:1.55;font-weight:300}
+.bento-cell .bento-icon{font-size:24px;margin-bottom:14px;display:block}
 
 /* ═══ PROCESS ═══ */
-.process{padding:120px 0}
+.process{padding:120px 0;border-top:1px solid var(--border)}
 .process h2{font-size:clamp(28px,4vw,42px);font-weight:700;letter-spacing:-.04em;line-height:1.15;margin-bottom:64px;max-width:480px}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:48px;counter-reset:step}
 .step{counter-increment:step}
-.step::before{content:counter(step,decimal-leading-zero);font-family:var(--mono);font-size:48px;font-weight:500;color:var(--bg-3);display:block;margin-bottom:20px;line-height:1;background:linear-gradient(to bottom,rgba(255,255,255,0.12),rgba(255,255,255,0.03));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.step::before{content:counter(step,decimal-leading-zero);font-family:var(--mono);font-size:48px;font-weight:500;display:block;margin-bottom:20px;line-height:1;background:linear-gradient(to bottom,rgba(255,255,255,0.12),rgba(255,255,255,0.03));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .step h3{font-size:17px;font-weight:600;letter-spacing:-.02em;margin-bottom:10px}
 .step p{font-size:14px;color:var(--t2);line-height:1.6;font-weight:300}
+
+/* ═══ CTA + CONTACT ═══ */
+.cta-section{padding:120px 0;text-align:center;border-top:1px solid var(--border);position:relative}
+.cta-section::before{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(79,143,247,0.08),transparent 70%);pointer-events:none}
+.cta-section h2{font-size:clamp(28px,4.5vw,48px);font-weight:700;letter-spacing:-.04em;line-height:1.1;margin-bottom:16px}
+.cta-section p{font-size:16px;color:var(--t2);max-width:440px;margin:0 auto 36px;line-height:1.6;font-weight:300}
+.contact-form{max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.contact-form input,.contact-form textarea{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--t1);font-size:14px;font-family:var(--font);outline:none;transition:border-color .2s;resize:vertical}
+.contact-form input:focus,.contact-form textarea:focus{border-color:var(--accent)}
+.contact-form input::placeholder,.contact-form textarea::placeholder{color:var(--t3)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
 /* ═══ CHAT WIDGET ═══ */
 .chat-float{position:fixed;bottom:24px;right:24px;z-index:90}
@@ -116,10 +133,8 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .chat-msg.bot{background:var(--surface);color:var(--t1);align-self:flex-start;border-bottom-left-radius:4px}
 .chat-msg.bot strong{color:var(--accent);font-weight:600}
 .chat-msg.bot ul,.chat-msg.bot ol{margin:6px 0 6px 18px;padding:0}
-.chat-msg.bot li{margin:3px 0;color:var(--t2)}
-.chat-msg.bot li strong{color:var(--t1)}
-.chat-msg.bot p{margin:0 0 8px}
-.chat-msg.bot p:last-child{margin-bottom:0}
+.chat-msg.bot li{margin:3px 0;color:var(--t2)}.chat-msg.bot li strong{color:var(--t1)}
+.chat-msg.bot p{margin:0 0 8px}.chat-msg.bot p:last-child{margin-bottom:0}
 .chat-msg.bot a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
 .chat-msg.bot code{background:rgba(255,255,255,0.06);padding:2px 5px;border-radius:4px;font-family:var(--mono);font-size:12px}
 .chat-msg.user{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
@@ -133,18 +148,6 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .chat-input-row input:focus{border-color:var(--accent)}
 .chat-input-row button{background:var(--accent);border:none;border-radius:8px;padding:0 14px;cursor:pointer;color:#fff;font-weight:600;font-size:13px}
 
-/* ═══ CTA ═══ */
-.cta-section{padding:120px 0;text-align:center;border-top:1px solid var(--border);position:relative}
-.cta-section::before{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(79,143,247,0.08),transparent 70%);pointer-events:none}
-.cta-section h2{font-size:clamp(28px,4.5vw,48px);font-weight:700;letter-spacing:-.04em;line-height:1.1;margin-bottom:16px}
-.cta-section p{font-size:16px;color:var(--t2);max-width:440px;margin:0 auto 36px;line-height:1.6;font-weight:300}
-.contact-form{max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
-.contact-form input,.contact-form textarea{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--t1);font-size:14px;font-family:var(--font);outline:none;transition:border-color .2s;resize:vertical}
-.contact-form input:focus,.contact-form textarea:focus{border-color:var(--accent)}
-.contact-form input::placeholder,.contact-form textarea::placeholder{color:var(--t3)}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:480px){.form-row{grid-template-columns:1fr}}
-
 /* ═══ FOOTER ═══ */
 .footer{padding:40px 0;border-top:1px solid var(--border)}
 .footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
@@ -157,11 +160,13 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
   .nav-links a:not(.nav-cta){display:none}
   .hero{min-height:auto;padding:140px 24px 80px}
   .hero h1{font-size:36px}
-  .products-grid{grid-template-columns:1fr}
+  .products-grid,.bento-grid{grid-template-columns:1fr}
+  .bento-cell.wide{grid-column:span 1}
   .steps{grid-template-columns:1fr;gap:36px}
-  .live-ticker{gap:20px}
-  .proof-inner{gap:32px}
+  .pg-grid{grid-template-columns:1fr;gap:16px}
+  .pg-arrow{display:none}
   .chat-panel{width:calc(100vw - 32px);right:16px;bottom:80px}
+  .form-row{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -172,77 +177,124 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
   <a href="/" class="nav-logo"><img src="logo.png" alt="nexframe"><span>nexframe</span></a>
   <div class="nav-links">
     <a href="#work">Work</a>
-    <a href="#process">Process</a>
+    <a href="#why">Why us</a>
     <a href="#contact" class="nav-cta">Start a project</a>
   </div>
 </div></nav>
 
 <!-- ═══ HERO ═══ -->
 <section class="hero">
-  <div class="hero-badge reveal">All systems live — pulling real data right now</div>
-  <h1 class="reveal">We build systems<br>that <span class="shine">think</span></h1>
-  <p class="hero-sub reveal">Your team is drowning in email, leads, and competitor noise. We build AI workflows that handle it — deployed, monitored, and running before your next standup.</p>
+  <h1 class="reveal">Stop hiring people<br>to do what <span class="shine">machines should</span></h1>
+  <p class="hero-sub reveal">We build AI workflows that triage your email, score your leads, monitor your competitors, and answer your customers — deployed on production infrastructure in under two weeks.</p>
   <div class="hero-cta-row reveal">
     <a href="#contact" class="btn-primary">Start a project <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg></a>
     <a href="#work" class="btn-ghost">See live demos</a>
   </div>
-  <div class="live-ticker reveal">
-    <div class="tick"><div class="tick-val tick-loading" id="t-emails">—</div><div class="tick-label">Emails triaged</div></div>
-    <div class="tick"><div class="tick-val tick-loading" id="t-alerts">—</div><div class="tick-label">Alerts tracked</div></div>
-    <div class="tick"><div class="tick-val tick-loading" id="t-leads">—</div><div class="tick-label">Leads scored</div></div>
-    <div class="tick"><div class="tick-val" style="color:var(--green)">●</div><div class="tick-label">All systems online</div></div>
+  <div class="hero-trust reveal"><span class="live-dot"></span> 5 production systems running right now — click any to try it</div>
+</section>
+
+<!-- ═══ PAIN → GAIN ═══ -->
+<section class="pain-gain">
+<div class="w">
+  <div class="pg-grid">
+    <div class="pg-col pain-col reveal">
+      <h3><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="7" r="6"/><path d="M7 4v4M7 10h.01"/></svg> Without automation</h3>
+      <div class="pg-item"><strong>3 hours/day</strong> sorting and replying to email manually</div>
+      <div class="pg-item">Leads sit <strong>untouched for 48 hours</strong> before anyone qualifies them</div>
+      <div class="pg-item">Competitor price changes discovered <strong>weeks late</strong> from a customer complaint</div>
+      <div class="pg-item">Support questions answered by <strong>copy-pasting from docs</strong></div>
+      <div class="pg-item">Every insight trapped in <strong>5 different dashboards</strong> nobody checks</div>
+    </div>
+    <div class="pg-arrow reveal">→</div>
+    <div class="pg-col gain-col reveal">
+      <h3><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3l-8 8-3-3"/></svg> With nexframe</h3>
+      <div class="pg-item">Every email <strong>classified and drafted in seconds</strong>. You just approve.</div>
+      <div class="pg-item">Leads scored with <strong>AI reasoning + next step</strong> the moment they arrive</div>
+      <div class="pg-item">Pricing changes caught <strong>within minutes</strong> with severity-ranked alerts</div>
+      <div class="pg-item">Customers get <strong>cited, grounded answers</strong> from your own knowledge base</div>
+      <div class="pg-item">One screen. <strong>Real-time. Auto-refreshing.</strong> Everything that matters.</div>
+    </div>
   </div>
+</div>
 </section>
 
 <!-- ═══ PRODUCTS ═══ -->
 <section class="products" id="work">
 <div class="w">
   <div class="products-header">
-    <div class="sl reveal">001 / What we ship</div>
-    <h2 class="reveal">These aren't mockups.<br>Click any to use it.</h2>
-    <p class="reveal">Every system below runs on production infrastructure, processing real data, right now. We built them. We can build yours.</p>
+    <div class="sl reveal">Live systems</div>
+    <h2 class="reveal">Not mockups. Not slides.<br>Click any to use it.</h2>
+    <p class="reveal">Every system below is running on production infrastructure, processing real data. We built each one in under a week.</p>
   </div>
   <div class="products-grid">
     <a href="dashboard.html" class="pcard reveal">
       <div class="pcard-img-wrap"><span class="pcard-live">Live</span><img class="pcard-img" src="screenshot-dashboard.png" alt="AI Command Center" loading="lazy"></div>
-      <div class="pcard-body"><div class="pcard-tag"><span class="dot" style="background:var(--accent)"></span>Operations</div><h3>AI Command Center</h3><p>Unified dashboard. Email volume, competitor alerts, lead pipeline — one screen, auto-refreshing every 30 seconds.</p></div>
+      <div class="pcard-body">
+        <div class="pcard-tag"><span class="dot" style="background:var(--accent)"></span>Operations</div>
+        <h3>AI Command Center</h3>
+        <p>One screen for everything. Email throughput, competitor alerts, lead pipeline — auto-refreshing every 30 seconds. No more tab-switching.</p>
+        <div class="pcard-stat">4 data sources → 1 dashboard</div>
+      </div>
       <div class="pcard-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg></div>
     </a>
     <a href="email-triage.html" class="pcard reveal">
       <div class="pcard-img-wrap"><span class="pcard-live">Live</span><img class="pcard-img" src="screenshot-email-triage.png" alt="Email Triage" loading="lazy"></div>
-      <div class="pcard-body"><div class="pcard-tag"><span class="dot" style="background:#ef4444"></span>Email AI</div><h3>Intelligent Email Triage</h3><p>Every incoming email classified, prioritized, and answered before you open your inbox. Zero manual sorting.</p></div>
+      <div class="pcard-body">
+        <div class="pcard-tag"><span class="dot" style="background:var(--red)"></span>Email AI</div>
+        <h3>Intelligent Email Triage</h3>
+        <p>Every email classified by urgency. Draft replies generated. Critical items surfaced before you even open your inbox. Zero manual sorting.</p>
+        <div class="pcard-stat">3hrs/day manual → 0 with AI triage</div>
+      </div>
       <div class="pcard-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg></div>
     </a>
     <a href="competitor-monitor.html" class="pcard reveal">
       <div class="pcard-img-wrap"><span class="pcard-live">Live</span><img class="pcard-img" src="screenshot-competitor-monitor.png" alt="Competitor Monitor" loading="lazy"></div>
-      <div class="pcard-body"><div class="pcard-tag"><span class="dot" style="background:#f59e0b"></span>Intelligence</div><h3>Competitor Intelligence</h3><p>Pricing shifts, feature drops, partnership moves — caught the moment they happen. AI scores severity and routes alerts.</p></div>
+      <div class="pcard-body">
+        <div class="pcard-tag"><span class="dot" style="background:var(--amber)"></span>Intelligence</div>
+        <h3>Competitor Intelligence</h3>
+        <p>Pricing shifts, feature drops, partnerships — caught the moment they happen. AI scores severity so you know what actually matters.</p>
+        <div class="pcard-stat">Weeks late → minutes after it happens</div>
+      </div>
       <div class="pcard-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg></div>
     </a>
     <a href="lead-capture.html" class="pcard reveal">
       <div class="pcard-img-wrap"><span class="pcard-live">Live</span><img class="pcard-img" src="screenshot-lead-capture.png" alt="Lead Scoring" loading="lazy"></div>
-      <div class="pcard-body"><div class="pcard-tag"><span class="dot" style="background:var(--green)"></span>Revenue</div><h3>AI Lead Scoring</h3><p>Every lead scored, classified, and routed with reasoning your sales team can act on immediately.</p></div>
+      <div class="pcard-body">
+        <div class="pcard-tag"><span class="dot" style="background:var(--green)"></span>Revenue</div>
+        <h3>AI Lead Scoring</h3>
+        <p>Every lead scored, classified Hot/Warm/Cold, with AI-written reasoning and a recommended next step. Your sales team works the right deals first.</p>
+        <div class="pcard-stat">48hr response → instant qualification</div>
+      </div>
       <div class="pcard-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg></div>
     </a>
     <a href="chat-ui.html" class="pcard reveal">
       <div class="pcard-img-wrap"><span class="pcard-live">Live</span><img class="pcard-img" src="screenshot-chat-ui.png" alt="Knowledge Base Chatbot" loading="lazy"></div>
-      <div class="pcard-body"><div class="pcard-tag"><span class="dot" style="background:var(--accent-2)"></span>Conversational AI</div><h3>Knowledge Base Chatbot</h3><p>Give it a URL. It indexes your content and answers questions with cited, grounded responses. Try it in the bottom right.</p></div>
+      <div class="pcard-body">
+        <div class="pcard-tag"><span class="dot" style="background:var(--accent-2)"></span>Conversational AI</div>
+        <h3>Knowledge Base Chatbot</h3>
+        <p>Give it a URL. It scrapes, embeds, and indexes your content — then answers questions with cited responses. Multi-turn memory included.</p>
+        <div class="pcard-stat">URL in → AI assistant out. Try it →</div>
+      </div>
       <div class="pcard-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg></div>
     </a>
-    <div class="pcard reveal" style="display:flex;align-items:center;justify-content:center;min-height:280px;background:var(--bg-2)">
-      <div style="text-align:center;padding:24px"><div style="font-size:36px;margin-bottom:12px;opacity:.15">+</div><h3 style="color:var(--t2);font-weight:500;font-size:16px">Your workflow here</h3><p style="font-size:13px;margin-top:8px;color:var(--t3)">Custom-built for your process, your tools, your data.</p></div>
-    </div>
+    <a href="#contact" class="pcard reveal" style="display:flex;align-items:center;justify-content:center;min-height:280px">
+      <div style="text-align:center;padding:24px"><div style="font-size:36px;margin-bottom:12px;opacity:.15">+</div><h3 style="color:var(--t2);font-weight:500;font-size:16px">Your workflow next</h3><p style="font-size:13px;margin-top:8px;color:var(--t3)">Tell us what eats your team's time.</p></div>
+    </a>
   </div>
 </div>
 </section>
 
-<!-- ═══ PROOF ═══ -->
-<section class="proof">
+<!-- ═══ BENTO: WHY US ═══ -->
+<section class="bento" id="why">
 <div class="w">
-  <div class="proof-inner">
-    <div class="proof-item reveal"><div class="proof-num"><span data-count="5">0</span></div><div class="proof-label">Live systems</div></div>
-    <div class="proof-item reveal"><div class="proof-num"><span data-count="56">0</span>+</div><div class="proof-label">Records processed</div></div>
-    <div class="proof-item reveal"><div class="proof-num">&lt;<span data-count="2">0</span> wk</div><div class="proof-label">Avg. delivery time</div></div>
-    <div class="proof-item reveal"><div class="proof-num"><span data-count="99">0</span>.9%</div><div class="proof-label">Uptime</div></div>
+  <div class="sl reveal" style="text-align:center">What makes us different</div>
+  <h2 class="reveal">Built for speed.<br>Engineered for trust.</h2>
+  <div class="bento-grid">
+    <div class="bento-cell wide reveal"><span class="bento-icon">⚡</span><h3>Production in days, not months</h3><p>We don't do 12-week discovery phases. You describe the problem, we ship a working system — usually within one to two weeks. If it doesn't work, you don't pay.</p></div>
+    <div class="bento-cell reveal"><span class="bento-icon">🔒</span><h3>Your data stays yours</h3><p>We deploy on your infrastructure or ours. Either way, your data never touches a training set. Full audit trail on every decision.</p></div>
+    <div class="bento-cell reveal"><span class="bento-icon">🧠</span><h3>AI that explains itself</h3><p>Every lead score comes with written reasoning. Every email classification has a confidence level. No black boxes — your team always knows <em>why</em>.</p></div>
+    <div class="bento-cell wide reveal"><span class="bento-icon">📊</span><h3>Monitoring included, always</h3><p>Every system ships with a real-time dashboard. You see exactly what's happening — errors, throughput, latency. We don't hand off and disappear.</p></div>
+    <div class="bento-cell reveal"><span class="bento-icon">🔌</span><h3>Connects to what you use</h3><p>Slack, Gmail, Salesforce, HubSpot, Notion, Stripe — if it has an API, we wire it in. No new tools to learn.</p></div>
   </div>
 </div>
 </section>
@@ -250,12 +302,12 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 <!-- ═══ PROCESS ═══ -->
 <section class="process" id="process">
 <div class="w">
-  <div class="sl reveal">002 / How we work</div>
+  <div class="sl reveal">How it works</div>
   <h2 class="reveal">Problem in,<br>production out</h2>
   <div class="steps">
-    <div class="step reveal"><h3>Map your workflow</h3><p>We audit what your team actually does, find the repetitive parts, and design an automation blueprint — what to automate, what to keep human.</p></div>
-    <div class="step reveal"><h3>Build &amp; integrate</h3><p>We wire your tools, connect the AI, build error handling, and ship with dashboards — tested on real data before you see it.</p></div>
-    <div class="step reveal"><h3>Deploy &amp; iterate</h3><p>Goes live on cloud infrastructure with monitoring. We keep tuning until the numbers prove it works for your team.</p></div>
+    <div class="step reveal"><h3>You describe the pain</h3><p>Tell us what eats your time. We audit the workflow, map the repetitive parts, and design an automation blueprint in 48 hours.</p></div>
+    <div class="step reveal"><h3>We build it live</h3><p>We connect your tools, wire the AI, and ship with dashboards — tested against real data. You see progress daily, not after 6 weeks.</p></div>
+    <div class="step reveal"><h3>It runs, you grow</h3><p>Goes live on production infrastructure with monitoring. We iterate until the numbers prove it. Then your team scales without scaling headcount.</p></div>
   </div>
 </div>
 </section>
@@ -263,29 +315,29 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 <!-- ═══ CTA + CONTACT ═══ -->
 <section class="cta-section" id="contact">
 <div class="w">
-  <div class="sl reveal">003 / Let's go</div>
-  <h2 class="reveal">Ready to stop doing<br>what machines should?</h2>
-  <p class="reveal">Tell us what eats your team's time. We respond within 24 hours.</p>
+  <div class="sl reveal">Let's build</div>
+  <h2 class="reveal">What's eating<br>your team's time?</h2>
+  <p class="reveal">Tell us. We'll scope it in 24 hours. No commitment, no sales pitch.</p>
   <form class="contact-form reveal" id="contactForm">
     <div class="form-row">
       <input type="text" name="name" placeholder="Your name" required>
       <input type="email" name="email" placeholder="Email" required>
     </div>
     <input type="text" name="project" placeholder="What do you need automated?" required>
-    <textarea name="message" placeholder="Tell us more about your project..." rows="3"></textarea>
+    <textarea name="message" placeholder="Tell us more (optional)..." rows="3"></textarea>
     <button type="submit" class="btn-primary" style="width:100%;justify-content:center;font-size:15px;padding:14px">
       <span id="formBtnText">Send inquiry</span>
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg>
     </button>
     <div id="formMsg" style="display:none;text-align:center;margin-top:12px;font-size:13px;color:var(--green)"></div>
   </form>
-  <p class="reveal" style="margin-top:20px;font-size:13px;color:var(--t3)">Or reach us directly on <a href="https://www.upwork.com/freelancers/~01488801c28f4a7010" style="color:var(--accent)">Upwork</a></p>
+  <p class="reveal" style="margin-top:20px;font-size:13px;color:var(--t3)">Or reach us on <a href="https://www.upwork.com/freelancers/~01488801c28f4a7010" style="color:var(--accent)">Upwork</a></p>
 </div>
 </section>
 
 <footer class="footer"><div class="w"><div class="footer-inner">
   <div class="footer-left"><img src="logo.png" alt=""><span>nexframe</span></div>
-  <div class="footer-right">Built by Yunsu Kim</div>
+  <div class="footer-right">Seoul, South Korea</div>
 </div></div></footer>
 
 <!-- ═══ CHAT WIDGET ═══ -->
@@ -297,7 +349,7 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 <div class="chat-panel" id="chatPanel">
   <div class="chat-panel-header"><h4>Ask about Nexframe</h4><button id="chatClose">&times;</button></div>
   <div class="chat-msgs" id="chatMsgs">
-    <div class="chat-msg bot">Hey! I'm the Nexframe assistant. Ask me anything about our services, pricing, or how we work.</div>
+    <div class="chat-msg bot"><p>Hey! I can tell you about our services, pricing, and how we work. What are you looking to automate?</p></div>
   </div>
   <div class="chat-input-row">
     <input type="text" id="chatInput" placeholder="Ask anything..." autocomplete="off">
@@ -309,12 +361,10 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
 <script>
-/* ── Smooth Scroll ── */
 const lenis=new Lenis({lerp:.08,smoothWheel:true});
 function raf(t){lenis.raf(t);requestAnimationFrame(raf)}requestAnimationFrame(raf);
 gsap.ticker.add(t=>lenis.raf(t*1000));gsap.ticker.lagSmoothing(0);
 
-/* ── Reveals ── */
 gsap.registerPlugin(ScrollTrigger);
 gsap.utils.toArray('.reveal').forEach((el,i)=>{
   const isCard=el.classList.contains('pcard');
@@ -323,32 +373,12 @@ gsap.utils.toArray('.reveal').forEach((el,i)=>{
     delay:isCard?(i%3)*.08:0});
 });
 
-/* ── Counters ── */
-gsap.utils.toArray('[data-count]').forEach(el=>{
-  const t=parseInt(el.dataset.count),obj={val:0};
-  gsap.to(obj,{val:t,duration:1.8,ease:'power2.out',
-    scrollTrigger:{trigger:el.closest('.proof-item')||el,start:'top 85%',toggleActions:'play none none none'},
-    onUpdate:()=>{el.textContent=Math.round(obj.val)}});
-});
-
-/* ── Nav anchors ── */
 document.querySelectorAll('a[href^="#"]').forEach(a=>{
   a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)lenis.scrollTo(t,{offset:-80})});
 });
 
-/* ── Live Ticker (fetch real API data) ── */
-/* Hardcoded ticker — instant load */
-function animateTick(id,target){
-  const el=document.getElementById(id),obj={v:0};
-  gsap.to(obj,{v:target,duration:1.2,ease:'power2.out',onUpdate:()=>{el.textContent=Math.round(obj.v)}});
-}
-document.querySelectorAll('.tick-loading').forEach(e=>e.classList.remove('tick-loading'));
-animateTick('t-emails',16);
-animateTick('t-alerts',16);
-animateTick('t-leads',12);
-
 /* ── Chat Widget ── */
-const CHAT_API=API+'/rag-v5/chat?action=sendMessage';
+const CHAT_API='https://n8n-upwork-w6ty.onrender.com/webhook/rag-v5/chat?action=sendMessage';
 const chatToggle=document.getElementById('chatToggle');
 const chatPanel=document.getElementById('chatPanel');
 const chatClose=document.getElementById('chatClose');
@@ -361,11 +391,10 @@ let chatBusy=false;
 chatToggle.onclick=()=>chatPanel.classList.toggle('open');
 chatClose.onclick=()=>chatPanel.classList.remove('open');
 
-// Safe markdown: only converts known patterns, escapes HTML first
 function safeMd(s){
   if(!s)return'';
   const div=document.createElement('div');div.textContent=s;
-  let h=div.innerHTML; // escaped
+  let h=div.innerHTML;
   h=h.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
   h=h.replace(/`([^`]+)`/g,'<code>$1</code>');
   h=h.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
@@ -379,61 +408,37 @@ function safeMd(s){
 function addChatMsg(role,text){
   const d=document.createElement('div');
   d.className='chat-msg '+role;
-  if(role==='bot'){
-    // innerHTML is safe here: safeMd escapes all user content first via textContent
-    d.innerHTML=safeMd(text);
-  }else{
-    d.textContent=text;
-  }
-  chatMsgs.appendChild(d);
-  chatMsgs.scrollTop=chatMsgs.scrollHeight;
-  return d;
+  if(role==='bot'){d.innerHTML=safeMd(text)}else{d.textContent=text}
+  chatMsgs.appendChild(d);chatMsgs.scrollTop=chatMsgs.scrollHeight;return d;
 }
 
-function showTyping(){
-  const d=document.createElement('div');
-  d.className='chat-typing';d.id='chatTyping';
-  for(let i=0;i<3;i++)d.appendChild(document.createElement('span'));
-  chatMsgs.appendChild(d);
-  chatMsgs.scrollTop=chatMsgs.scrollHeight;
-}
+function showTyping(){const d=document.createElement('div');d.className='chat-typing';d.id='chatTyping';for(let i=0;i<3;i++)d.appendChild(document.createElement('span'));chatMsgs.appendChild(d);chatMsgs.scrollTop=chatMsgs.scrollHeight}
 function hideTyping(){const t=document.getElementById('chatTyping');if(t)t.remove()}
 
 async function sendChat(){
-  const text=chatInput.value.trim();
-  if(!text||chatBusy)return;
-  chatBusy=true;chatInput.value='';
-  addChatMsg('user',text);
-  showTyping();
+  const text=chatInput.value.trim();if(!text||chatBusy)return;
+  chatBusy=true;chatInput.value='';addChatMsg('user',text);showTyping();
   try{
     const res=await fetch(CHAT_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:chatSession,chatInput:text})});
-    const raw=await res.text();
-    hideTyping();
-    try{const j=JSON.parse(raw);addChatMsg('bot',j.output||j.text||raw)}catch{addChatMsg('bot',raw||'Sorry, could not process that.')}
+    const raw=await res.text();hideTyping();
+    let botReply='';
+    try{const j=JSON.parse(raw);botReply=j.output||j.text||raw}catch{botReply=raw||'Sorry, could not process that.'}
+    addChatMsg('bot',botReply);
+    fetch('https://n8n-upwork-w6ty.onrender.com/webhook/nexframe-contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'[Chat]',email:'chat@nexframe',project:'Chat conversation',message:'Q: '+text+'\n\nA: '+botReply})}).catch(()=>{});
   }catch(e){hideTyping();addChatMsg('bot','Connection error. Try again.')}
   chatBusy=false;
 }
 chatSend.onclick=sendChat;
 chatInput.onkeydown=e=>{if(e.key==='Enter')sendChat()};
 
-/* ── Contact Form ── */
 document.getElementById('contactForm').onsubmit=async function(e){
-  e.preventDefault();
-  const btn=document.getElementById('formBtnText');
-  const msg=document.getElementById('formMsg');
-  const fd=new FormData(this);
-  const data={name:fd.get('name'),email:fd.get('email'),project:fd.get('project'),message:fd.get('message')};
+  e.preventDefault();const btn=document.getElementById('formBtnText');const msg=document.getElementById('formMsg');
+  const fd=new FormData(this);const data={name:fd.get('name'),email:fd.get('email'),project:fd.get('project'),message:fd.get('message')};
   btn.textContent='Sending...';
-  try{
-    const r=await fetch('https://n8n-upwork-w6ty.onrender.com/webhook/nexframe-contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
-    const j=await r.json();
-    msg.style.display='block';msg.textContent=j.message||'Sent! We\'ll be in touch.';
-    this.reset();btn.textContent='Sent!';
+  try{const r=await fetch('https://n8n-upwork-w6ty.onrender.com/webhook/nexframe-contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    const j=await r.json();msg.style.display='block';msg.textContent=j.message||'Sent!';this.reset();btn.textContent='Sent!';
     setTimeout(()=>{btn.textContent='Send inquiry';msg.style.display='none'},4000);
-  }catch{
-    msg.style.display='block';msg.style.color='var(--t2)';msg.textContent='Could not send. Email us directly.';
-    btn.textContent='Send inquiry';
-  }
+  }catch{msg.style.display='block';msg.style.color='var(--t2)';msg.textContent='Could not send. Try Upwork.';btn.textContent='Send inquiry'}
 };
 </script>
 </body>
