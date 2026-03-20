@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Ask AI</title>
+<title>Nexframe AI Assistant</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -486,7 +486,8 @@ body {
 </div>
 
 <script>
-const API = 'https://n8n-upwork-w6ty.onrender.com/webhook/rag-v5/chat';
+const CHAT_PROXY = 'https://nexframe-chat.narukys.workers.dev';
+const chatHistory = [];
 const msgsEl = document.getElementById('msgs');
 const input = document.getElementById('input');
 const sendBtn = document.getElementById('sendBtn');
@@ -634,17 +635,18 @@ async function send(text) {
   showTyping();
 
   try {
-    const res = await fetch(API + '?action=sendMessage', {
+    chatHistory.push({role:'user',content:text.trim().slice(0,500)});
+    const res = await fetch(CHAT_PROXY, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sessionId: sessionId, chatInput: text.trim() })
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({messages:chatHistory})
     });
-    const raw = await res.text();
+    const data = await res.json();
     hideTyping();
-    try {
-      const data = JSON.parse(raw);
-      addMsg('bot', data.output || data.text || data.response || 'Sorry, I could not process that request.');
-    } catch { addMsg('bot', raw || 'Sorry, I could not process that request.'); }
+    if(data.error){addMsg('bot',data.error);sending=false;return}
+    const reply = data.choices?.[0]?.message?.content || 'Sorry, I could not process that.';
+    chatHistory.push({role:'assistant',content:reply});
+    addMsg('bot', reply);
   } catch (e) {
     hideTyping();
     addMsg('bot', 'Connection error. Please try again.');
@@ -667,13 +669,13 @@ input.addEventListener('keydown', e => {
 sendBtn.addEventListener('click', () => send(input.value));
 
 // Welcome
-addMsg('bot', "Hi! I'm your AI assistant. Ask me anything about this website \u2014 features, pricing, integrations, and more.", false);
+addMsg('bot', "Hi! I'm the Nexframe AI assistant. Ask me about our services, pricing, or how we work.", false);
 
 // Suggestions
 const sugWrap = document.createElement('div');
 sugWrap.className = 'suggestions';
 sugWrap.id = 'suggestions';
-['What is n8n?', 'Show me pricing', 'What features does it offer?'].forEach(q => {
+['What does Nexframe do?', 'How fast can you ship?', 'What are your prices?'].forEach(q => {
   const pill = document.createElement('button');
   pill.className = 'sug-pill';
   pill.textContent = q;
