@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lead Command — AI-Powered Lead Scoring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #09090b;
+      --surface:     #111113;
+      --surface-2:   #18181b;
+      --border:      rgba(255,255,255,0.06);
+      --border-md:   rgba(255,255,255,0.10);
+      --text-1:      #e4e4e7;
+      --text-2:      #71717a;
+      --text-3:      #52525b;
+      --hot:         #ef4444;
+      --hot-dim:     rgba(239,68,68,0.15);
+      --hot-glow:    rgba(239,68,68,0.25);
+      --warm:        #f59e0b;
+      --warm-dim:    rgba(245,158,11,0.15);
+      --cold:        #3b82f6;
+      --cold-dim:    rgba(59,130,246,0.15);
+      --green:       #22c55e;
+      --green-dim:   rgba(34,197,94,0.12);
+      --radius-sm:   6px;
+      --radius-md:   10px;
+      --radius-lg:   14px;
+      --radius-xl:   18px;
+      --font-sans:   'DM Sans', system-ui, sans-serif;
+      --font-mono:   'DM Mono', 'Fira Code', monospace;
+    }
+
+    /* ── Dark theme (default) ── */
+    [data-theme="dark"] {
+      --bg:        #09090b;
+      --surface:   #111113;
+      --surface-2: #18181b;
+      --border:    rgba(255,255,255,0.06);
+      --border-md: rgba(255,255,255,0.10);
+      --text-1:    #e4e4e7;
+      --text-2:    #71717a;
+      --text-3:    #52525b;
+      --hot-dim:   rgba(239,68,68,0.15);
+      --hot-glow:  rgba(239,68,68,0.25);
+      --warm-dim:  rgba(245,158,11,0.15);
+      --cold-dim:  rgba(59,130,246,0.15);
+      --green-dim: rgba(34,197,94,0.12);
+    }
+
+    /* ── Light theme ── */
+    [data-theme="light"] {
+      --bg:        #f8f8fa;
+      --surface:   #ffffff;
+      --surface-2: #f0f0f2;
+      --border:    rgba(0,0,0,0.08);
+      --border-md: rgba(0,0,0,0.15);
+      --text-1:    #1d1d1f;
+      --text-2:    #52525b;
+      --text-3:    #6b6b70;
+      --hot-dim:   rgba(239,68,68,0.10);
+      --hot-glow:  rgba(239,68,68,0.15);
+      --warm-dim:  rgba(245,158,11,0.10);
+      --cold-dim:  rgba(59,130,246,0.10);
+      --green-dim: rgba(34,197,94,0.08);
+    }
+    [data-theme="light"] .ambient-blob { opacity: 0.015; }
+    [data-theme="light"] .noise { opacity: 0; }
+    [data-theme="light"] .scanlines { opacity: 0; }
+    [data-theme="light"] .lead-row:hover { background: rgba(0,0,0,0.02); }
+    [data-theme="light"] .filter-tab.active { background: var(--bg); border-color: var(--border-md); }
+    [data-theme="light"] .skel { background: linear-gradient(90deg,#e8e8ea 25%,rgba(0,0,0,0.04) 50%,#e8e8ea 75%); background-size: 200% 100%; }
+    [data-theme="light"] .gauge-ring { background: conic-gradient(var(--score-color,#3b82f6) var(--score-pct,0%), rgba(0,0,0,0.08) var(--score-pct,0%)); }
+    [data-theme="light"] .tier-pill.HOT  { background: rgba(239,68,68,0.12); color: #dc2626; border-color: rgba(239,68,68,0.25); }
+    [data-theme="light"] .tier-pill.WARM { background: rgba(245,158,11,0.12); color: #d97706; border-color: rgba(245,158,11,0.25); }
+    [data-theme="light"] .tier-pill.COLD { background: rgba(59,130,246,0.12); color: #2563eb; border-color: rgba(59,130,246,0.25); }
+    [data-theme="light"] .score-badge.hot  { animation: none; }
+    [data-theme="light"] .stat-card { background: #ffffff; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    [data-theme="light"] .stat-sub { color: #52525b; }
+    [data-theme="light"] .stat-label { color: #3f3f46; }
+    [data-theme="light"] .section-title { color: #3f3f46; font-weight: 600; }
+    [data-theme="light"] .legend-item { color: #3f3f46; }
+    [data-theme="light"] .dist-label-item { color: #52525b; }
+
+    /* Theme toggle button */
+    .theme-toggle-btn {
+      display: flex; align-items: center; gap: 7px;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--surface); border: 1px solid var(--border-md);
+      color: var(--text-2); cursor: pointer;
+      font-size: 13px; font-family: var(--font-sans);
+      transition: all 200ms ease; flex-shrink: 0;
+    }
+    .theme-toggle-btn:hover { background: var(--surface-2); color: var(--text-1); }
+    .theme-toggle-btn svg { width: 14px; height: 14px; }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg);
+      color: var(--text-1);
+      min-height: 100dvh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ─── Ambient Background ────────────────────────────────────── */
+    .ambient {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .ambient-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.04;
+    }
+    .ambient-blob-1 {
+      width: 600px; height: 600px;
+      background: #ef4444;
+      top: -200px; left: -150px;
+      animation: blob-drift 20s ease-in-out infinite alternate;
+    }
+    .ambient-blob-2 {
+      width: 500px; height: 500px;
+      background: #3b82f6;
+      bottom: -150px; right: -100px;
+      animation: blob-drift 25s ease-in-out infinite alternate-reverse;
+    }
+    .ambient-blob-3 {
+      width: 300px; height: 300px;
+      background: #f59e0b;
+      top: 40%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: blob-drift 18s ease-in-out infinite alternate;
+    }
+    @keyframes blob-drift {
+      0%   { transform: translate(0,0) scale(1); }
+      100% { transform: translate(40px,30px) scale(1.08); }
+    }
+
+    /* Noise texture overlay */
+    .noise {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 1; opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    /* Scanlines */
+    .scanlines {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 2;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px
+      );
+    }
+
+    /* ─── Layout ────────────────────────────────────────────────── */
+    .app {
+      position: relative; z-index: 10;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ─── Header ────────────────────────────────────────────────── */
+    .header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 28px 0 32px;
+      border-bottom: 1px solid var(--border);
+      gap: 16px; flex-wrap: wrap;
+    }
+    .header-left { display: flex; flex-direction: column; gap: 4px; }
+    .header-title { display: flex; align-items: center; gap: 12px; }
+    .header-logo {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #ef4444 0%, #f59e0b 100%);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-1); }
+    .header-subtitle {
+      font-size: 13px; color: var(--text-2); font-weight: 400; margin-left: 48px;
+    }
+    .header-right { display: flex; align-items: center; gap: 16px; }
+    .live-indicator {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 12px; color: var(--text-2); font-family: var(--font-mono);
+    }
+    .live-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--green);
+      animation: pulse-live 2s ease-in-out infinite; flex-shrink: 0;
+    }
+    @keyframes pulse-live {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+      50%       { opacity: 0.7; box-shadow: 0 0 0 5px rgba(34,197,94,0); }
+    }
+    .clock {
+      font-family: var(--font-mono); font-size: 13px;
+      color: var(--text-2); letter-spacing: 0.5px;
+    }
+    .btn-refresh {
+      display: flex; align-items: center; gap: 7px;
+      padding: 8px 14px;
+      border: 1px solid var(--border-md);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text-2);
+      font-size: 13px; font-family: var(--font-sans); font-weight: 500;
+      cursor: pointer; transition: all 200ms ease; white-space: nowrap;
+    }
+    .btn-refresh:hover { background: var(--surface-2); color: var(--text-1); }
+    .btn-refresh:focus-visible { outline: 2px solid var(--cold); outline-offset: 2px; }
+    .btn-refresh .icon-spin { transition: transform 400ms ease; }
+    .btn-refresh.spinning .icon-spin { animation: spin 600ms linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    /* ─── Stats Row ─────────────────────────────────────────────── */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 12px; margin: 28px 0 20px;
+    }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 20px;
+      position: relative; overflow: hidden;
+      transition: transform 200ms ease, border-color 200ms ease;
+    }
+    .stat-card::before {
+      content: ''; position: absolute; inset: 0;
+      border-radius: inherit; opacity: 0; transition: opacity 200ms ease;
+    }
+    .stat-card:hover { transform: translateY(-2px); }
+    .stat-card.hot   { border-color: rgba(239,68,68,0.2); }
+    .stat-card.hot::before   { background: radial-gradient(ellipse at top,rgba(239,68,68,0.15) 0%,transparent 70%); opacity:1; }
+    .stat-card.hot::after    { content:''; position:absolute; top:-10px; right:-10px; width:100px; height:100px; border-radius:50%; background:#ef4444; filter:blur(45px); opacity:.12; pointer-events:none; }
+    .stat-card.warm  { border-color: rgba(245,158,11,0.2); }
+    .stat-card.warm::before  { background: radial-gradient(ellipse at top,rgba(245,158,11,0.15) 0%,transparent 70%); opacity:1; }
+    .stat-card.warm::after   { content:''; position:absolute; top:-10px; right:-10px; width:100px; height:100px; border-radius:50%; background:#f59e0b; filter:blur(45px); opacity:.12; pointer-events:none; }
+    .stat-card.cold  { border-color: rgba(59,130,246,0.2); }
+    .stat-card.cold::before  { background: radial-gradient(ellipse at top,rgba(59,130,246,0.15) 0%,transparent 70%); opacity:1; }
+    .stat-card.cold::after   { content:''; position:absolute; top:-10px; right:-10px; width:100px; height:100px; border-radius:50%; background:#3b82f6; filter:blur(45px); opacity:.12; pointer-events:none; }
+    .stat-card.score { border-color: rgba(139,92,246,0.2); min-height: 120px; }
+    .stat-card.score::before { background: radial-gradient(ellipse at top,rgba(139,92,246,0.15) 0%,transparent 70%); opacity:1; }
+    .stat-card.score::after  { content:''; position:absolute; top:-10px; right:-10px; width:100px; height:100px; border-radius:50%; background:#8b5cf6; filter:blur(45px); opacity:.12; pointer-events:none; }
+    .stat-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+    .stat-label {
+      font-size: 12px; font-weight: 600; color: var(--text-2);
+      text-transform: uppercase; letter-spacing: .05em;
+    }
+    .stat-icon {
+      width: 32px; height: 32px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .stat-icon.total { background: rgba(228,228,231,0.08); }
+    .stat-icon.hot   { background: var(--hot-dim); box-shadow: 0 0 16px var(--hot-glow); }
+    .stat-icon.warm  { background: var(--warm-dim); }
+    .stat-icon.cold  { background: var(--cold-dim); }
+    .stat-value {
+      font-size: 34px; font-weight: 700; letter-spacing: -1.5px;
+      line-height: 1; font-family: var(--font-mono);
+    }
+    .stat-value.total { color: var(--text-1); }
+    .stat-value.hot   { color: var(--hot); }
+    .stat-value.warm  { color: var(--warm); }
+    .stat-value.cold  { color: var(--cold); }
+    .stat-sub {
+      font-size: 13px; color: var(--text-2); margin-top: 6px;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .trend-up { color: var(--green); display: flex; align-items: center; gap: 2px; }
+
+    /* Circular gauge for avg score */
+    .gauge-wrap { display: flex; align-items: center; gap: 14px; }
+    .gauge { position: relative; width: 56px; height: 56px; flex-shrink: 0; }
+    .gauge-ring {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: conic-gradient(
+        var(--score-color,#3b82f6) var(--score-pct,0%),
+        rgba(255,255,255,0.06) var(--score-pct,0%)
+      );
+      display: flex; align-items: center; justify-content: center;
+      transition: background 600ms ease;
+    }
+    .gauge-inner {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--surface);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .gauge-num {
+      font-family: var(--font-mono); font-size: 14px; font-weight: 500; color: var(--text-1);
+    }
+    .gauge-info { flex: 1; }
+
+    /* ─── Score Distribution ────────────────────────────────────── */
+    .distribution {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 20px;
+    }
+    .distribution-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: 15px; font-weight: 600; color: var(--text-2);
+      text-transform: uppercase; letter-spacing: 0.8px;
+    }
+    .dist-legend { display: flex; align-items: center; gap: 16px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-2); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+    .dist-bar-wrap {
+      display: flex; height: 10px; border-radius: 5px;
+      overflow: hidden; gap: 2px;
+    }
+    .dist-seg {
+      height: 100%; border-radius: 4px;
+      transition: width 800ms cubic-bezier(0.4,0,0.2,1); min-width: 2px;
+    }
+    .dist-seg.hot  { background: linear-gradient(90deg,#ef4444,#f87171); }
+    .dist-seg.warm { background: linear-gradient(90deg,#f59e0b,#fbbf24); }
+    .dist-seg.cold { background: linear-gradient(90deg,#3b82f6,#60a5fa); }
+    .dist-labels { display: flex; margin-top: 10px; font-size: 12px; font-family: var(--font-mono); }
+    .dist-label-item {
+      transition: width 800ms cubic-bezier(0.4,0,0.2,1);
+      color: var(--text-2); white-space: nowrap; overflow: hidden;
+    }
+
+    /* ─── Lead Pipeline ─────────────────────────────────────────── */
+    .pipeline {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); overflow: hidden;
+    }
+    .pipeline-header { padding: 20px 24px 0; border-bottom: 1px solid var(--border); }
+    .pipeline-title-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px; gap: 12px; flex-wrap: wrap;
+    }
+    .pipeline-title { font-size: 16px; font-weight: 600; color: var(--text-1); }
+    .pipeline-count {
+      font-size: 12px; font-family: var(--font-mono); color: var(--text-2);
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 20px; padding: 2px 10px;
+    }
+
+    /* Filter tabs */
+    .filter-tabs { display: flex; gap: 2px; }
+    .filter-tab {
+      padding: 8px 14px;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      border: 1px solid transparent; border-bottom: none;
+      font-size: 14px; font-weight: 500; color: var(--text-2);
+      cursor: pointer; background: transparent; font-family: var(--font-sans);
+      transition: all 180ms ease;
+      display: flex; align-items: center; gap: 7px; white-space: nowrap;
+      position: relative; bottom: -1px;
+    }
+    .filter-tab:hover { color: var(--text-1); }
+    .filter-tab.active {
+      color: var(--text-1); background: var(--bg);
+      border-color: var(--border); border-bottom-color: var(--bg);
+    }
+    .filter-tab:focus-visible { outline: 2px solid var(--cold); outline-offset: 2px; }
+    .tab-count {
+      font-family: var(--font-mono); font-size: 11px;
+      padding: 1px 6px; border-radius: 10px; font-weight: 500;
+    }
+    .tab-count.all  { background: rgba(228,228,231,0.1); color: var(--text-2); }
+    .tab-count.hot  { background: var(--hot-dim); color: var(--hot); }
+    .tab-count.warm { background: var(--warm-dim); color: var(--warm); }
+    .tab-count.cold { background: var(--cold-dim); color: var(--cold); }
+
+    /* Source filter pills */
+    .source-filters {
+      display: flex; gap: 6px; padding: 14px 24px;
+      overflow-x: auto; border-bottom: 1px solid var(--border);
+      scrollbar-width: none;
+    }
+    .source-filters::-webkit-scrollbar { display: none; }
+    .source-pill {
+      display: flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: 20px;
+      border: 1px solid var(--border); background: transparent;
+      font-size: 13px; font-weight: 500; color: var(--text-2);
+      cursor: pointer; white-space: nowrap; font-family: var(--font-sans);
+      transition: all 150ms ease;
+    }
+    .source-pill:hover { background: var(--surface-2); color: var(--text-1); border-color: var(--border-md); }
+    .source-pill.active {
+      background: rgba(228,228,231,0.07); color: var(--text-1);
+      border-color: rgba(228,228,231,0.2);
+    }
+    .source-pill:focus-visible { outline: 2px solid var(--cold); outline-offset: 2px; }
+
+    /* Lead rows */
+    .leads-list { padding: 8px 0; }
+    .lead-row {
+      border-bottom: 1px solid var(--border);
+      transition: background 150ms ease;
+      cursor: pointer;
+      animation: row-fade-in 300ms ease both;
+    }
+    .lead-row:last-child { border-bottom: none; }
+    .lead-row:hover { background: rgba(255,255,255,0.02); }
+    @keyframes row-fade-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .lead-main {
+      display: flex; align-items: center;
+      padding: 16px 24px; gap: 16px; min-height: 70px;
+    }
+
+    /* Score badge */
+    .score-badge {
+      width: 48px; height: 48px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-size: 15px; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .score-badge.hot  {
+      background: var(--hot-dim); border: 1.5px solid rgba(239,68,68,0.3);
+      color: var(--hot); animation: hot-pulse 3s ease-in-out infinite;
+    }
+    .score-badge.warm { background: var(--warm-dim); border: 1.5px solid rgba(245,158,11,0.3); color: var(--warm); }
+    .score-badge.cold { background: var(--cold-dim); border: 1.5px solid rgba(59,130,246,0.3); color: var(--cold); }
+    @keyframes hot-pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.3); }
+      50%      { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+    }
+
+    /* Lead info */
+    .lead-info { flex: 1; min-width: 0; }
+    .lead-name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+    .lead-name {
+      font-size: 15px; font-weight: 600; color: var(--text-1);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .tier-pill {
+      font-size: 12px; font-weight: 700; font-family: var(--font-mono);
+      padding: 2px 7px; border-radius: 4px; letter-spacing: 0.8px; flex-shrink: 0;
+    }
+    .tier-pill.HOT  { background: var(--hot-dim); color: var(--hot); border: 1px solid rgba(239,68,68,0.2); }
+    .tier-pill.WARM { background: var(--warm-dim); color: var(--warm); border: 1px solid rgba(245,158,11,0.2); }
+    .tier-pill.COLD { background: var(--cold-dim); color: var(--cold); border: 1px solid rgba(59,130,246,0.2); }
+    .lead-company-role {
+      font-size: 13px; color: var(--text-2);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      line-height: 1.5;
+    }
+
+    /* Meta pills */
+    .lead-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex-shrink: 0; }
+    .meta-pill {
+      display: flex; align-items: center; gap: 4px;
+      padding: 3px 9px; border-radius: 4px;
+      font-size: 12px; font-family: var(--font-mono); font-weight: 500;
+      background: var(--surface-2); border: 1px solid var(--border); color: var(--text-2);
+      white-space: nowrap;
+    }
+
+    /* Source icon */
+    .lead-source-wrap { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .source-icon-wrap {
+      width: 28px; height: 28px; border-radius: var(--radius-sm);
+      background: var(--surface-2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Time */
+    .lead-time {
+      font-size: 13px; font-family: var(--font-mono);
+      color: var(--text-3); white-space: nowrap; flex-shrink: 0;
+    }
+
+    /* Chevron */
+    .expand-chevron {
+      color: var(--text-3); flex-shrink: 0;
+      transition: transform 280ms ease, color 180ms ease; margin-left: 4px;
+    }
+    .lead-row.expanded .expand-chevron { transform: rotate(180deg); color: var(--text-2); }
+
+    /* Expanded detail panel */
+    .lead-detail {
+      overflow: hidden; max-height: 0;
+      transition: max-height 280ms cubic-bezier(0.4,0,0.2,1);
+    }
+    .lead-row.expanded .lead-detail { max-height: 600px; }
+    .lead-detail-inner {
+      padding: 0 24px 20px 88px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    }
+
+    /* Detail cards */
+    .detail-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 14px 16px;
+    }
+    .detail-card.full { grid-column: 1 / -1; }
+    .detail-card-label {
+      font-size: 12px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.9px; color: var(--text-3);
+      margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+    }
+    .detail-card-text { font-size: 14px; color: var(--text-1); line-height: 1.55; }
+    .detail-card-text.mono {
+      font-family: var(--font-mono); font-size: 13px; color: var(--text-2);
+    }
+
+    /* AI card */
+    .ai-card {
+      background: linear-gradient(135deg,rgba(139,92,246,0.05) 0%,rgba(59,130,246,0.05) 100%);
+      border-color: rgba(139,92,246,0.15);
+    }
+    .ai-card .detail-card-label { color: rgba(167,139,250,0.8); }
+
+    /* Next step card */
+    .nextstep-card {
+      background: linear-gradient(135deg,rgba(34,197,94,0.05) 0%,rgba(16,185,129,0.05) 100%);
+      border-color: rgba(34,197,94,0.2);
+    }
+    .nextstep-card .detail-card-label { color: rgba(74,222,128,0.9); }
+    .nextstep-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 12px; gap: 10px; flex-wrap: wrap;
+    }
+
+    /* Email link */
+    .email-link {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 12px; font-family: var(--font-mono);
+      color: var(--cold); text-decoration: none; transition: color 150ms ease;
+    }
+    .email-link:hover { color: #93c5fd; }
+
+    /* Action button */
+    .btn-action {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: var(--radius-sm);
+      border: 1px solid rgba(34,197,94,0.3);
+      background: rgba(34,197,94,0.1); color: var(--green);
+      font-size: 12px; font-weight: 600; font-family: var(--font-sans);
+      cursor: pointer; transition: all 180ms ease; white-space: nowrap;
+    }
+    .btn-action:hover {
+      background: rgba(34,197,94,0.18); border-color: rgba(34,197,94,0.5);
+      box-shadow: 0 0 16px rgba(34,197,94,0.15);
+    }
+    .btn-action:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+    /* Empty state */
+    .empty-state { padding: 60px 24px; text-align: center; color: var(--text-3); }
+    .empty-state p { font-size: 14px; margin-top: 12px; }
+
+    /* Loading skeleton */
+    .skeleton-row {
+      padding: 16px 24px; display: flex; align-items: center; gap: 16px;
+      border-bottom: 1px solid var(--border);
+      animation: row-fade-in 300ms ease both;
+    }
+    .skel {
+      background: linear-gradient(90deg,var(--surface-2) 25%,rgba(255,255,255,0.04) 50%,var(--surface-2) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s ease-in-out infinite;
+      border-radius: var(--radius-sm);
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* Error banner */
+    .error-banner {
+      background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.2);
+      border-radius: var(--radius-md); padding: 14px 18px;
+      font-size: 13px; color: #fca5a5;
+      display: flex; align-items: center; gap: 10px; margin: 12px 0;
+    }
+
+    /* ─── Footer ────────────────────────────────────────────────── */
+    .footer {
+      margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-size: 12px; color: var(--text-3); font-family: var(--font-mono);
+      flex-wrap: wrap;
+    }
+    .footer-dot { opacity: 0.4; }
+
+    /* ─── Responsive ────────────────────────────────────────────── */
+    @media (max-width: 1100px) {
+      .stats-row { grid-template-columns: repeat(3,1fr); }
+    }
+    @media (max-width: 1024px) {
+      .app { padding: 0 20px 60px; }
+      .stats-row { grid-template-columns: repeat(3,1fr); }
+    }
+    @media (max-width: 768px) {
+      .app { padding: 0 16px 60px; }
+      .stats-row { grid-template-columns: repeat(2,1fr); }
+      .header { padding: 20px 0 24px; }
+      h1 { font-size: 18px; }
+      .header-subtitle { margin-left: 0; }
+      .lead-detail-inner { grid-template-columns: 1fr; padding-left: 24px; }
+      .lead-main { padding: 14px 16px; gap: 12px; min-height: 48px; }
+      .lead-meta { display: none; }
+      .pipeline-header { padding: 16px 16px 0; }
+      .source-filters {
+        padding: 10px 16px;
+        overflow-x: auto; flex-wrap: nowrap; white-space: nowrap;
+        -webkit-overflow-scrolling: touch; scrollbar-width: none;
+      }
+      .source-filters::-webkit-scrollbar { display: none; }
+      .source-pill { flex-shrink: 0; min-height: 44px; }
+      .filter-tab { min-height: 44px; }
+      .lead-row { min-height: 48px; }
+      .lead-name { font-size: 15px; }
+      .lead-company-role { font-size: 13px; }
+    }
+    @media (max-width: 480px) {
+      .app { padding: 0 12px 48px; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .stat-card.score { grid-column: 1 / -1; }
+      .clock { display: none; }
+      .header-right { gap: 10px; }
+      .lead-main { padding: 12px 12px; gap: 10px; min-height: 48px; }
+      .source-filters {
+        padding: 10px 12px;
+        overflow-x: auto; flex-wrap: nowrap; white-space: nowrap;
+        -webkit-overflow-scrolling: touch; scrollbar-width: none;
+      }
+      .source-filters::-webkit-scrollbar { display: none; }
+      .source-pill { flex-shrink: 0; min-height: 48px; }
+      .filter-tabs { overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
+      .filter-tabs::-webkit-scrollbar { display: none; }
+      .filter-tab { flex-shrink: 0; min-height: 48px; white-space: nowrap; }
+      .pipeline-header { padding: 14px 12px 0; }
+      .lead-detail-inner { padding: 0 12px 16px; }
+    }
+
+    /* ─── Reduced motion ────────────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ══ FORCE READABLE SIZES ══ */
+    .stat-sub { font-size: 13px !important; }
+    .stat-label { font-size: 12px !important; font-weight: 600 !important; }
+    .section-title { font-size: 14px !important; font-weight: 600 !important; }
+    .lead-company-role { font-size: 13px !important; }
+    .lead-time { font-size: 13px !important; }
+    .tier-pill { font-size: 12px !important; }
+    .lead-name { font-size: 15px !important; }
+    .filter-tab { font-size: 14px !important; }
+    .source-pill { font-size: 14px !important; }
+    .detail-card-label { font-size: 12px !important; }
+    .detail-card-text { font-size: 14px !important; line-height: 1.55 !important; }
+    .legend-item { font-size: 13px !important; }
+    .dist-label-item { font-size: 13px !important; color: var(--text-2) !important; }
+  </style>
+</head>
+<body>
+
+<!-- Ambient background effects -->
+<div class="ambient" aria-hidden="true">
+  <div class="ambient-blob ambient-blob-1"></div>
+  <div class="ambient-blob ambient-blob-2"></div>
+  <div class="ambient-blob ambient-blob-3"></div>
+</div>
+<div class="noise"     aria-hidden="true"></div>
+<div class="scanlines" aria-hidden="true"></div>
+
+<div class="app">
+
+  <!-- ── HEADER ─────────────────────────────────────────────────── -->
+  <header class="header">
+    <div class="header-left">
+      <div class="header-title">
+        <div class="header-logo" aria-hidden="true">
+          <!-- SVG: Target / crosshair — 100% static, no user data -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="3"/>
+            <line x1="12" y1="2"  x2="12" y2="5"/>
+            <line x1="12" y1="19" x2="12" y2="22"/>
+            <line x1="2"  y1="12" x2="5"  y2="12"/>
+            <line x1="19" y1="12" x2="22" y2="12"/>
+          </svg>
+        </div>
+        <h1>Lead Command</h1>
+      </div>
+      <p class="header-subtitle">AI-Powered Lead Scoring &amp; Qualification</p>
+    </div>
+    <div class="header-right">
+      <div class="live-indicator">
+        <span class="live-dot" aria-label="Live data"></span>
+        <span aria-hidden="true">LIVE</span>
+      </div>
+      <time class="clock" id="clock" aria-live="off"></time>
+      <button class="theme-toggle-btn" id="theme-toggle" title="Toggle theme" aria-label="Toggle light/dark mode">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <button class="btn-refresh" id="btnRefresh" aria-label="Refresh lead data">
+        <svg class="icon-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <polyline points="23 4 23 10 17 10"/>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+        Refresh
+      </button>
+    </div>
+  </header>
+
+  <!-- ── STATS ROW ──────────────────────────────────────────────── -->
+  <section aria-label="Lead statistics" class="stats-row">
+
+    <!-- Total -->
+    <div class="stat-card">
+      <div class="stat-card-header">
+        <span class="stat-label">Total Leads</span>
+        <div class="stat-icon total" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+      </div>
+      <div class="stat-value total" id="statTotal">0</div>
+      <div class="stat-sub">
+        <span class="trend-up">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="18 15 12 9 6 15"/></svg>
+          All time
+        </span>
+      </div>
+    </div>
+
+    <!-- Hot -->
+    <div class="stat-card hot">
+      <div class="stat-card-header">
+        <span class="stat-label">Hot Leads</span>
+        <div class="stat-icon hot" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="stat-value hot" id="statHot">0</div>
+      <div class="stat-sub">Score &ge; 70</div>
+    </div>
+
+    <!-- Warm -->
+    <div class="stat-card warm">
+      <div class="stat-card-header">
+        <span class="stat-label">Warm Leads</span>
+        <div class="stat-icon warm" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </div>
+      </div>
+      <div class="stat-value warm" id="statWarm">0</div>
+      <div class="stat-sub">Score 40&ndash;69</div>
+    </div>
+
+    <!-- Cold -->
+    <div class="stat-card cold">
+      <div class="stat-card-header">
+        <span class="stat-label">Cold Leads</span>
+        <div class="stat-icon cold" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+            <line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/>
+            <path d="m20 16-4-4 4-4"/><path d="m4 8 4 4-4 4"/>
+            <path d="m16 4-4 4-4-4"/><path d="m8 20 4-4 4 4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="stat-value cold" id="statCold">0</div>
+      <div class="stat-sub">Score &lt; 40</div>
+    </div>
+
+    <!-- Avg Score -->
+    <div class="stat-card score">
+      <div class="stat-card-header">
+        <span class="stat-label">Avg Score</span>
+      </div>
+      <div class="gauge-wrap">
+        <div class="gauge" role="meter" aria-label="Average lead score" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          <div class="gauge-ring" id="gaugeRing">
+            <div class="gauge-inner">
+              <span class="gauge-num" id="gaugeNum">0</span>
+            </div>
+          </div>
+        </div>
+        <div class="gauge-info">
+          <div class="stat-sub" id="avgScoreTier" style="font-size:12px;margin-top:0;">Calculating…</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── SCORE DISTRIBUTION ─────────────────────────────────────── -->
+  <div class="distribution">
+    <div class="distribution-header">
+      <span class="section-title">Score Distribution</span>
+      <div class="dist-legend" aria-hidden="true">
+        <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div><span>Hot</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div><span>Warm</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div><span>Cold</span></div>
+      </div>
+    </div>
+    <div class="dist-bar-wrap" role="img" aria-label="Lead tier distribution bar">
+      <div class="dist-seg hot"  id="distHot"  style="width:0%"></div>
+      <div class="dist-seg warm" id="distWarm" style="width:0%"></div>
+      <div class="dist-seg cold" id="distCold" style="width:0%"></div>
+    </div>
+    <div class="dist-labels">
+      <div class="dist-label-item" id="distLabelHot"  style="width:0%"></div>
+      <div class="dist-label-item" id="distLabelWarm" style="width:0%"></div>
+      <div class="dist-label-item" id="distLabelCold" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- ── LEAD PIPELINE ──────────────────────────────────────────── -->
+  <main class="pipeline" id="pipeline">
+    <div class="pipeline-header">
+      <div class="pipeline-title-row">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <h2 class="pipeline-title">Lead Pipeline</h2>
+          <span class="pipeline-count" id="pipelineCount" aria-live="polite">0 leads</span>
+        </div>
+      </div>
+      <nav class="filter-tabs" role="tablist" aria-label="Filter leads by tier">
+        <button class="filter-tab active" role="tab" aria-selected="true"  data-filter="all"  id="tab-all">
+          All <span class="tab-count all"  id="countAll">0</span>
+        </button>
+        <button class="filter-tab"        role="tab" aria-selected="false" data-filter="HOT"  id="tab-hot">
+          Hot <span class="tab-count hot"  id="countHot">0</span>
+        </button>
+        <button class="filter-tab"        role="tab" aria-selected="false" data-filter="WARM" id="tab-warm">
+          Warm <span class="tab-count warm" id="countWarm">0</span>
+        </button>
+        <button class="filter-tab"        role="tab" aria-selected="false" data-filter="COLD" id="tab-cold">
+          Cold <span class="tab-count cold" id="countCold">0</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Source filter pills — all static labels, no user data -->
+    <div class="source-filters" role="group" aria-label="Filter leads by source">
+      <button class="source-pill active" data-source="all">All Sources</button>
+      <button class="source-pill" data-source="Web Form">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        Web Form
+      </button>
+      <button class="source-pill" data-source="LinkedIn">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        LinkedIn
+      </button>
+      <button class="source-pill" data-source="Referral">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Referral
+      </button>
+      <button class="source-pill" data-source="Google Ads">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Google Ads
+      </button>
+      <button class="source-pill" data-source="Conference">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Conference
+      </button>
+    </div>
+
+    <!-- Lead rows injected here by JS (all user data set via textContent) -->
+    <div class="leads-list" id="leadsList" role="list" aria-label="Lead entries"></div>
+  </main>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <span>Nexframe Studio</span>
+    <span class="footer-dot">&#xB7;</span>
+    <span>Lead Command</span>
+    <span class="footer-dot">&#xB7;</span>
+    <span id="footerDate"></span>
+  </footer>
+
+</div><!-- /app -->
+
+<!-- ============================================================
+     ALL STATIC SVG TEMPLATES — zero user data, injected once
+     ============================================================ -->
+<template id="svgChevron">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="6 9 12 15 18 9"/></svg>
+</template>
+<template id="svgDollar">
+  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+</template>
+<template id="svgClock">
+  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+</template>
+<template id="svgMail">
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+</template>
+<template id="svgBrain">
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 2a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4z"/><path d="M12 10v2"/><path d="m9 15 3-3 3 3"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>
+</template>
+<template id="svgArrows">
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
+</template>
+<template id="svgHelp">
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+</template>
+<template id="svgChevronRight">
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="9 18 15 12 9 6"/></svg>
+</template>
+<template id="svgAlert">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+</template>
+<template id="svgSearch">
+  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#3f3f46" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</template>
+
+<!-- source icon templates -->
+<template id="svgSrcWebForm">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+</template>
+<template id="svgSrcLinkedIn">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="#60a5fa" aria-hidden="true" focusable="false"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+</template>
+<template id="svgSrcReferral">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+</template>
+<template id="svgSrcGoogle">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+</template>
+<template id="svgSrcConference">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+</template>
+
+<script>
+  /*
+   * ================================================================
+   *  LEAD COMMAND — Dashboard Script
+   *  SECURITY: ALL user-supplied data is inserted with textContent
+   *             or element.setAttribute only.
+   *             Static SVG templates are cloned from <template> tags
+   *             in the HTML above — never built from user strings.
+   * ================================================================
+   */
+  'use strict';
+
+  // ── Config ────────────────────────────────────────────────────
+  const API_LEADS  = 'https://n8n-upwork-w6ty.onrender.com/webhook/api-leads';
+  const API_STATS  = 'https://n8n-upwork-w6ty.onrender.com/webhook/api-lead-stats';
+  const REFRESH_MS = 30_000;
+
+  // ── State ──────────────────────────────────────────────────────
+  let allLeads     = [];
+  let activeFilter = 'all';
+  let activeSource = 'all';
+  let expandedId   = null;
+  let refreshTimer = null;
+  let rafIds       = {};
+
+  // ── DOM helpers ───────────────────────────────────────────────
+  const $ = id => document.getElementById(id);
+
+  /** Clone a <template> by id and return the first element child */
+  function cloneTpl(id) {
+    return document.getElementById(id).content.cloneNode(true).firstElementChild;
+  }
+
+  /** Set element text safely — never use innerHTML for user data */
+  function safeText(el, value) {
+    el.textContent = (value == null || value === '') ? '—' : String(value);
+  }
+
+  // ── Clock ──────────────────────────────────────────────────────
+  function updateClock() {
+    const now = new Date();
+    const p   = n => String(n).padStart(2,'0');
+    $('clock').textContent = `${p(now.getHours())}:${p(now.getMinutes())}:${p(now.getSeconds())}`;
+    $('footerDate').textContent = now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // ── Count-up animation ────────────────────────────────────────
+  function countUp(el, target, duration) {
+    if (!el) return;
+    if (rafIds[el.id]) cancelAnimationFrame(rafIds[el.id]);
+    const from  = parseInt(el.textContent) || 0;
+    const start = performance.now();
+    function step(now) {
+      const t = Math.min((now - start) / (duration || 700), 1);
+      const ease = 1 - Math.pow(1 - t, 3);
+      el.textContent = Math.round(from + (target - from) * ease);
+      if (t < 1) rafIds[el.id] = requestAnimationFrame(step);
+    }
+    rafIds[el.id] = requestAnimationFrame(step);
+  }
+
+  // ── Score helpers ──────────────────────────────────────────────
+  function scoreClass(s) { return s >= 70 ? 'hot' : s >= 40 ? 'warm' : 'cold'; }
+  function tierFromScore(s) { return s >= 70 ? 'HOT' : s >= 40 ? 'WARM' : 'COLD'; }
+  function scoreCSS(s)  { return s >= 70 ? '#ef4444' : s >= 40 ? '#f59e0b' : '#3b82f6'; }
+
+  // ── Time ago ───────────────────────────────────────────────────
+  function timeAgo(dateStr) {
+    if (!dateStr) return '—';
+    const diff = (Date.now() - new Date(dateStr).getTime()) / 1000;
+    if (diff < 60)    return Math.round(diff) + 's ago';
+    if (diff < 3600)  return Math.round(diff/60) + 'm ago';
+    if (diff < 86400) return Math.round(diff/3600) + 'h ago';
+    return Math.round(diff/86400) + 'd ago';
+  }
+
+  // ── Source icon (returns cloned SVG element, no user data) ─────
+  function sourceIconEl(source) {
+    const s = String(source || '').toLowerCase();
+    if (s.includes('linkedin'))   return cloneTpl('svgSrcLinkedIn');
+    if (s.includes('referral'))   return cloneTpl('svgSrcReferral');
+    if (s.includes('google'))     return cloneTpl('svgSrcGoogle');
+    if (s.includes('conference')) return cloneTpl('svgSrcConference');
+    return cloneTpl('svgSrcWebForm');
+  }
+
+  // ── Render stats ───────────────────────────────────────────────
+  function renderStats(stats, leads) {
+    const total  = stats?.total     ?? leads.length;
+    const hot    = stats?.hot       ?? leads.filter(l => normTier(l) === 'HOT').length;
+    const warm   = stats?.warm      ?? leads.filter(l => normTier(l) === 'WARM').length;
+    const cold   = stats?.cold      ?? leads.filter(l => normTier(l) === 'COLD').length;
+    const avg    = Math.round(stats?.avg_score ?? (leads.length ? leads.reduce((s,l)=>s+(l.score||0),0)/leads.length : 0));
+
+    countUp($('statTotal'), total, 600);
+    countUp($('statHot'),   hot,   650);
+    countUp($('statWarm'),  warm,  700);
+    countUp($('statCold'),  cold,  750);
+
+    // Gauge
+    const ring   = $('gaugeRing');
+    const numEl  = $('gaugeNum');
+    const color  = scoreCSS(avg);
+    ring.style.setProperty('--score-pct',  avg + '%');
+    ring.style.setProperty('--score-color', color);
+    ring.parentElement.setAttribute('aria-valuenow', avg);
+    countUp(numEl, avg, 700);
+
+    const tier = avg >= 70 ? 'Hot pipeline' : avg >= 40 ? 'Warm pipeline' : 'Needs nurture';
+    safeText($('avgScoreTier'), tier);
+
+    // Tab badge counts
+    safeText($('countAll'),  total);
+    safeText($('countHot'),  hot);
+    safeText($('countWarm'), warm);
+    safeText($('countCold'), cold);
+
+    // Distribution bar
+    if (total > 0) {
+      const hp = (hot  / total * 100).toFixed(1) + '%';
+      const wp = (warm / total * 100).toFixed(1) + '%';
+      const cp = (cold / total * 100).toFixed(1) + '%';
+      $('distHot').style.width  = hp;
+      $('distWarm').style.width = wp;
+      $('distCold').style.width = cp;
+      $('distLabelHot').style.width  = hp;
+      $('distLabelWarm').style.width = wp;
+      $('distLabelCold').style.width = cp;
+      safeText($('distLabelHot'),  hot  > 0 ? hot  + ' Hot'  : '');
+      safeText($('distLabelWarm'), warm > 0 ? warm + ' Warm' : '');
+      safeText($('distLabelCold'), cold > 0 ? cold + ' Cold' : '');
+    }
+  }
+
+  function normTier(lead) {
+    return ((lead.tier || tierFromScore(lead.score || 0)) + '').toUpperCase();
+  }
+
+  // ── Build one lead row (all user data via textContent only) ────
+  function buildLeadRow(lead, delayMs) {
+    const tier   = normTier(lead);
+    const cls    = scoreClass(lead.score || 0);
+    const score  = lead.score != null ? lead.score : '?';
+
+    /* ── wrapper ─────────────────────────────────── */
+    const row = document.createElement('div');
+    row.className = 'lead-row';
+    row.setAttribute('role', 'listitem');
+    row.setAttribute('tabindex', '0');
+    row.setAttribute('aria-expanded', 'false');
+    row.style.animationDelay = delayMs + 'ms';
+
+    /* ── main (always-visible bar) ────────────────── */
+    const main = document.createElement('div');
+    main.className = 'lead-main';
+
+    // Score badge
+    const badge = document.createElement('div');
+    badge.className = 'score-badge ' + cls;
+    badge.setAttribute('aria-label', 'Score ' + score);
+    badge.textContent = score; // numeric, safe
+    main.appendChild(badge);
+
+    // Info block
+    const info = document.createElement('div');
+    info.className = 'lead-info';
+
+    const nameRow = document.createElement('div');
+    nameRow.className = 'lead-name-row';
+
+    const nameEl = document.createElement('span');
+    nameEl.className = 'lead-name';
+    safeText(nameEl, lead.name);
+    nameRow.appendChild(nameEl);
+
+    const pill = document.createElement('span');
+    pill.className = 'tier-pill ' + tier;
+    pill.textContent = tier; // static enum value, safe
+    nameRow.appendChild(pill);
+
+    info.appendChild(nameRow);
+
+    const compRole = document.createElement('div');
+    compRole.className = 'lead-company-role';
+    const parts = [];
+    if (lead.company) parts.push(String(lead.company));
+    if (lead.role)    parts.push(String(lead.role));
+    compRole.textContent = parts.join(' · ');
+    info.appendChild(compRole);
+    main.appendChild(info);
+
+    // Meta pills
+    const meta = document.createElement('div');
+    meta.className = 'lead-meta';
+    meta.setAttribute('aria-label', 'Lead meta details');
+
+    if (lead.budget) {
+      const bp = document.createElement('div');
+      bp.className = 'meta-pill';
+      bp.appendChild(cloneTpl('svgDollar'));
+      bp.appendChild(document.createTextNode(' ' + String(lead.budget)));
+      meta.appendChild(bp);
+    }
+    if (lead.timeline) {
+      const tp = document.createElement('div');
+      tp.className = 'meta-pill';
+      tp.appendChild(cloneTpl('svgClock'));
+      tp.appendChild(document.createTextNode(' ' + String(lead.timeline)));
+      meta.appendChild(tp);
+    }
+    main.appendChild(meta);
+
+    // Source icon
+    const srcWrap = document.createElement('div');
+    srcWrap.className = 'lead-source-wrap';
+    const iconBox = document.createElement('div');
+    iconBox.className = 'source-icon-wrap';
+    // aria-label uses source value via setAttribute (safe — no HTML injection)
+    iconBox.setAttribute('aria-label', String(lead.source || 'Unknown source'));
+    iconBox.appendChild(sourceIconEl(lead.source));
+    srcWrap.appendChild(iconBox);
+    main.appendChild(srcWrap);
+
+    // Time ago
+    const timeEl = document.createElement('div');
+    timeEl.className = 'lead-time';
+    timeEl.textContent = timeAgo(lead.created_at);
+    main.appendChild(timeEl);
+
+    // Chevron
+    const chev = document.createElement('div');
+    chev.className = 'expand-chevron';
+    chev.appendChild(cloneTpl('svgChevron'));
+    main.appendChild(chev);
+
+    row.appendChild(main);
+
+    /* ── collapsible detail panel ──────────────────── */
+    const detail = document.createElement('div');
+    detail.className = 'lead-detail';
+    const detailId = 'detail-' + String(lead.id || Math.random()).replace(/[^a-z0-9]/gi,'');
+    detail.id = detailId;
+    detail.setAttribute('aria-hidden', 'true');
+
+    const inner = document.createElement('div');
+    inner.className = 'lead-detail-inner';
+
+    // "What they need" card
+    const needCard = document.createElement('div');
+    needCard.className = 'detail-card';
+    const needLbl = document.createElement('div');
+    needLbl.className = 'detail-card-label';
+    needLbl.appendChild(cloneTpl('svgHelp'));
+    needLbl.appendChild(document.createTextNode(' What They Need'));
+    const needTxt = document.createElement('div');
+    needTxt.className = 'detail-card-text';
+    safeText(needTxt, lead.need || 'Not specified');
+    needCard.appendChild(needLbl);
+    needCard.appendChild(needTxt);
+    inner.appendChild(needCard);
+
+    // Contact card
+    const contCard = document.createElement('div');
+    contCard.className = 'detail-card';
+    const contLbl = document.createElement('div');
+    contLbl.className = 'detail-card-label';
+    contLbl.appendChild(cloneTpl('svgMail'));
+    contLbl.appendChild(document.createTextNode(' Contact'));
+
+    if (lead.email) {
+      const link = document.createElement('a');
+      link.className = 'email-link';
+      // Build href from encoded email — safe from injection
+      link.setAttribute('href', 'mailto:' + encodeURIComponent(String(lead.email)));
+      link.appendChild(cloneTpl('svgMail'));
+      link.appendChild(document.createTextNode(String(lead.email)));
+      contCard.appendChild(contLbl);
+      contCard.appendChild(link);
+    } else {
+      contCard.appendChild(contLbl);
+    }
+    inner.appendChild(contCard);
+
+    // AI reasoning card (full width)
+    if (lead.ai_reasoning) {
+      const aiCard = document.createElement('div');
+      aiCard.className = 'detail-card ai-card full';
+      const aiLbl = document.createElement('div');
+      aiLbl.className = 'detail-card-label';
+      aiLbl.appendChild(cloneTpl('svgBrain'));
+      aiLbl.appendChild(document.createTextNode(' AI Analysis'));
+      const aiTxt = document.createElement('div');
+      aiTxt.className = 'detail-card-text mono';
+      safeText(aiTxt, lead.ai_reasoning);
+      aiCard.appendChild(aiLbl);
+      aiCard.appendChild(aiTxt);
+      inner.appendChild(aiCard);
+    }
+
+    // Next step card (full width)
+    if (lead.ai_next_step) {
+      const nsCard = document.createElement('div');
+      nsCard.className = 'detail-card nextstep-card full';
+      const nsLbl = document.createElement('div');
+      nsLbl.className = 'detail-card-label';
+      nsLbl.appendChild(cloneTpl('svgArrows'));
+      nsLbl.appendChild(document.createTextNode(' Recommended Next Step'));
+      const nsTxt = document.createElement('div');
+      nsTxt.className = 'detail-card-text';
+      safeText(nsTxt, lead.ai_next_step);
+
+      const nsFooter = document.createElement('div');
+      nsFooter.className = 'nextstep-footer';
+
+      const btnAct = document.createElement('button');
+      btnAct.className = 'btn-action';
+      btnAct.setAttribute('aria-label', 'Take action on this lead');
+      btnAct.appendChild(cloneTpl('svgChevronRight'));
+      btnAct.appendChild(document.createTextNode('Take Action'));
+      btnAct.addEventListener('click', e => {
+        e.stopPropagation();
+        if (lead.email) {
+          const sub  = encodeURIComponent('Following up — ' + String(lead.company || lead.name || ''));
+          const href = 'mailto:' + encodeURIComponent(String(lead.email)) + '?subject=' + sub;
+          window.location.href = href;
+        }
+      });
+
+      nsFooter.appendChild(btnAct);
+      nsCard.appendChild(nsLbl);
+      nsCard.appendChild(nsTxt);
+      nsCard.appendChild(nsFooter);
+      inner.appendChild(nsCard);
+    }
+
+    detail.appendChild(inner);
+    row.appendChild(detail);
+
+    /* ── toggle expand ─────────────────────────────── */
+    function toggle(e) {
+      if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+      if (e.type === 'keydown') e.preventDefault();
+
+      const wasExpanded = row.classList.contains('expanded');
+
+      // collapse any previously open row
+      if (expandedId && expandedId !== detailId) {
+        const prev = document.getElementById(expandedId);
+        if (prev) {
+          const prevRow = prev.closest('.lead-row');
+          prevRow.classList.remove('expanded');
+          prev.setAttribute('aria-hidden', 'true');
+          prevRow.setAttribute('aria-expanded', 'false');
+        }
+      }
+
+      if (wasExpanded) {
+        row.classList.remove('expanded');
+        detail.setAttribute('aria-hidden', 'true');
+        row.setAttribute('aria-expanded', 'false');
+        expandedId = null;
+      } else {
+        row.classList.add('expanded');
+        detail.setAttribute('aria-hidden', 'false');
+        row.setAttribute('aria-expanded', 'true');
+        expandedId = detailId;
+      }
+    }
+
+    main.addEventListener('click', toggle);
+    row.addEventListener('keydown', toggle);
+    return row;
+  }
+
+  // ── Render leads list ──────────────────────────────────────────
+  function renderLeads(leads) {
+    const list = $('leadsList');
+    list.textContent = ''; // clears all children safely
+    expandedId = null;
+
+    const filtered = leads.filter(l => {
+      const tierOk = activeFilter === 'all' || normTier(l) === activeFilter;
+      const srcOk  = activeSource === 'all' || String(l.source || '') === activeSource;
+      return tierOk && srcOk;
+    });
+
+    safeText($('pipelineCount'), filtered.length + ' lead' + (filtered.length !== 1 ? 's' : ''));
+
+    if (filtered.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.setAttribute('role', 'status');
+      empty.appendChild(cloneTpl('svgSearch'));
+      const msg = document.createElement('p');
+      msg.textContent = 'No leads match the current filters.';
+      empty.appendChild(msg);
+      list.appendChild(empty);
+      return;
+    }
+
+    // Sort: HOT > WARM > COLD, then score desc
+    const ORDER = { HOT:0, WARM:1, COLD:2 };
+    const sorted = [...filtered].sort((a,b) => {
+      const diff = (ORDER[normTier(a)]||0) - (ORDER[normTier(b)]||0);
+      return diff !== 0 ? diff : (b.score||0) - (a.score||0);
+    });
+
+    const frag = document.createDocumentFragment();
+    sorted.forEach((lead, i) => frag.appendChild(buildLeadRow(lead, i * 30)));
+    list.appendChild(frag);
+  }
+
+  // ── Skeleton loading ───────────────────────────────────────────
+  function showSkeleton() {
+    const list = $('leadsList');
+    list.textContent = '';
+    for (let i = 0; i < 6; i++) {
+      const row = document.createElement('div');
+      row.className = 'skeleton-row';
+      row.setAttribute('aria-hidden', 'true');
+      row.style.animationDelay = (i * 50) + 'ms';
+
+      const circle = document.createElement('div');
+      circle.className = 'skel';
+      circle.style.cssText = 'width:48px;height:48px;border-radius:50%;flex-shrink:0';
+      row.appendChild(circle);
+
+      const col = document.createElement('div');
+      col.style.cssText = 'flex:1;display:flex;flex-direction:column;gap:8px';
+      const l1 = document.createElement('div');
+      l1.className = 'skel';
+      l1.style.cssText = `width:${130+i*18}px;height:14px`;
+      const l2 = document.createElement('div');
+      l2.className = 'skel';
+      l2.style.cssText = `width:${90+i*10}px;height:11px`;
+      col.appendChild(l1);
+      col.appendChild(l2);
+      row.appendChild(col);
+
+      const p1 = document.createElement('div');
+      p1.className = 'skel';
+      p1.style.cssText = 'width:68px;height:22px;border-radius:4px';
+      const p2 = document.createElement('div');
+      p2.className = 'skel';
+      p2.style.cssText = 'width:58px;height:22px;border-radius:4px';
+      row.appendChild(p1);
+      row.appendChild(p2);
+
+      list.appendChild(row);
+    }
+  }
+
+  // ── Error banner ───────────────────────────────────────────────
+  function showError(msg) {
+    const list = $('leadsList');
+    list.textContent = '';
+    const banner = document.createElement('div');
+    banner.className = 'error-banner';
+    banner.setAttribute('role', 'alert');
+    banner.appendChild(cloneTpl('svgAlert'));
+    banner.appendChild(document.createTextNode(' ' + String(msg)));
+    list.appendChild(banner);
+  }
+
+  // ── Fetch ──────────────────────────────────────────────────────
+  async function fetchAll() {
+    const btn = $('btnRefresh');
+    btn.classList.add('spinning');
+    btn.disabled = true;
+    showSkeleton();
+
+    try {
+      const [leadsRes, statsRes] = await Promise.allSettled([
+        fetch(API_LEADS, { signal: AbortSignal.timeout(15000) }),
+        fetch(API_STATS, { signal: AbortSignal.timeout(15000) }),
+      ]);
+
+      if (leadsRes.status !== 'fulfilled' || !leadsRes.value.ok) {
+        showError('Could not load leads. API server may be starting up. Please wait and refresh.');
+        return;
+      }
+
+      const raw = await leadsRes.value.json();
+      allLeads = Array.isArray(raw) ? raw : [];
+
+      let stats = null;
+      if (statsRes.status === 'fulfilled' && statsRes.value.ok) {
+        const s = await statsRes.value.json();
+        stats = Array.isArray(s) ? s[0] : s;
+      }
+
+      renderStats(stats, allLeads);
+      renderLeads(allLeads);
+
+    } catch (err) {
+      showError('Network error: ' + String(err.message || 'Unknown'));
+    } finally {
+      btn.classList.remove('spinning');
+      btn.disabled = false;
+    }
+  }
+
+  // ── Refresh button ─────────────────────────────────────────────
+  $('btnRefresh').addEventListener('click', () => { clearTimeout(refreshTimer); fetchAll().then(scheduleRefresh); });
+
+  // ── Filter tabs ────────────────────────────────────────────────
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.filter-tab').forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+      activeFilter = tab.dataset.filter;
+      renderLeads(allLeads);
+    });
+  });
+
+  // ── Source pills ───────────────────────────────────────────────
+  document.querySelectorAll('.source-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.source-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      activeSource = pill.dataset.source;
+      renderLeads(allLeads);
+    });
+  });
+
+  // ── Auto-refresh ───────────────────────────────────────────────
+  function scheduleRefresh() {
+    clearTimeout(refreshTimer);
+    refreshTimer = setTimeout(() => fetchAll().then(scheduleRefresh), REFRESH_MS);
+  }
+
+  // ── Boot ───────────────────────────────────────────────────────
+  fetchAll().then(scheduleRefresh);
+
+  // ── Theme toggle ───────────────────────────────────────────────
+  (function() {
+    var toggle = document.getElementById('theme-toggle');
+    var stored = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', stored);
+    toggle.querySelector('.sun').style.display = stored === 'dark' ? 'block' : 'none';
+    toggle.querySelector('.moon').style.display = stored === 'light' ? 'block' : 'none';
+
+    toggle.addEventListener('click', function() {
+      var current = document.documentElement.getAttribute('data-theme');
+      var next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      toggle.querySelector('.sun').style.display = next === 'dark' ? 'block' : 'none';
+      toggle.querySelector('.moon').style.display = next === 'light' ? 'block' : 'none';
+    });
+  })();
+</script>
+</body>
+</html>

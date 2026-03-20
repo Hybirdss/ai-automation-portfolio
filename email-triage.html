@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Triage — AI-Powered Classification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── Reset & Base ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:           #09090b;
+  --surface:      #111113;
+  --surface-2:    #18181b;
+  --border:       rgba(255,255,255,0.06);
+  --border-2:     rgba(255,255,255,0.10);
+  --text-primary: #e4e4e7;
+  --text-sec:     #71717a;
+  --text-tert:    #52525b;
+  --critical:     #ef4444;
+  --high:         #f59e0b;
+  --normal:       #22c55e;
+  --low:          #71717a;
+  --accent:       #6366f1;
+  --accent-dim:   rgba(99,102,241,0.12);
+
+  --cat-technical: #818cf8;
+  --cat-sales:     #34d399;
+  --cat-support:   #fb923c;
+  --cat-hr:        #e879f9;
+  --cat-finance:   #38bdf8;
+  --cat-other:     #71717a;
+
+  --radius:    8px;
+  --radius-lg: 12px;
+  --trans:     0.18s ease;
+}
+
+/* ── Dark theme (default) ── */
+[data-theme="dark"] {
+  --bg:           #09090b;
+  --surface:      #111113;
+  --surface-2:    #18181b;
+  --border:       rgba(255,255,255,0.06);
+  --border-2:     rgba(255,255,255,0.10);
+  --text-primary: #e4e4e7;
+  --text-sec:     #71717a;
+  --text-tert:    #52525b;
+}
+
+/* ── Light theme ── */
+[data-theme="light"] {
+  --bg:           #f8f8fa;
+  --surface:      #ffffff;
+  --surface-2:    #f0f0f2;
+  --border:       rgba(0,0,0,0.08);
+  --border-2:     rgba(0,0,0,0.15);
+  --text-primary: #1d1d1f;
+  --text-sec:     #52525b;
+  --text-tert:    #6b6b70;
+}
+[data-theme="light"] body::before { opacity: 0; }
+[data-theme="light"] .email-row:hover { background: rgba(0,0,0,0.02); }
+[data-theme="light"] .detail-block.summary-blk { background: rgba(0,0,0,0.02); }
+[data-theme="light"] .stat-card::after { opacity: 0.5; }
+[data-theme="light"] .stat-card {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+[data-theme="light"] .stat-label { color: #3f3f46; }
+[data-theme="light"] .stat-sub { color: #52525b; }
+[data-theme="light"] .section-title { color: #3f3f46; font-weight: 600; }
+[data-theme="light"] .category-name { color: #3f3f46; }
+[data-theme="light"] .category-count { color: #52525b; }
+
+/* Theme toggle button */
+.theme-toggle-btn {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--surface-2); border: 1px solid var(--border-2);
+  color: var(--text-sec); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--trans), border-color var(--trans), color var(--trans);
+  flex-shrink: 0;
+}
+.theme-toggle-btn:hover { background: var(--surface); color: var(--text-primary); }
+.theme-toggle-btn svg { width: 14px; height: 14px; }
+
+html { font-size: 14px; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Noise overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+}
+
+/* ─── Header ─── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 0 24px;
+  border-bottom: 1px solid var(--border);
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.header-left { display: flex; flex-direction: column; gap: 4px; }
+.header-title { display: flex; align-items: center; gap: 10px; }
+.header-title h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.025em; }
+.header-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid rgba(99,102,241,0.2);
+  padding: 3px 8px; border-radius: 4px;
+}
+.header-subtitle { font-size: 0.8rem; color: var(--text-sec); }
+.header-right { display: flex; align-items: center; gap: 12px; }
+
+.last-updated {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem; color: var(--text-tert); letter-spacing: 0.03em;
+}
+.live-dot {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.7rem; color: var(--normal);
+  font-family: 'DM Mono', monospace; font-weight: 500;
+}
+.live-dot::before {
+  content: '';
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--normal);
+  animation: pulse-live 2s ease-in-out infinite;
+}
+@keyframes pulse-live {
+  0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(34,197,94,.4); }
+  50%      { opacity:.7; box-shadow:0 0 0 4px rgba(34,197,94,0); }
+}
+
+.countdown {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem; color: var(--text-tert); letter-spacing: 0.04em;
+}
+
+.refresh-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 7px 14px;
+  background: var(--surface); border: 1px solid var(--border-2);
+  border-radius: var(--radius);
+  color: var(--text-sec);
+  font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500;
+  cursor: pointer;
+  transition: background var(--trans), color var(--trans), border-color var(--trans), transform .1s;
+  user-select: none;
+}
+.refresh-btn:hover { background: var(--surface-2); color: var(--text-primary); border-color: rgba(255,255,255,.16); }
+.refresh-btn:active { transform: scale(.97); }
+.refresh-icon { width: 13px; height: 13px; }
+.refresh-btn.spinning .refresh-icon { animation: spin .6s cubic-bezier(.4,0,.2,1); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Stats ─── */
+.stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-top: 24px; }
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px; position: relative; overflow: hidden;
+  transition: border-color var(--trans), transform .2s; cursor: default;
+}
+.stat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--c-accent, var(--accent)), transparent);
+  opacity: .6;
+}
+.stat-card::after {
+  content: '';
+  position: absolute; top: -20px; right: -20px;
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: var(--c-accent, var(--accent));
+  filter: blur(40px);
+  opacity: .12;
+  pointer-events: none;
+}
+.stat-card:hover { border-color: var(--border-2); transform: translateY(-1px); }
+
+.stat-card.c-critical { --c-accent: var(--critical); }
+.stat-card.c-high     { --c-accent: var(--high); }
+.stat-card.c-normal   { --c-accent: var(--normal); }
+.stat-card.c-accent   { --c-accent: var(--accent); }
+.stat-card.c-critical::after { opacity: .18; }
+.stat-card.c-high::after     { opacity: .16; }
+
+.stat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.stat-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--text-sec); }
+
+.stat-icon {
+  width: 28px; height: 28px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--icon-bg, rgba(99,102,241,.12));
+  color: var(--icon-clr, var(--accent));
+}
+.stat-card.c-critical .stat-icon { --icon-bg: rgba(239,68,68,.12); --icon-clr: var(--critical); }
+.stat-card.c-high     .stat-icon { --icon-bg: rgba(245,158,11,.12); --icon-clr: var(--high); }
+.stat-card.c-normal   .stat-icon { --icon-bg: rgba(34,197,94,.12);  --icon-clr: var(--normal); }
+
+.stat-number {
+  font-family: 'DM Mono', monospace;
+  font-size: 2.4rem; font-weight: 500;
+  color: var(--text-primary); line-height: 1; letter-spacing: -.03em;
+}
+.stat-sub { margin-top: 6px; font-size: 13px; color: var(--text-sec); }
+
+/* ─── Sections ─── */
+.section { margin-top: 14px; }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.section-title { font-size: .85rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--text-tert); }
+
+/* ─── Category Card ─── */
+.category-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px 24px;
+}
+.category-bar-track {
+  display: flex; height: 6px; border-radius: 3px;
+  overflow: hidden; gap: 2px; background: var(--bg);
+}
+.category-segment {
+  height: 100%; border-radius: 2px;
+  transition: width .8s cubic-bezier(.4,0,.2,1);
+  min-width: 0; cursor: default;
+}
+.category-segment:hover { filter: brightness(1.2); }
+.category-labels { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 14px; }
+.category-item { display: flex; align-items: center; gap: 7px; cursor: default; }
+.category-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.category-name { font-size: .75rem; color: var(--text-sec); font-weight: 500; }
+.category-count { font-family: 'DM Mono', monospace; font-size: .7rem; color: var(--text-tert); }
+
+/* ─── Email Card ─── */
+.email-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.email-filters {
+  display: flex; align-items: center; gap: 6px;
+  padding: 14px 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.filter-pill {
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 12px; border-radius: 6px;
+  font-size: .875rem; font-weight: 500; color: var(--text-sec);
+  background: transparent; border: 1px solid transparent;
+  cursor: pointer;
+  transition: background var(--trans), color var(--trans), border-color var(--trans);
+  user-select: none;
+}
+.filter-pill:hover { background: var(--surface-2); color: var(--text-primary); }
+.filter-pill.active {
+  background: var(--surface-2); color: var(--text-primary);
+  border-color: var(--border-2); position: relative;
+}
+.filter-pill.active::after {
+  content: '';
+  position: absolute; inset: -1px; border-radius: 7px;
+  animation: ring-pulse 1.2s ease-out;
+  pointer-events: none;
+}
+@keyframes ring-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(255,255,255,.3); }
+  100% { box-shadow: 0 0 0 6px rgba(255,255,255,0); }
+}
+.filter-dot { width: 5px; height: 5px; border-radius: 50%; }
+.filter-count { font-family: 'DM Mono', monospace; font-size: .65rem; opacity: .7; }
+
+/* ─── Email rows ─── */
+.email-list { padding: 0; }
+.email-row {
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background var(--trans);
+  opacity: 0; transform: translateY(4px);
+  animation: row-in .3s ease forwards;
+}
+.email-row:last-child { border-bottom: none; }
+.email-row:hover { background: rgba(255,255,255,.02); }
+@keyframes row-in { to { opacity:1; transform:translateY(0); } }
+
+.email-row-main { display: flex; align-items: center; gap: 12px; padding: 13px 16px; }
+
+.urgency-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+}
+.urgency-dot.critical {
+  background: var(--critical); box-shadow: 0 0 0 2px rgba(239,68,68,.2);
+  animation: crit-pulse 2s ease-in-out infinite;
+}
+@keyframes crit-pulse {
+  0%,100% { box-shadow: 0 0 0 2px rgba(239,68,68,.2); }
+  50%      { box-shadow: 0 0 0 4px rgba(239,68,68,.1); }
+}
+.urgency-dot.high   { background: var(--high); }
+.urgency-dot.normal { background: var(--normal); }
+.urgency-dot.low    { background: var(--low); }
+
+.email-info { flex: 1; min-width: 0; }
+.email-subject { font-size: .9375rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -.01em; line-height: 1.55; }
+.email-sender  { font-size: .8125rem; color: var(--text-sec); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.email-meta    { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+.cat-pill {
+  font-family: 'DM Mono', monospace;
+  font-size: .75rem; font-weight: 500; letter-spacing: .04em;
+  padding: 2px 8px; border-radius: 4px; text-transform: uppercase;
+}
+.cat-pill.technical { background: rgba(129,140,248,.12); color: var(--cat-technical); border: 1px solid rgba(129,140,248,.2); }
+.cat-pill.sales     { background: rgba(52,211,153,.12);  color: var(--cat-sales);     border: 1px solid rgba(52,211,153,.2); }
+.cat-pill.support   { background: rgba(251,146,60,.12);  color: var(--cat-support);   border: 1px solid rgba(251,146,60,.2); }
+.cat-pill.hr        { background: rgba(232,121,249,.12); color: var(--cat-hr);        border: 1px solid rgba(232,121,249,.2); }
+.cat-pill.finance   { background: rgba(56,189,248,.12);  color: var(--cat-finance);   border: 1px solid rgba(56,189,248,.2); }
+.cat-pill.other     { background: rgba(113,113,122,.12); color: var(--cat-other);     border: 1px solid rgba(113,113,122,.2); }
+
+.email-time { font-family: 'DM Mono', monospace; font-size: .8125rem; color: var(--text-tert); white-space: nowrap; min-width: 52px; text-align: right; }
+
+.chevron {
+  width: 14px; height: 14px; color: var(--text-tert); flex-shrink: 0;
+  transition: transform .25s cubic-bezier(.4,0,.2,1), color var(--trans);
+}
+.email-row.expanded .chevron { transform: rotate(180deg); color: var(--text-sec); }
+
+/* ─── Expanded detail ─── */
+.email-detail { max-height: 0; overflow: hidden; transition: max-height .28s cubic-bezier(.4,0,.2,1); }
+.email-row.expanded .email-detail { max-height: 900px; }
+.detail-inner { padding: 0 16px 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.detail-block { border-radius: var(--radius); padding: 14px; position: relative; }
+.detail-block.summary-blk { background: rgba(255,255,255,.025); border: 1px solid var(--border); }
+.detail-block.draft-blk   { background: rgba(34,197,94,.04);    border: 1px solid rgba(34,197,94,.15); }
+.detail-label {
+  font-size: .75rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--text-tert); margin-bottom: 8px;
+}
+.draft-blk .detail-label { color: rgba(34,197,94,.6); }
+.detail-text { font-size: .875rem; color: var(--text-sec); line-height: 1.65; }
+.draft-blk .detail-text { color: rgba(34,197,94,.85); }
+
+.copy-btn {
+  position: absolute; top: 12px; right: 12px;
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 10px;
+  background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.2);
+  border-radius: 5px; color: var(--normal);
+  font-size: .68rem; font-weight: 600; cursor: pointer;
+  transition: background var(--trans), border-color var(--trans);
+  font-family: 'DM Sans', sans-serif;
+}
+.copy-btn:hover { background: rgba(34,197,94,.15); border-color: rgba(34,197,94,.3); }
+.copy-btn.copied { background: rgba(34,197,94,.2); border-color: rgba(34,197,94,.4); }
+
+/* ─── States ─── */
+.loading-state {
+  display: flex; align-items: center; justify-content: center;
+  padding: 48px; gap: 10px; color: var(--text-tert); font-size: .8rem;
+}
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid var(--border-2); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin .7s linear infinite;
+}
+
+.empty-state {
+  display: none; flex-direction: column; align-items: center;
+  justify-content: center; padding: 56px 24px; gap: 12px;
+}
+.empty-state.visible { display: flex; }
+.empty-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-tert);
+}
+.empty-text { font-size: .82rem; color: var(--text-tert); }
+
+/* ─── Error banner ─── */
+.error-banner {
+  display: none; align-items: center; gap: 10px;
+  padding: 10px 16px;
+  background: rgba(239,68,68,.06); border: 1px solid rgba(239,68,68,.2);
+  border-radius: var(--radius); color: rgba(239,68,68,.8);
+  font-size: .75rem; margin-top: 16px;
+}
+.error-banner.visible { display: flex; }
+
+/* ─── Copy tooltip ─── */
+.copy-tooltip {
+  position: fixed; z-index: 9999;
+  background: var(--surface-2); border: 1px solid var(--border-2);
+  color: var(--text-primary);
+  font-size: .72rem; font-weight: 500;
+  padding: 5px 10px; border-radius: 5px;
+  pointer-events: none; white-space: nowrap;
+  opacity: 0; transform: translateY(2px);
+  transition: opacity .15s, transform .15s;
+}
+.copy-tooltip.show { opacity: 1; transform: translateY(0); }
+
+/* ─── Footer ─── */
+.footer {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; padding-top: 40px;
+  font-size: .75rem; color: var(--text-tert); letter-spacing: .02em;
+}
+.footer-sep { opacity: .3; }
+
+/* ─── Fade-in sections ─── */
+.fade-in {
+  opacity: 0; transform: translateY(8px);
+  animation: sec-in .4s ease forwards;
+}
+.fade-in:nth-child(1) { animation-delay: .05s; }
+.fade-in:nth-child(2) { animation-delay: .10s; }
+.fade-in:nth-child(3) { animation-delay: .15s; }
+.fade-in:nth-child(4) { animation-delay: .20s; }
+@keyframes sec-in { to { opacity:1; transform:translateY(0); } }
+
+/* ─── Responsive ─── */
+@media(max-width:1024px){
+  .app { padding: 0 20px 48px; }
+  .stats-row { grid-template-columns: repeat(2,1fr); }
+}
+@media(max-width:768px){
+  .app { padding: 0 16px 40px; }
+  .stats-row { grid-template-columns: repeat(2,1fr); }
+  .header { flex-direction: column; align-items: flex-start; }
+  .header-right { width: 100%; justify-content: space-between; }
+  .detail-inner { grid-template-columns: 1fr; }
+  .email-meta { display: none; }
+  .stat-number { font-size: 1.8rem; }
+  .email-filters { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .filter-pill { min-height: 44px; white-space: nowrap; flex-shrink: 0; }
+  .email-row-main { min-height: 48px; }
+  .email-subject { font-size: .9375rem; }
+  .email-sender { font-size: .8125rem; }
+  .last-updated { display: none; }
+}
+@media(max-width:480px){
+  .app { padding: 0 12px 32px; }
+  .stats-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-card { padding: 14px; }
+  .stat-number { font-size: 1.6rem; }
+  .email-filters {
+    overflow-x: auto; white-space: nowrap; flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch; padding: 10px 12px;
+    scrollbar-width: none;
+  }
+  .email-filters::-webkit-scrollbar { display: none; }
+  .filter-pill { flex-shrink: 0; white-space: nowrap; min-height: 48px; padding: 0 12px; }
+  .email-row-main { padding: 10px 12px; min-height: 48px; gap: 8px; }
+  .header-inner, .content { padding-left: 12px; padding-right: 12px; }
+  .countdown { display: none; }
+}
+
+/* ══ FORCE READABLE SIZES ══ */
+.stat-sub { font-size: 13px !important; }
+.stat-label { font-size: 12px !important; font-weight: 600 !important; }
+.section-title { font-size: 14px !important; font-weight: 600 !important; }
+.email-sender { font-size: 13px !important; }
+.email-time { font-size: 13px !important; }
+.cat-pill { font-size: 12px !important; }
+.email-subject { font-size: 15px !important; }
+.filter-pill { font-size: 14px !important; }
+.detail-label { font-size: 12px !important; }
+.detail-text { font-size: 14px !important; line-height: 1.55 !important; }
+.category-name { font-size: 13px !important; }
+.category-count { font-size: 13px !important; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header fade-in">
+    <div class="header-left">
+      <div class="header-title">
+        <!-- envelope icon -->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="color:var(--accent)">
+          <rect x="2" y="4" width="20" height="16" rx="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M2 8l10 6 10-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <h1>Email Triage</h1>
+        <span class="header-badge">AI</span>
+      </div>
+      <p class="header-subtitle">AI-powered email classification &amp; draft generation</p>
+    </div>
+    <div class="header-right">
+      <span class="live-dot">Live</span>
+      <span class="last-updated" id="lastUpdated">—</span>
+      <span class="countdown" id="countdown"></span>
+      <button class="theme-toggle-btn" id="theme-toggle" title="Toggle theme" aria-label="Toggle light/dark mode">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <button class="refresh-btn" id="refreshBtn" onclick="triggerRefresh()">
+        <svg class="refresh-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+          <path d="M21 3v5h-5"/>
+          <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+          <path d="M8 16H3v5"/>
+        </svg>
+        Refresh
+      </button>
+    </div>
+  </header>
+
+  <!-- Error banner -->
+  <div class="error-banner" id="errorBanner">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <span id="errorMsg">Unable to connect to n8n webhook. Retrying…</span>
+  </div>
+
+  <!-- STATS ROW -->
+  <div class="stats-row fade-in" id="statsRow">
+    <div class="stat-card c-accent">
+      <div class="stat-header">
+        <span class="stat-label">Total Processed</span>
+        <div class="stat-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+      </div>
+      <div class="stat-number" id="statTotal">0</div>
+      <div class="stat-sub">emails classified</div>
+    </div>
+    <div class="stat-card c-critical">
+      <div class="stat-header">
+        <span class="stat-label">Critical</span>
+        <div class="stat-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+      </div>
+      <div class="stat-number" id="statCritical">0</div>
+      <div class="stat-sub">require immediate action</div>
+    </div>
+    <div class="stat-card c-high">
+      <div class="stat-header">
+        <span class="stat-label">Needs Response</span>
+        <div class="stat-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        </div>
+      </div>
+      <div class="stat-number" id="statAlerts">0</div>
+      <div class="stat-sub">total alerts raised</div>
+    </div>
+    <div class="stat-card c-normal">
+      <div class="stat-header">
+        <span class="stat-label">Auto-classified</span>
+        <div class="stat-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+      </div>
+      <div class="stat-number" id="statHighAlerts">0</div>
+      <div class="stat-sub">high-priority alerts</div>
+    </div>
+  </div>
+
+  <!-- CATEGORY BREAKDOWN -->
+  <div class="section fade-in">
+    <div class="section-header">
+      <span class="section-title">Category Breakdown</span>
+    </div>
+    <div class="category-card">
+      <div class="category-bar-track" id="categoryBar"></div>
+      <div class="category-labels" id="categoryLabels"></div>
+    </div>
+  </div>
+
+  <!-- EMAIL LIST -->
+  <div class="section fade-in">
+    <div class="section-header">
+      <span class="section-title">Email Inbox</span>
+    </div>
+    <div class="email-card">
+      <div class="email-filters" id="filterBar">
+        <button class="filter-pill active" data-filter="all" onclick="setFilter('all',this)">
+          All <span class="filter-count" id="fc-all">0</span>
+        </button>
+        <button class="filter-pill" data-filter="critical" onclick="setFilter('critical',this)">
+          <span class="filter-dot" style="background:var(--critical)"></span>
+          Critical <span class="filter-count" id="fc-critical">0</span>
+        </button>
+        <button class="filter-pill" data-filter="high" onclick="setFilter('high',this)">
+          <span class="filter-dot" style="background:var(--high)"></span>
+          High <span class="filter-count" id="fc-high">0</span>
+        </button>
+        <button class="filter-pill" data-filter="normal" onclick="setFilter('normal',this)">
+          <span class="filter-dot" style="background:var(--normal)"></span>
+          Normal <span class="filter-count" id="fc-normal">0</span>
+        </button>
+        <button class="filter-pill" data-filter="low" onclick="setFilter('low',this)">
+          <span class="filter-dot" style="background:var(--low)"></span>
+          Low <span class="filter-count" id="fc-low">0</span>
+        </button>
+      </div>
+
+      <div id="emailListBody">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          Fetching emails…
+        </div>
+      </div>
+
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M2 8l10 6 10-6"/></svg>
+        </div>
+        <p class="empty-text">No emails match this filter</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <span>Nexframe Studio</span>
+    <span class="footer-sep">·</span>
+    <span>Email Triage</span>
+  </footer>
+</div>
+
+<!-- Copy tooltip (trusted, no user data) -->
+<div class="copy-tooltip" id="copyTooltip">Copied!</div>
+
+<script>
+/* ══════════════════════════════════════════
+   CONFIG
+══════════════════════════════════════════ */
+var API_EMAILS = 'https://n8n-upwork-w6ty.onrender.com/webhook/api-emails';
+var API_STATS  = 'https://n8n-upwork-w6ty.onrender.com/webhook/api-stats';
+var REFRESH_SEC = 30;
+
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+var allEmails    = [];
+var activeFilter = 'all';
+var expandedId   = null;
+var cdVal        = REFRESH_SEC;
+var cdTimer      = null;
+var rfTimer      = null;
+
+/* ══════════════════════════════════════════
+   NORMALIZERS
+══════════════════════════════════════════ */
+var CAT_COLORS = {
+  technical: 'var(--cat-technical)',
+  sales:     'var(--cat-sales)',
+  support:   'var(--cat-support)',
+  hr:        'var(--cat-hr)',
+  finance:   'var(--cat-finance)',
+  other:     'var(--cat-other)'
+};
+
+function normCat(c) {
+  if (!c) return 'other';
+  var s = String(c).toLowerCase().trim();
+  if (s.indexOf('tech')   !== -1) return 'technical';
+  if (s.indexOf('sale')   !== -1) return 'sales';
+  if (s.indexOf('support')!== -1) return 'support';
+  if (s.indexOf('hr')     !== -1 || s.indexOf('human') !== -1) return 'hr';
+  if (s.indexOf('financ') !== -1 || s.indexOf('bill') !== -1)  return 'finance';
+  return (s in CAT_COLORS) ? s : 'other';
+}
+
+function normUrg(u) {
+  if (!u) return 'normal';
+  var v = String(u).toLowerCase().trim();
+  if (v === 'critical') return 'critical';
+  if (v === 'high')     return 'high';
+  if (v === 'low')      return 'low';
+  return 'normal';
+}
+
+/* ══════════════════════════════════════════
+   TIME AGO
+══════════════════════════════════════════ */
+function timeAgo(s) {
+  if (!s) return '—';
+  var d = new Date(s);
+  if (isNaN(d)) return '—';
+  var sec = Math.floor((Date.now() - d) / 1000);
+  if (sec < 60)    return sec + 's';
+  if (sec < 3600)  return Math.floor(sec / 60) + 'm';
+  if (sec < 86400) return Math.floor(sec / 3600) + 'h';
+  return Math.floor(sec / 86400) + 'd';
+}
+
+/* ══════════════════════════════════════════
+   COUNT-UP
+══════════════════════════════════════════ */
+function countUp(el, target, dur) {
+  dur = dur || 800;
+  var start = performance.now();
+  var from  = parseInt(el.textContent, 10) || 0;
+  var diff  = target - from;
+  if (diff === 0) { el.textContent = target; return; }
+  function tick(now) {
+    var prog = Math.min((now - start) / dur, 1);
+    var ease = 1 - Math.pow(1 - prog, 3);
+    el.textContent = Math.round(from + diff * ease);
+    if (prog < 1) requestAnimationFrame(tick);
+    else el.textContent = target;
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ══════════════════════════════════════════
+   FETCH
+══════════════════════════════════════════ */
+function fetchAll(cb) {
+  var done = 0;
+  var results = { emails: null, stats: null, err: null };
+
+  function finish() {
+    done++;
+    if (done === 2) cb(results);
+  }
+
+  fetch(API_EMAILS)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      results.emails = Array.isArray(data) ? data : [];
+      finish();
+    })
+    .catch(function(e) {
+      results.err = e;
+      results.emails = null;
+      finish();
+    });
+
+  fetch(API_STATS)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      results.stats = Array.isArray(data) ? data[0] : data;
+      finish();
+    })
+    .catch(function() {
+      results.stats = null;
+      finish();
+    });
+}
+
+/* ══════════════════════════════════════════
+   RENDER STATS
+══════════════════════════════════════════ */
+function renderStats(emails, s) {
+  var total    = (s && s.total_emails    != null) ? s.total_emails    : emails.length;
+  var critical = (s && s.critical_emails != null) ? s.critical_emails : countBy(emails, 'critical');
+  var alerts   = (s && s.total_alerts   != null)  ? s.total_alerts   : countBy(emails, 'critical') + countBy(emails, 'high');
+  var highAl   = (s && s.high_alerts    != null)  ? s.high_alerts    : countBy(emails, 'high');
+
+  countUp(document.getElementById('statTotal'),      total);
+  countUp(document.getElementById('statCritical'),   critical);
+  countUp(document.getElementById('statAlerts'),     alerts);
+  countUp(document.getElementById('statHighAlerts'), highAl);
+}
+
+function countBy(emails, urg) {
+  var n = 0;
+  for (var i = 0; i < emails.length; i++) {
+    if (normUrg(emails[i].urgency) === urg) n++;
+  }
+  return n;
+}
+
+/* ══════════════════════════════════════════
+   RENDER CATEGORIES (pure DOM, no innerHTML for user data)
+══════════════════════════════════════════ */
+function renderCategories(emails) {
+  var counts = {};
+  for (var i = 0; i < emails.length; i++) {
+    var cat = normCat(emails[i].category);
+    counts[cat] = (counts[cat] || 0) + 1;
+  }
+
+  var total = emails.length || 1;
+  var sorted = Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a]; });
+
+  var bar    = document.getElementById('categoryBar');
+  var labels = document.getElementById('categoryLabels');
+  bar.textContent    = '';
+  labels.textContent = '';
+
+  sorted.forEach(function(cat) {
+    var count = counts[cat];
+    var pct   = (count / total * 100).toFixed(1);
+    var color = CAT_COLORS[cat] || 'var(--cat-other)';
+
+    /* Bar segment */
+    var seg = document.createElement('div');
+    seg.className = 'category-segment';
+    seg.style.width = '0%';
+    seg.style.background = color;
+    seg.title = cat + ': ' + count + ' (' + pct + '%)';
+    bar.appendChild(seg);
+    /* Animate width after paint */
+    requestAnimationFrame(function(s, p){ return function() {
+      requestAnimationFrame(function(){ s.style.width = p + '%'; });
+    }; }(seg, pct));
+
+    /* Label item */
+    var item = document.createElement('div');
+    item.className = 'category-item';
+
+    var dot = document.createElement('span');
+    dot.className = 'category-dot';
+    dot.style.background = color;
+
+    var name = document.createElement('span');
+    name.className = 'category-name';
+    name.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+
+    var cnt = document.createElement('span');
+    cnt.className = 'category-count';
+    cnt.textContent = count;
+
+    item.appendChild(dot);
+    item.appendChild(name);
+    item.appendChild(cnt);
+    labels.appendChild(item);
+  });
+}
+
+/* ══════════════════════════════════════════
+   BUILD SVG (trusted, no user data)
+══════════════════════════════════════════ */
+function makeSVG(d) {
+  var ns = 'http://www.w3.org/2000/svg';
+  var svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '2');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  svg.style.cssText = 'width:14px;height:14px';
+  var path = document.createElementNS(ns, 'polyline');
+  path.setAttribute('points', '6 9 12 15 18 9');
+  svg.appendChild(path);
+  return svg;
+}
+
+function makeCopySVG() {
+  var ns = 'http://www.w3.org/2000/svg';
+  var svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '2');
+  svg.style.cssText = 'width:10px;height:10px';
+  var r = document.createElementNS(ns, 'rect');
+  r.setAttribute('x','9'); r.setAttribute('y','9');
+  r.setAttribute('width','13'); r.setAttribute('height','13'); r.setAttribute('rx','2');
+  var p = document.createElementNS(ns, 'path');
+  p.setAttribute('d','M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1');
+  svg.appendChild(r); svg.appendChild(p);
+  return svg;
+}
+
+/* ══════════════════════════════════════════
+   RENDER EMAILS (all user data via textContent)
+══════════════════════════════════════════ */
+function renderEmails(emails) {
+  /* Update filter pill counts */
+  document.getElementById('fc-all').textContent      = emails.length;
+  document.getElementById('fc-critical').textContent = countBy(emails, 'critical');
+  document.getElementById('fc-high').textContent     = countBy(emails, 'high');
+  document.getElementById('fc-normal').textContent   = countBy(emails, 'normal');
+  document.getElementById('fc-low').textContent      = countBy(emails, 'low');
+
+  var filtered = activeFilter === 'all'
+    ? emails
+    : emails.filter(function(e){ return normUrg(e.urgency) === activeFilter; });
+
+  var body  = document.getElementById('emailListBody');
+  var empty = document.getElementById('emptyState');
+  body.textContent = ''; /* clear safely */
+
+  if (filtered.length === 0) {
+    empty.classList.add('visible');
+    return;
+  }
+  empty.classList.remove('visible');
+
+  var frag = document.createDocumentFragment();
+
+  filtered.forEach(function(email, idx) {
+    var urg = normUrg(email.urgency);
+    var cat = normCat(email.category);
+
+    /* ── Row container ── */
+    var row = document.createElement('div');
+    row.className = 'email-row';
+    row.style.animationDelay = (idx * 0.03) + 's';
+    if (email.id !== undefined && email.id !== null) {
+      row.dataset.eid = String(email.id);
+    }
+
+    /* ── Main row ── */
+    var main = document.createElement('div');
+    main.className = 'email-row-main';
+
+    /* Urgency dot */
+    var dot = document.createElement('div');
+    dot.className = 'urgency-dot ' + urg;
+
+    /* Info col */
+    var info = document.createElement('div');
+    info.className = 'email-info';
+
+    var subj = document.createElement('div');
+    subj.className = 'email-subject';
+    subj.textContent = email.subject || '(No subject)';
+
+    var sndr = document.createElement('div');
+    sndr.className = 'email-sender';
+    sndr.textContent = email.sender || '(Unknown sender)';
+
+    info.appendChild(subj);
+    info.appendChild(sndr);
+
+    /* Meta col */
+    var meta = document.createElement('div');
+    meta.className = 'email-meta';
+
+    var pill = document.createElement('span');
+    pill.className = 'cat-pill ' + cat;
+    pill.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+
+    var tme = document.createElement('span');
+    tme.className = 'email-time';
+    tme.textContent = timeAgo(email.created_at);
+
+    meta.appendChild(pill);
+    meta.appendChild(tme);
+
+    /* Chevron */
+    var chev = makeSVG();
+    chev.className = 'chevron';
+
+    main.appendChild(dot);
+    main.appendChild(info);
+    main.appendChild(meta);
+    main.appendChild(chev);
+
+    /* ── Detail panel ── */
+    var detail = document.createElement('div');
+    detail.className = 'email-detail';
+
+    var inner = document.createElement('div');
+    inner.className = 'detail-inner';
+
+    /* Summary block */
+    var sumBlk = document.createElement('div');
+    sumBlk.className = 'detail-block summary-blk';
+
+    var sumLbl = document.createElement('div');
+    sumLbl.className = 'detail-label';
+    sumLbl.textContent = 'AI Summary';
+
+    var sumTxt = document.createElement('div');
+    sumTxt.className = 'detail-text';
+    sumTxt.textContent = email.summary || 'No summary available.';
+
+    sumBlk.appendChild(sumLbl);
+    sumBlk.appendChild(sumTxt);
+
+    /* Draft block */
+    var dftBlk = document.createElement('div');
+    dftBlk.className = 'detail-block draft-blk';
+
+    var dftLbl = document.createElement('div');
+    dftLbl.className = 'detail-label';
+    dftLbl.textContent = 'Draft Reply';
+
+    /* Copy button (trusted markup, no user data) */
+    var copyBtn = document.createElement('button');
+    copyBtn.className = 'copy-btn';
+    copyBtn.type = 'button';
+    copyBtn.appendChild(makeCopySVG());
+    var copyTxt = document.createElement('span');
+    copyTxt.textContent = 'Copy';
+    copyBtn.appendChild(copyTxt);
+
+    var dftTxt = document.createElement('div');
+    dftTxt.className = 'detail-text';
+    dftTxt.textContent = email.draft_reply || 'No draft reply generated.';
+
+    dftBlk.appendChild(dftLbl);
+    dftBlk.appendChild(copyBtn);
+    dftBlk.appendChild(dftTxt);
+
+    inner.appendChild(sumBlk);
+    inner.appendChild(dftBlk);
+    detail.appendChild(inner);
+
+    row.appendChild(main);
+    row.appendChild(detail);
+
+    /* ── Event listeners ── */
+    main.addEventListener('click', function(r, e) {
+      return function() { toggleRow(r, e); };
+    }(row, email));
+
+    copyBtn.addEventListener('click', function(e, btn, txt) {
+      return function(ev) {
+        ev.stopPropagation();
+        var text = e.draft_reply || '';
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function() {
+            flashCopy(btn, txt);
+          }).catch(function() { legacyCopy(text, btn, txt); });
+        } else {
+          legacyCopy(text, btn, txt);
+        }
+      };
+    }(email, copyBtn, copyTxt));
+
+    frag.appendChild(row);
+  });
+
+  body.appendChild(frag);
+
+  /* Re-apply expanded state */
+  if (expandedId !== null) {
+    var rows = body.querySelectorAll('.email-row');
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].dataset.eid === String(expandedId)) {
+        rows[i].classList.add('expanded');
+        break;
+      }
+    }
+  }
+}
+
+/* ══════════════════════════════════════════
+   EXPAND / COLLAPSE
+══════════════════════════════════════════ */
+function toggleRow(row, email) {
+  var isOpen = row.classList.contains('expanded');
+  var rows = document.querySelectorAll('.email-row.expanded');
+  for (var i = 0; i < rows.length; i++) rows[i].classList.remove('expanded');
+
+  if (!isOpen) {
+    row.classList.add('expanded');
+    expandedId = email.id !== undefined ? email.id : null;
+  } else {
+    expandedId = null;
+  }
+}
+
+/* ══════════════════════════════════════════
+   COPY
+══════════════════════════════════════════ */
+function flashCopy(btn, txt) {
+  txt.textContent = 'Copied!';
+  btn.classList.add('copied');
+  showTooltip(btn);
+  setTimeout(function() {
+    txt.textContent = 'Copy';
+    btn.classList.remove('copied');
+  }, 1500);
+}
+
+function legacyCopy(text, btn, txt) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+  flashCopy(btn, txt);
+}
+
+function showTooltip(el) {
+  var tip  = document.getElementById('copyTooltip');
+  var rect = el.getBoundingClientRect();
+  tip.style.left = (rect.left + rect.width / 2 - 28) + 'px';
+  tip.style.top  = (rect.top - 34 + window.scrollY) + 'px';
+  tip.classList.add('show');
+  setTimeout(function(){ tip.classList.remove('show'); }, 1500);
+}
+
+/* ══════════════════════════════════════════
+   FILTER
+══════════════════════════════════════════ */
+function setFilter(f, btn) {
+  activeFilter = f;
+  var pills = document.querySelectorAll('.filter-pill');
+  for (var i = 0; i < pills.length; i++) pills[i].classList.remove('active');
+  btn.classList.add('active');
+  renderEmails(allEmails);
+}
+
+/* ══════════════════════════════════════════
+   TIMESTAMP & COUNTDOWN
+══════════════════════════════════════════ */
+function updateTimestamp() {
+  var now = new Date();
+  var h = String(now.getHours()).padStart(2,'0');
+  var m = String(now.getMinutes()).padStart(2,'0');
+  var s = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('lastUpdated').textContent = 'Updated ' + h + ':' + m + ':' + s;
+}
+
+function startCountdown() {
+  clearInterval(cdTimer);
+  cdVal = REFRESH_SEC;
+  var el = document.getElementById('countdown');
+  cdTimer = setInterval(function() {
+    cdVal--;
+    if (cdVal > 0) el.textContent = '\u00b7 ' + cdVal + 's';
+    else el.textContent = '';
+  }, 1000);
+}
+
+/* ══════════════════════════════════════════
+   ERROR
+══════════════════════════════════════════ */
+function showError(msg) {
+  var b = document.getElementById('errorBanner');
+  document.getElementById('errorMsg').textContent = msg;
+  b.classList.add('visible');
+}
+function hideError() {
+  document.getElementById('errorBanner').classList.remove('visible');
+}
+
+/* ══════════════════════════════════════════
+   LOAD DATA
+══════════════════════════════════════════ */
+function loadData(isRefresh) {
+  if (isRefresh) {
+    var btn = document.getElementById('refreshBtn');
+    btn.classList.add('spinning');
+    setTimeout(function(){ btn.classList.remove('spinning'); }, 650);
+  } else {
+    var body = document.getElementById('emailListBody');
+    body.textContent = '';
+    var ls = document.createElement('div');
+    ls.className = 'loading-state';
+    var sp = document.createElement('div');
+    sp.className = 'spinner';
+    var lt = document.createTextNode(' Fetching emails\u2026');
+    ls.appendChild(sp);
+    ls.appendChild(lt);
+    body.appendChild(ls);
+  }
+
+  fetchAll(function(r) {
+    if (r.emails === null && r.stats === null) {
+      showError('Unable to connect to n8n webhook. Will retry in ' + REFRESH_SEC + 's.');
+      if (!isRefresh) {
+        var body2 = document.getElementById('emailListBody');
+        body2.textContent = '';
+        document.getElementById('emptyState').classList.add('visible');
+      }
+      return;
+    }
+
+    hideError();
+
+    if (r.emails !== null) {
+      allEmails = r.emails;
+      renderEmails(r.emails);
+      renderCategories(r.emails);
+    }
+    renderStats(r.emails || [], r.stats);
+    updateTimestamp();
+    startCountdown();
+  });
+}
+
+/* ══════════════════════════════════════════
+   REFRESH LOOP
+══════════════════════════════════════════ */
+function scheduleRefresh() {
+  clearTimeout(rfTimer);
+  rfTimer = setTimeout(function(){
+    loadData(true);
+    scheduleRefresh();
+  }, REFRESH_SEC * 1000);
+}
+
+function triggerRefresh() {
+  clearTimeout(rfTimer);
+  loadData(true);
+  scheduleRefresh();
+}
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', function() {
+  loadData(false);
+  scheduleRefresh();
+});
+
+/* ── Theme toggle ── */
+(function() {
+  var toggle = document.getElementById('theme-toggle');
+  var stored = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', stored);
+  toggle.querySelector('.sun').style.display = stored === 'dark' ? 'block' : 'none';
+  toggle.querySelector('.moon').style.display = stored === 'light' ? 'block' : 'none';
+
+  toggle.addEventListener('click', function() {
+    var current = document.documentElement.getAttribute('data-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    toggle.querySelector('.sun').style.display = next === 'dark' ? 'block' : 'none';
+    toggle.querySelector('.moon').style.display = next === 'light' ? 'block' : 'none';
+  });
+})();
+</script>
+</body>
+</html>

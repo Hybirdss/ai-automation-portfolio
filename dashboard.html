@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0b;--bg2:#141416;--bg3:#1c1c1f;
+  --border:rgba(255,255,255,0.06);--border-h:rgba(255,255,255,0.1);
+  --t1:#e5e5e7;--t2:#a1a1a6;--t3:#6e6e73;
+  --red:#ff453a;--orange:#ff9f0a;--green:#30d158;--blue:#5ac8fa;--muted:#6e6e73;
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+  --ease:cubic-bezier(.25,.46,.45,.94);--spring:cubic-bezier(.34,1.56,.64,1);
+  --r:12px;--r2:10px;
+}
+html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-smoothing:antialiased}
+body{overflow-x:hidden;position:relative}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(90,200,250,0.04),transparent);pointer-events:none;z-index:0}
+
+/* ── Topbar ── */
+.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:16px 28px;background:rgba(10,10,11,0.82);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--border)}
+.topbar-logo{display:flex;align-items:center;gap:10px}
+.topbar-logo svg{width:20px;height:20px;color:var(--blue)}
+.topbar-logo span{font-size:14px;font-weight:600;letter-spacing:-.02em}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.topbar-time{font-family:var(--mono);font-size:12px;color:var(--t3);letter-spacing:.02em}
+.topbar-updated{font-size:11px;color:var(--t3);opacity:.7}
+.topbar-refresh{width:30px;height:30px;border-radius:8px;background:var(--bg2);border:1px solid var(--border);color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s ease}
+.topbar-refresh:hover{background:var(--bg3);border-color:var(--border-h);color:var(--t1)}
+.topbar-refresh:active{transform:scale(.93)}
+.topbar-refresh.spinning svg{animation:spin .6s ease}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Content ── */
+.content{max-width:1280px;margin:0 auto;padding:24px 28px 40px}
+
+/* ── Stats ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;position:relative;overflow:hidden;animation:fadeUp .4s var(--ease) both}
+.stat:nth-child(1){animation-delay:.05s}.stat:nth-child(2){animation-delay:.1s}.stat:nth-child(3){animation-delay:.15s}.stat:nth-child(4){animation-delay:.2s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.stat-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.stat-icon svg{width:16px;height:16px}
+.stat-num{font-size:32px;font-weight:700;letter-spacing:-.04em;line-height:1;margin-bottom:4px;font-variant-numeric:tabular-nums}
+.stat-label{font-size:12px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.05em}
+.stat-accent{position:absolute;top:0;right:0;width:80px;height:80px;border-radius:50%;filter:blur(40px);opacity:.12;pointer-events:none}
+
+/* ── Panels ── */
+.panels{display:grid;grid-template-columns:1.5fr 1fr;gap:12px}
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;animation:fadeUp .45s var(--ease) .25s both}
+.panel:nth-child(2){animation-delay:.3s}
+.panel-hdr{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-size:13px;font-weight:600;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.panel-title svg{width:14px;height:14px;color:var(--t3)}
+.panel-badge{font-family:var(--mono);font-size:10px;background:var(--bg3);color:var(--t3);padding:3px 8px;border-radius:20px;border:1px solid var(--border)}
+.panel-body{max-height:520px;overflow-y:auto}
+.panel-body::-webkit-scrollbar{width:4px}.panel-body::-webkit-scrollbar-track{background:transparent}.panel-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
+
+/* ── Email Row ── */
+.email{padding:14px 20px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s ease}
+.email:hover{background:rgba(255,255,255,.02)}
+.email:last-child{border-bottom:none}
+.email-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.email-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.email-subject{font-size:13.5px;font-weight:500;letter-spacing:-.01em;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.email-cat{font-size:10px;font-weight:500;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.04);color:var(--t2);border-left:2px solid var(--t3);white-space:nowrap;letter-spacing:.02em;text-transform:uppercase}
+.email-meta{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--t3)}
+.email-sender{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.email-summary{font-size:12.5px;color:var(--t2);margin-top:6px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.email-expand{max-height:0;overflow:hidden;transition:max-height .3s var(--ease),opacity .2s ease;opacity:0}
+.email.open .email-expand{max-height:200px;opacity:1}
+.email-draft{font-size:12.5px;color:var(--t2);line-height:1.5;padding:10px 14px;margin-top:8px;background:rgba(48,209,88,.06);border:1px solid rgba(48,209,88,.1);border-radius:8px}
+.email-draft-label{font-size:10px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+
+/* ── Alert Row ── */
+.alert{padding:12px 20px;border-bottom:1px solid var(--border);transition:background .12s ease}
+.alert:hover{background:rgba(255,255,255,.02)}
+.alert:last-child{border-bottom:none}
+.alert-top{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.alert-sev{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.alert-competitor{font-size:13px;font-weight:600;letter-spacing:-.01em}
+.alert-type{font-size:10px;font-weight:500;padding:2px 7px;border-radius:5px;background:rgba(255,255,255,.04);color:var(--t2);letter-spacing:.02em}
+.alert-link{margin-left:auto;color:var(--t3);transition:color .15s ease;flex-shrink:0}
+.alert-link:hover{color:var(--blue)}
+.alert-link svg{width:12px;height:12px}
+.alert-desc{font-size:12.5px;color:var(--t3);line-height:1.4;padding-left:14px}
+
+/* ── Skeleton ── */
+.skel{background:linear-gradient(90deg,var(--bg3) 25%,rgba(255,255,255,.04) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel-row{padding:14px 20px;border-bottom:1px solid var(--border)}
+.skel-line{height:12px;margin-bottom:8px;border-radius:4px}
+.skel-line.w60{width:60%}.skel-line.w40{width:40%}.skel-line.w80{width:80%}
+
+/* ── Empty ── */
+.empty{padding:48px 20px;text-align:center;color:var(--t3);font-size:13px}
+.empty svg{width:32px;height:32px;margin-bottom:12px;opacity:.3}
+
+/* ── Mobile ── */
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}.panels{grid-template-columns:1fr}}
+@media(max-width:480px){.stats{grid-template-columns:1fr}.content{padding:16px 14px}.topbar{padding:14px 16px}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26z"/></svg>
+    <span>AI Command Center</span>
+  </div>
+  <div class="topbar-right">
+    <span class="topbar-updated" id="updated"></span>
+    <span class="topbar-time" id="clock"></span>
+    <button class="topbar-refresh" id="refreshBtn" title="Refresh">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="content">
+  <div class="stats" id="stats"></div>
+  <div class="panels">
+    <div class="panel">
+      <div class="panel-hdr">
+        <span class="panel-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Email Triage
+        </span>
+        <span class="panel-badge" id="emailCount">—</span>
+      </div>
+      <div class="panel-body" id="emailList"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-hdr">
+        <span class="panel-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Competitor Monitor
+        </span>
+        <span class="panel-badge" id="alertCount">—</span>
+      </div>
+      <div class="panel-body" id="alertList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_BASE='https://n8n-upwork-w6ty.onrender.com/webhook';
+const statsEl=document.getElementById('stats');
+const emailEl=document.getElementById('emailList');
+const alertEl=document.getElementById('alertList');
+const emailCountEl=document.getElementById('emailCount');
+const alertCountEl=document.getElementById('alertCount');
+const updatedEl=document.getElementById('updated');
+const clockEl=document.getElementById('clock');
+const refreshBtn=document.getElementById('refreshBtn');
+
+let lastFetch=Date.now();
+
+const URGENCY={critical:'#ff453a',high:'#ff9f0a',normal:'#30d158',low:'#6e6e73'};
+const SEVERITY={critical:'#ff453a',high:'#ff9f0a',medium:'#5ac8fa',low:'#6e6e73',info:'#6e6e73'};
+
+function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.textContent}
+
+function timeAgo(ts){
+  if(!ts)return'—';
+  const s=Math.floor((Date.now()-new Date(ts).getTime())/1000);
+  if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';
+  if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';
+}
+
+// Clock
+function updateClock(){
+  const d=new Date();
+  clockEl.textContent=d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+  const ago=Math.floor((Date.now()-lastFetch)/1000);
+  updatedEl.textContent=ago<5?'just updated':'updated '+ago+'s ago';
+}
+setInterval(updateClock,1000);updateClock();
+
+// Count-up animation
+function countUp(el,target,duration=800){
+  const start=performance.now();
+  const from=0;
+  const to=parseInt(target)||0;
+  function frame(now){
+    const p=Math.min((now-start)/duration,1);
+    const eased=1-Math.pow(1-p,3);
+    el.textContent=Math.round(from+eased*(to-from));
+    if(p<1)requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+function renderSkeleton(container,n){
+  let h='';
+  for(let i=0;i<n;i++)h+=`<div class="skel-row"><div class="skel skel-line w60"></div><div class="skel skel-line w40"></div><div class="skel skel-line w80"></div></div>`;
+  container.insertAdjacentHTML('beforeend',h);
+}
+
+function renderStats(data){
+  const s=data[0]||{};
+  const items=[
+    {label:'Total Emails',key:'total_emails',color:'#5ac8fa',icon:'<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>'},
+    {label:'Critical Emails',key:'critical_emails',color:'#ff453a',icon:'<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>'},
+    {label:'Competitor Alerts',key:'total_alerts',color:'#ff9f0a',icon:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'},
+    {label:'High Priority',key:'high_alerts',color:'#30d158',icon:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'}
+  ];
+  statsEl.textContent='';
+  items.forEach((it,i)=>{
+    const card=document.createElement('div');
+    card.className='stat';
+    card.style.animationDelay=(i*0.05+0.05)+'s';
+    const iconDiv=document.createElement('div');
+    iconDiv.className='stat-icon';
+    iconDiv.style.background=it.color+'18';
+    iconDiv.insertAdjacentHTML('beforeend',`<svg viewBox="0 0 24 24" fill="none" stroke="${it.color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${it.icon}</svg>`);
+    card.appendChild(iconDiv);
+    const numEl=document.createElement('div');
+    numEl.className='stat-num';
+    numEl.textContent='0';
+    card.appendChild(numEl);
+    const labelEl=document.createElement('div');
+    labelEl.className='stat-label';
+    labelEl.textContent=it.label;
+    card.appendChild(labelEl);
+    const accent=document.createElement('div');
+    accent.className='stat-accent';
+    accent.style.background=it.color;
+    card.appendChild(accent);
+    statsEl.appendChild(card);
+    countUp(numEl,s[it.key]||0);
+  });
+}
+
+function renderEmails(data){
+  emailEl.textContent='';
+  emailCountEl.textContent=data.length+' items';
+  if(!data.length){emailEl.insertAdjacentHTML('beforeend','<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><div>No emails yet</div></div>');return}
+  data.forEach(e=>{
+    const row=document.createElement('div');
+    row.className='email';
+    row.addEventListener('click',()=>row.classList.toggle('open'));
+    const dotColor=URGENCY[e.urgency]||URGENCY.normal;
+    const catColor=URGENCY[e.urgency]||'#6e6e73';
+
+    const top=document.createElement('div');top.className='email-top';
+    const dot=document.createElement('span');dot.className='email-dot';dot.style.background=dotColor;top.appendChild(dot);
+    const subj=document.createElement('span');subj.className='email-subject';subj.textContent=esc(e.subject);top.appendChild(subj);
+    const cat=document.createElement('span');cat.className='email-cat';cat.style.borderLeftColor=catColor;cat.textContent=esc(e.category);top.appendChild(cat);
+    row.appendChild(top);
+
+    const meta=document.createElement('div');meta.className='email-meta';
+    const sender=document.createElement('span');sender.className='email-sender';sender.textContent=esc(e.sender);meta.appendChild(sender);
+    const time=document.createElement('span');time.textContent=timeAgo(e.created_at);meta.appendChild(time);
+    row.appendChild(meta);
+
+    if(e.summary){const sum=document.createElement('div');sum.className='email-summary';sum.textContent=esc(e.summary);row.appendChild(sum)}
+
+    if(e.draft_reply){
+      const expand=document.createElement('div');expand.className='email-expand';
+      const draft=document.createElement('div');draft.className='email-draft';
+      const lbl=document.createElement('div');lbl.className='email-draft-label';lbl.textContent='AI Draft Reply';draft.appendChild(lbl);
+      const txt=document.createElement('div');txt.textContent=esc(e.draft_reply);draft.appendChild(txt);
+      expand.appendChild(draft);row.appendChild(expand);
+    }
+    emailEl.appendChild(row);
+  });
+}
+
+function renderAlerts(data){
+  alertEl.textContent='';
+  alertCountEl.textContent=data.length+' items';
+  if(!data.length){alertEl.insertAdjacentHTML('beforeend','<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg><div>No alerts yet</div></div>');return}
+  data.forEach(a=>{
+    const row=document.createElement('div');row.className='alert';
+    const sevColor=SEVERITY[a.severity]||SEVERITY.info;
+
+    const top=document.createElement('div');top.className='alert-top';
+    const dot=document.createElement('span');dot.className='alert-sev';dot.style.background=sevColor;top.appendChild(dot);
+    const comp=document.createElement('span');comp.className='alert-competitor';comp.textContent=esc(a.competitor);top.appendChild(comp);
+    const type=document.createElement('span');type.className='alert-type';type.textContent=esc(a.change_type);top.appendChild(type);
+    if(a.url){
+      const link=document.createElement('a');link.className='alert-link';link.href=a.url;link.target='_blank';link.rel='noopener noreferrer';
+      link.insertAdjacentHTML('beforeend','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>');
+      top.appendChild(link);
+    }
+    row.appendChild(top);
+
+    if(a.description){const desc=document.createElement('div');desc.className='alert-desc';desc.textContent=esc(a.description);row.appendChild(desc)}
+    alertEl.appendChild(row);
+  });
+}
+
+async function loadAll(){
+  refreshBtn.classList.add('spinning');
+  renderSkeleton(emailEl,4);renderSkeleton(alertEl,3);
+
+  try{
+    const [statsRes,emailsRes,alertsRes]=await Promise.all([
+      fetch(API_BASE+'/api-stats').then(r=>r.json()).catch(()=>[{}]),
+      fetch(API_BASE+'/api-emails').then(r=>r.json()).catch(()=>[]),
+      fetch(API_BASE+'/api-alerts').then(r=>r.json()).catch(()=>[])
+    ]);
+    renderStats(statsRes);renderEmails(emailsRes);renderAlerts(alertsRes);
+    lastFetch=Date.now();
+  }catch(err){
+    console.error(err);
+  }
+  setTimeout(()=>refreshBtn.classList.remove('spinning'),600);
+}
+
+refreshBtn.addEventListener('click',loadAll);
+loadAll();
+setInterval(loadAll,30000);
+</script>
+</body>
+</html>
