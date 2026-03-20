@@ -140,10 +140,17 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .products-top p{font-size:14px;color:var(--t2);max-width:340px;line-height:1.5;font-weight:300}
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 
-.pc{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:all .3s ease}
+.pc{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:all .3s ease;border-top-width:2px}
 .pc:hover{border-color:var(--border-h);transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,0.4)}
 .pc:hover .pc-img{transform:scale(1.04)}
 .pc-iw{overflow:hidden;position:relative;border-bottom:1px solid var(--border)}
+/* per-category top border colors */
+.pc[data-cat="ops"]{border-top-color:var(--accent)}
+.pc[data-cat="email"]{border-top-color:var(--red)}
+.pc[data-cat="intel"]{border-top-color:var(--amber)}
+.pc[data-cat="revenue"]{border-top-color:var(--green)}
+.pc[data-cat="chat"]{border-top-color:#7c6cfc}
+.pc[data-cat="cta"]{border-top-color:var(--border)}
 .pc-img{width:100%;aspect-ratio:16/10;object-fit:cover;transition:transform .45s ease}
 .pc-live{position:absolute;top:8px;left:8px;display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:5px;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);font-size:9px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.08em}
 .pc-live::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
@@ -166,7 +173,8 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .bento{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:1fr;gap:1px;background:var(--border);border-radius:14px;overflow:hidden;border:1px solid var(--border)}
 .bcell{background:var(--bg-2);padding:36px 28px;transition:background .2s;display:flex;flex-direction:column;min-height:160px}
 .bcell:hover{background:var(--bg-3)}
-.bcell.w2{grid-column:span 2}
+.bcell.w2{grid-column:span 2;background:linear-gradient(135deg,var(--bg-2) 60%,rgba(80,144,240,0.06) 100%)}
+.bcell.w2:hover{background:linear-gradient(135deg,var(--bg-3) 60%,rgba(80,144,240,0.1) 100%)}
 .bcell svg{width:20px;height:20px;color:var(--accent);margin-bottom:14px;display:block}
 .bcell h3{font-size:15px;font-weight:600;letter-spacing:-.01em;margin-bottom:6px}
 .bcell p{font-size:13px;color:var(--t2);line-height:1.55;font-weight:300}
@@ -378,17 +386,17 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
   <div class="products-top sr">
     <div>
       <div class="label" style="margin-bottom:10px">What we ship</div>
-      <h2>Systems your team<br>will actually use</h2>
+      <h2>Results your team<br>will actually measure</h2>
     </div>
-    <p>Each one designed to eliminate a specific bottleneck — and deployed in under a week.</p>
+    <p>Each system eliminates a specific bottleneck — deployed in under a week, with numbers to prove it.</p>
   </div>
   <div class="pgrid">
-    <a href="dashboard.html" class="pc sr"><div class="pc-iw"><img class="pc-img" src="screenshot-dashboard.png" alt="" loading="lazy"></div><div class="pc-b"><div class="pc-tag">Operations</div><h3>AI Command Center</h3><p>One screen. Email throughput, competitor alerts, lead pipeline — auto-refreshing.</p><div class="pc-stat">4 sources → 1 dashboard</div></div></a>
-    <a href="email-triage.html" class="pc sr"><div class="pc-iw"><img class="pc-img" src="screenshot-email-triage.png" alt="" loading="lazy"></div><div class="pc-b"><div class="pc-tag">Email AI</div><h3>Email Triage</h3><p>Every email classified by urgency. Drafts generated. Critical items surfaced first.</p><div class="pc-stat">3hrs/day → 0 manual sorting</div></div></a>
-    <a href="competitor-monitor.html" class="pc sr"><div class="pc-iw"><img class="pc-img" src="screenshot-competitor-monitor.png" alt="" loading="lazy"></div><div class="pc-b"><div class="pc-tag">Intelligence</div><h3>Competitor Intel</h3><p>Pricing shifts, feature drops, partnerships — caught when they happen.</p><div class="pc-stat">Weeks late → minutes</div></div></a>
-    <a href="lead-capture.html" class="pc sr"><div class="pc-iw"><img class="pc-img" src="screenshot-lead-capture.png" alt="" loading="lazy"></div><div class="pc-b"><div class="pc-tag">Revenue</div><h3>Lead Scoring</h3><p>Every lead scored Hot/Warm/Cold with AI reasoning and next step.</p><div class="pc-stat">48hr wait → instant qualification</div></div></a>
-    <a href="chat-ui.html" class="pc sr"><div class="pc-iw"><img class="pc-img" src="screenshot-chat-ui.png" alt="" loading="lazy"></div><div class="pc-b"><div class="pc-tag">Conversational AI</div><h3>KB Chatbot</h3><p>Give it a URL. It indexes and answers questions with cited responses.</p><div class="pc-stat">URL in → AI assistant out</div></div></a>
-    <a href="#contact" class="pc sr"><div class="pc-plus"><div class="pc-plus-inner"><div class="plus">+</div><h3>Your workflow next</h3></div></div></a>
+    <a href="dashboard.html" class="pc sr" data-cat="ops"><div class="pc-iw"><img class="pc-img" src="screenshot-dashboard.png" alt="" loading="lazy"></div><div class="pc-b"><div class="pc-tag">Operations</div><h3>AI Command Center</h3><p>Stop switching between five tabs. All your critical signals — emails, alerts, leads — on one screen that updates itself.</p><div class="pc-stat">4 sources → 1 dashboard</div></div></a>
+    <a href="email-triage.html" class="pc sr" data-cat="email"><div class="pc-iw"><img class="pc-img" src="screenshot-email-triage.png" alt="" loading="lazy"></div><div class="pc-b"><div class="pc-tag">Email AI</div><h3>Email Triage</h3><p>Reclaim 3+ hours a day. Every email lands pre-classified by urgency, pre-drafted, and ready to action — before you open your inbox.</p><div class="pc-stat">3hrs/day → 0 manual sorting</div></div></a>
+    <a href="competitor-monitor.html" class="pc sr" data-cat="intel"><div class="pc-iw"><img class="pc-img" src="screenshot-competitor-monitor.png" alt="" loading="lazy"></div><div class="pc-b"><div class="pc-tag">Intelligence</div><h3>Competitor Intel</h3><p>Know before your customers do. Pricing changes, feature launches, partnerships — flagged the moment they go live, not weeks later.</p><div class="pc-stat">Weeks late → minutes</div></div></a>
+    <a href="lead-capture.html" class="pc sr" data-cat="revenue"><div class="pc-iw"><img class="pc-img" src="screenshot-lead-capture.png" alt="" loading="lazy"></div><div class="pc-b"><div class="pc-tag">Revenue</div><h3>Lead Scoring</h3><p>Close more by working fewer leads. Every inbound contact scored Hot/Warm/Cold with AI reasoning and a specific next step — instantly.</p><div class="pc-stat">48hr wait → instant qualification</div></div></a>
+    <a href="chat-ui.html" class="pc sr" data-cat="chat"><div class="pc-iw"><img class="pc-img" src="screenshot-chat-ui.png" alt="" loading="lazy"></div><div class="pc-b"><div class="pc-tag">Conversational AI</div><h3>KB Chatbot</h3><p>Turn your docs into a 24/7 support agent. Give it a URL — it indexes, embeds, and answers customer questions with cited responses.</p><div class="pc-stat">URL in → AI assistant out</div></div></a>
+    <a href="#contact" class="pc sr" data-cat="cta"><div class="pc-plus"><div class="pc-plus-inner"><div class="plus">+</div><h3>Your workflow next</h3></div></div></a>
   </div>
 </div>
 </section>
@@ -422,7 +430,7 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
       <h3>AI that explains itself</h3>
       <p>Every score, classification, and decision comes with written reasoning. No black boxes.</p>
     </div>
-    <div class="bcell w2 sr">
+    <div class="bcell w2 sr" style="background:linear-gradient(225deg,var(--bg-2) 55%,rgba(124,108,252,0.07) 100%)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
       <h3>Connects to everything you already use</h3>
       <p>Slack, Gmail, Salesforce, HubSpot, Notion, Stripe, Shopify — if it has an API, we wire it in. No new tools to learn, no migration, no disruption.</p>
@@ -437,9 +445,9 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
   <div class="label sr" style="margin-bottom:10px">How it works</div>
   <h2 class="sr">Problem in, production out.</h2>
   <div class="steps">
-    <div class="stp sr"><h3>You describe the pain</h3><p>Tell us what eats your time. We audit the workflow and design an automation blueprint in 48 hours.</p></div>
-    <div class="stp sr"><h3>We build it live</h3><p>We wire your tools, connect the AI, ship with dashboards — tested on real data. Progress daily.</p></div>
-    <div class="stp sr"><h3>It runs, you grow</h3><p>Production deploy with monitoring. We iterate until the numbers prove it. Scale without headcount.</p></div>
+    <div class="stp sr"><h3>You describe the pain</h3><p>Tell us what eats your team's time. We audit and return an automation blueprint in 48 hours.</p></div>
+    <div class="stp sr"><h3>We build it on your data</h3><p>We wire your tools, connect the AI, and ship a working system — tested on real inputs, not mock data.</p></div>
+    <div class="stp sr"><h3>It runs. You scale.</h3><p>Live deploy with monitoring dashboard included. Iterate on results. Add headcount only when humans are actually needed.</p></div>
   </div>
 </div>
 </section>
@@ -488,10 +496,6 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 const lenis=new Lenis({lerp:.07,smoothWheel:true});
 (function r(t){lenis.raf(t);requestAnimationFrame(r)})(0);
 gsap.ticker.add(t=>lenis.raf(t*1000));gsap.ticker.lagSmoothing(0);
-
-/* ── Scroll reveals (IntersectionObserver — visible by default) ── */
-const obs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:0.05,rootMargin:'0px 0px -40px 0px'});
-document.querySelectorAll('.sr').forEach(el=>obs.observe(el));
 
 /* ── Nav anchors ── */
 document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)lenis.scrollTo(t,{offset:-80})})});
