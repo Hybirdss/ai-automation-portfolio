@@ -60,63 +60,35 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .btn-s:hover{color:var(--t1);border-color:var(--border-h)}
 
 /* ═══ SHOWCASE ═══ */
-.showcase{padding:48px 0 100px;animation:heroIn .8s .35s cubic-bezier(.16,1,.3,1) both}
-.sc-frame{position:relative;max-width:960px;margin:0 auto;border-radius:16px;overflow:hidden;
-  border:1px solid var(--border);background:var(--bg-2);
-  box-shadow:0 0 0 1px var(--border),0 40px 80px -20px rgba(0,0,0,0.7),0 0 60px var(--accent-glow)}
-.sc-top{display:flex;align-items:center;gap:6px;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--bg-3)}
-.sc-dot-r{width:8px;height:8px;border-radius:50%;background:#f06060}
-.sc-dot-y{width:8px;height:8px;border-radius:50%;background:#e8b040}
-.sc-dot-g{width:8px;height:8px;border-radius:50%;background:#40d89a}
-.sc-title{margin-left:12px;font-size:11px;color:var(--t3);font-family:var(--mono);font-weight:400}
-.sc-screen{position:relative;aspect-ratio:16/9.5;overflow:hidden}
-.sc-slide{position:absolute;inset:0;opacity:0;transition:opacity .5s ease;padding:20px 24px;font-size:12px;display:flex;flex-direction:column}
-.sc-slide.active{opacity:1}
-/* Mini dashboard styles */
-.sc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
-.sc-stat{background:var(--bg-3);border-radius:8px;padding:12px;border:1px solid var(--border)}
-.sc-stat-label{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;font-family:var(--mono)}
-.sc-stat-val{font-size:22px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-.sc-rows{flex:1;display:flex;flex-direction:column;gap:6px;overflow:hidden}
-.sc-row{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg-3);border-radius:6px;border:1px solid var(--border);opacity:0;animation:scRowIn .4s ease forwards}
-@keyframes scRowIn{to{opacity:1;transform:translateX(0)}}
-.sc-row{transform:translateX(-12px)}
-.sc-badge{font-size:8px;font-weight:600;padding:2px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
-.sc-badge-crit{background:rgba(240,96,96,0.15);color:var(--red)}
-.sc-badge-high{background:rgba(232,176,64,0.15);color:var(--amber)}
-.sc-badge-norm{background:rgba(64,216,154,0.15);color:var(--green)}
-.sc-badge-low{background:rgba(80,144,240,0.12);color:var(--accent)}
-.sc-row-text{font-size:11px;color:var(--t2);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sc-row-sub{font-size:10px;color:var(--t3);font-family:var(--mono)}
-.sc-row-time{font-size:9px;color:var(--t3);font-family:var(--mono);white-space:nowrap}
-/* Bars */
-.sc-bars{display:flex;gap:3px;align-items:flex-end;height:40px;margin-top:8px}
-.sc-bar{flex:1;background:var(--accent);border-radius:2px 2px 0 0;animation:scBarGrow 1s ease forwards;transform-origin:bottom}
-@keyframes scBarGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
-/* Lead gauge */
-.sc-gauge{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
-/* Chat typing */
-.sc-chat-msg{padding:8px 12px;border-radius:10px;max-width:75%;font-size:11px;line-height:1.5;animation:msgIn .3s ease}
-.sc-chat-user{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:3px;margin-bottom:6px}
-.sc-chat-bot{background:var(--bg-3);color:var(--t1);align-self:flex-start;border-bottom-left-radius:3px;border:1px solid var(--border)}
-.sc-chat-typing span{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--t3);margin:0 1px;animation:td 1.4s ease infinite}
-.sc-chat-typing span:nth-child(2){animation-delay:.2s}
-.sc-chat-typing span:nth-child(3){animation-delay:.4s}
-
-.sc-bar-wrap{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--border);background:var(--bg-2)}
-.sc-bar-info{display:flex;align-items:center;gap:10px}
-.sc-bar-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-.sc-bar-name{font-size:13px;font-weight:600}
-.sc-bar-desc{font-size:11px;color:var(--t2)}
-.sc-bar-try{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:500;transition:color .2s}
-.sc-bar-try:hover{color:var(--t1)}
-.sc-pips{display:flex;gap:6px;position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:5}
-.sc-pip{width:28px;height:3px;border-radius:2px;background:rgba(255,255,255,0.12);cursor:pointer;transition:all .3s;border:none;padding:0}
-.sc-pip.active{background:var(--accent);width:40px}
-/* progress bar on active pip */
-.sc-pip.active::after{content:'';display:block;height:100%;background:rgba(255,255,255,0.3);border-radius:2px;animation:pipFill 4.5s linear forwards}
+.showcase{padding:56px 0 120px;animation:heroIn .8s .35s cubic-bezier(.16,1,.3,1) both}
+.sc-wrap{display:flex;align-items:center;gap:64px;max-width:960px;margin:0 auto}
+.sc-text{flex:1;min-width:0}
+.sc-tag{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;transition:opacity .4s}
+.sc-h{font-size:clamp(26px,3.2vw,36px);font-weight:700;letter-spacing:-.04em;line-height:1.1;margin-bottom:14px;transition:opacity .4s}
+.sc-p{font-size:14px;color:var(--t2);line-height:1.6;font-weight:300;margin-bottom:24px;max-width:360px;transition:opacity .4s}
+.sc-link{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:color .2s}
+.sc-link:hover{color:var(--t1)}
+.sc-pips{display:flex;gap:8px;margin-top:32px}
+.sc-pip{width:32px;height:3px;border-radius:2px;background:rgba(255,255,255,0.08);cursor:pointer;transition:all .3s;border:none;padding:0;position:relative;overflow:hidden}
+.sc-pip.active{background:rgba(255,255,255,0.08);width:44px}
+.sc-pip.active::after{content:'';position:absolute;left:0;top:0;height:100%;background:var(--accent);border-radius:2px;animation:pipFill 5s linear forwards}
 @keyframes pipFill{from{width:0}to{width:100%}}
+/* Phone mockup */
+.sc-phone{flex-shrink:0;width:280px;position:relative}
+.sc-phone-frame{border-radius:32px;overflow:hidden;border:3px solid rgba(255,255,255,0.08);background:#000;box-shadow:0 30px 60px -15px rgba(0,0,0,0.6),0 0 40px var(--accent-glow),inset 0 0 0 1px rgba(255,255,255,0.04);position:relative}
+.sc-phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:100px;height:22px;background:#000;border-radius:0 0 16px 16px;z-index:3}
+.sc-phone-screen{position:relative;aspect-ratio:9/19.5;overflow:hidden}
+.sc-phone-slide{position:absolute;inset:0;opacity:0;transition:opacity .5s ease}
+.sc-phone-slide.active{opacity:1}
+.sc-phone-slide img{width:100%;height:100%;object-fit:cover;object-position:top}
+.sc-phone-bar{position:absolute;bottom:0;left:0;right:0;height:4px;background:rgba(255,255,255,0.06)}
+.sc-phone-bar::after{content:'';position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:100px;height:4px;background:rgba(255,255,255,0.15);border-radius:4px}
+@media(max-width:768px){
+  .sc-wrap{flex-direction:column-reverse;gap:32px;text-align:center}
+  .sc-phone{width:220px}
+  .sc-p{max-width:none;margin-left:auto;margin-right:auto}
+  .sc-pips{justify-content:center}
+}
 
 /* ═══ PRODUCTS GRID ═══ */
 .products{padding:80px 0 120px;border-top:1px solid var(--border)}
@@ -271,84 +243,25 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 <!-- ═══ SHOWCASE ═══ -->
 <section class="showcase">
 <div class="w">
-  <div class="sc-frame">
-    <div class="sc-top">
-      <span class="sc-dot-r"></span><span class="sc-dot-y"></span><span class="sc-dot-g"></span>
-      <span class="sc-title" id="scTitle">nexframe / command-center</span>
-    </div>
-    <div class="sc-screen" id="scScreen">
-
-      <!-- Slide 0: Command Center -->
-      <div class="sc-slide active" data-href="dashboard.html" data-name="AI Command Center" data-desc="4 data sources, one screen, 30s auto-refresh" data-title="nexframe / command-center">
-        <div class="sc-stats">
-          <div class="sc-stat"><div class="sc-stat-label">Emails</div><div class="sc-stat-val" style="color:var(--accent)">16</div></div>
-          <div class="sc-stat"><div class="sc-stat-label">Critical</div><div class="sc-stat-val" style="color:var(--red)">4</div></div>
-          <div class="sc-stat"><div class="sc-stat-label">Alerts</div><div class="sc-stat-val" style="color:var(--amber)">16</div></div>
-          <div class="sc-stat"><div class="sc-stat-label">High Priority</div><div class="sc-stat-val" style="color:var(--green)">7</div></div>
-        </div>
-        <div class="sc-bars" style="flex:1">
-          <div class="sc-bar" style="height:70%;background:var(--accent)"></div>
-          <div class="sc-bar" style="height:45%;background:var(--accent);opacity:.7"></div>
-          <div class="sc-bar" style="height:90%;background:var(--red)"></div>
-          <div class="sc-bar" style="height:30%;background:var(--amber)"></div>
-          <div class="sc-bar" style="height:60%;background:var(--green)"></div>
-          <div class="sc-bar" style="height:85%;background:var(--accent)"></div>
-          <div class="sc-bar" style="height:40%;background:var(--amber)"></div>
-          <div class="sc-bar" style="height:75%;background:var(--red)"></div>
-          <div class="sc-bar" style="height:55%;background:var(--green)"></div>
-          <div class="sc-bar" style="height:65%;background:var(--accent);opacity:.7"></div>
-          <div class="sc-bar" style="height:50%;background:var(--amber)"></div>
-          <div class="sc-bar" style="height:80%;background:var(--accent)"></div>
-        </div>
-      </div>
-
-      <!-- Slide 1: Email Triage -->
-      <div class="sc-slide" data-href="email-triage.html" data-name="Email Triage" data-desc="Every email classified, drafted, routed in seconds" data-title="nexframe / email-triage">
-        <div class="sc-stats" style="grid-template-columns:repeat(3,1fr)">
-          <div class="sc-stat"><div class="sc-stat-label">Processed</div><div class="sc-stat-val" style="color:var(--accent)">16</div></div>
-          <div class="sc-stat"><div class="sc-stat-label">Critical</div><div class="sc-stat-val" style="color:var(--red)">4</div></div>
-          <div class="sc-stat"><div class="sc-stat-label">Drafts Ready</div><div class="sc-stat-val" style="color:var(--green)">12</div></div>
-        </div>
-        <div class="sc-rows" id="emailRows"></div>
-      </div>
-
-      <!-- Slide 2: Competitor Intel -->
-      <div class="sc-slide" data-href="competitor-monitor.html" data-name="Competitor Intelligence" data-desc="Pricing shifts caught in minutes, not weeks" data-title="nexframe / competitor-intel">
-        <div class="sc-stats" style="grid-template-columns:repeat(3,1fr)">
-          <div class="sc-stat"><div class="sc-stat-label">Tracked</div><div class="sc-stat-val" style="color:var(--amber)">16</div></div>
-          <div class="sc-stat"><div class="sc-stat-label">Critical</div><div class="sc-stat-val" style="color:var(--red)">3</div></div>
-          <div class="sc-stat"><div class="sc-stat-label">Competitors</div><div class="sc-stat-val" style="color:var(--accent)">6</div></div>
-        </div>
-        <div class="sc-rows" id="alertRows"></div>
-      </div>
-
-      <!-- Slide 3: Lead Scoring -->
-      <div class="sc-slide" data-href="lead-capture.html" data-name="Lead Scoring" data-desc="AI scores, classifies, routes every inbound lead" data-title="nexframe / lead-scoring">
-        <div class="sc-stats" style="grid-template-columns:repeat(4,1fr)">
-          <div class="sc-stat"><div class="sc-stat-label">Total</div><div class="sc-stat-val">12</div></div>
-          <div class="sc-stat"><div class="sc-stat-label">Hot</div><div class="sc-stat-val" style="color:var(--red)">6</div></div>
-          <div class="sc-stat"><div class="sc-stat-label">Warm</div><div class="sc-stat-val" style="color:var(--amber)">4</div></div>
-          <div class="sc-stat"><div class="sc-stat-label">Cold</div><div class="sc-stat-val" style="color:var(--accent)">2</div></div>
-        </div>
-        <div class="sc-rows" id="leadRows"></div>
-      </div>
-
-      <!-- Slide 4: Chatbot -->
-      <div class="sc-slide" data-href="chat-ui.html" data-name="Knowledge Base Chatbot" data-desc="URL in → cited AI answers out" data-title="nexframe / chatbot" style="justify-content:flex-end;gap:8px">
-        <div class="sc-chat-msg sc-chat-user">What services does Nexframe offer?</div>
-        <div class="sc-chat-msg sc-chat-bot" id="scChatReply" style="max-width:85%"></div>
-      </div>
-
+  <div class="sc-wrap">
+    <div class="sc-text">
+      <div class="sc-tag" id="scTag">01 — Operations</div>
+      <h2 class="sc-h" id="scH">AI Command Center</h2>
+      <p class="sc-p" id="scP">Four data sources distilled into one screen. Emails, alerts, leads, competitor moves — auto-refreshing every 30 seconds so you never check another tab.</p>
+      <a href="dashboard.html" class="sc-link" id="scLink">Try it live <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 1.5l5 4.5-5 4.5"/></svg></a>
       <div class="sc-pips" id="scPips"></div>
     </div>
-
-    <div class="sc-bar-wrap">
-      <div class="sc-bar-info">
-        <span class="sc-bar-dot"></span>
-        <span class="sc-bar-name" id="scName">AI Command Center</span>
-        <span class="sc-bar-desc" id="scDesc">4 data sources, one screen, 30s auto-refresh</span>
+    <div class="sc-phone">
+      <div class="sc-phone-frame">
+        <div class="sc-phone-notch"></div>
+        <div class="sc-phone-screen" id="scScreen">
+          <div class="sc-phone-slide active"><img src="screenshot-dashboard.png" alt=""></div>
+          <div class="sc-phone-slide"><img src="screenshot-email-triage.png" alt=""></div>
+          <div class="sc-phone-slide"><img src="screenshot-competitor-monitor.png" alt=""></div>
+          <div class="sc-phone-slide"><img src="screenshot-lead-capture.png" alt=""></div>
+          <div class="sc-phone-slide"><img src="screenshot-chat-ui.png" alt=""></div>
+        </div>
       </div>
-      <a href="dashboard.html" class="sc-bar-try" id="scTry">Try it live →</a>
     </div>
   </div>
 </div>
@@ -479,88 +392,31 @@ document.querySelectorAll('.sr').forEach(el=>obs.observe(el));
 document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)lenis.scrollTo(t,{offset:-80})})});
 
 /* ── SHOWCASE CAROUSEL ── */
-const scSlides=document.querySelectorAll('.sc-slide');
+const scData=[
+  {tag:'01 — Operations',h:'AI Command Center',p:'Four data sources distilled into one screen. Emails, alerts, leads, competitor moves — auto-refreshing every 30 seconds so you never check another tab.',href:'dashboard.html'},
+  {tag:'02 — Email AI',h:'Intelligent Email Triage',p:'Every incoming email classified by urgency, categorized, and draft-replied in seconds. Critical items surfaced before you open your inbox. Zero manual sorting.',href:'email-triage.html'},
+  {tag:'03 — Intelligence',h:'Competitor Intelligence',p:'Pricing shifts, feature drops, partnership moves — caught the moment they happen. AI severity scoring routes what matters to who matters.',href:'competitor-monitor.html'},
+  {tag:'04 — Revenue',h:'AI Lead Scoring',p:'Every inbound lead scored, classified Hot / Warm / Cold, with AI-written reasoning and a specific next step. Your sales team works the right deals first.',href:'lead-capture.html'},
+  {tag:'05 — Conversational AI',h:'Knowledge Base Chatbot',p:'Give it a URL. It scrapes, chunks, embeds, and indexes your content — then answers questions with cited, grounded responses. Multi-turn memory included.',href:'chat-ui.html'},
+];
+const scSlides=document.querySelectorAll('.sc-phone-slide');
 const scPipsC=document.getElementById('scPips');
-const scName=document.getElementById('scName');
-const scDesc=document.getElementById('scDesc');
-const scTry=document.getElementById('scTry');
-const scTitle=document.getElementById('scTitle');
+const scTag=document.getElementById('scTag'),scH=document.getElementById('scH'),scP=document.getElementById('scP'),scLink=document.getElementById('scLink');
 let scCur=0,scTimer;
 
-// Email rows data
-const emailData=[
-  {subj:'Urgent: Server down in production',from:'ops@client.com',badge:'crit',time:'2m'},
-  {subj:'Invoice #4521 for March services',from:'billing@vendor.com',badge:'norm',time:'15m'},
-  {subj:'Re: Partnership proposal',from:'sarah@startup.io',badge:'high',time:'22m'},
-  {subj:'Customer complaint: Integration failing',from:'support@bigclient.com',badge:'crit',time:'35m'},
-  {subj:'Contract renewal reminder',from:'legal@enterprise.com',badge:'high',time:'1h'},
-];
-const alertData=[
-  {comp:'Chatbase',type:'Pricing Change',badge:'high',desc:'Dropped Pro plan $99→$79'},
-  {comp:'Botpress',type:'Pricing Change',badge:'crit',desc:'Introduced free tier 2K msgs/mo'},
-  {comp:'Intercom',type:'Pricing Change',badge:'crit',desc:'Fin AI now $0.99/resolution'},
-  {comp:'Voiceflow',type:'New Feature',badge:'high',desc:'Phone call AI with Twilio'},
-  {comp:'Drift',type:'New Feature',badge:'high',desc:'AI lead scoring with CRM sync'},
-];
-const leadData=[
-  {name:'Emily Zhang',co:'Horizon Ventures',score:98,tier:'HOT'},
-  {name:'Lisa Thompson',co:'EnterpriseCorp',score:95,tier:'HOT'},
-  {name:'Sarah Chen',co:'TechStartup Inc',score:92,tier:'HOT'},
-  {name:'James Park',co:'SmallBiz Co',score:65,tier:'WARM'},
-  {name:'Tom Wilson',co:'Freelancer',score:15,tier:'COLD'},
-];
-const chatReply='**Nexframe** builds AI automation systems: email triage, lead scoring, competitor intelligence, and knowledge-base chatbots. Every system ships with real-time monitoring and connects to your existing tools.';
-
-function buildRows(id,data,buildFn){
-  const c=document.getElementById(id);if(!c)return;
-  c.textContent='';
-  data.forEach((d,i)=>{
-    const r=document.createElement('div');r.className='sc-row';
-    r.style.animationDelay=(i*0.12)+'s';
-    r.innerHTML=buildFn(d);c.appendChild(r);
-  });
-}
-
-function animateSlide(n){
-  if(n===1)buildRows('emailRows',emailData,d=>`<span class="sc-badge sc-badge-${d.badge}">${{crit:'CRITICAL',high:'HIGH',norm:'NORMAL',low:'LOW'}[d.badge]}</span><span class="sc-row-text">${d.subj}</span><span class="sc-row-sub">${d.from}</span><span class="sc-row-time">${d.time} ago</span>`);
-  if(n===2)buildRows('alertRows',alertData,d=>`<span class="sc-badge sc-badge-${d.badge}">${d.badge==='crit'?'CRITICAL':'HIGH'}</span><span class="sc-row-text"><strong style="color:var(--t1)">${d.comp}</strong> · ${d.desc}</span><span class="sc-row-sub">${d.type}</span>`);
-  if(n===3)buildRows('leadRows',leadData,d=>{
-    const c=d.score>=70?'var(--red)':d.score>=40?'var(--amber)':'var(--accent)';
-    return`<span class="sc-gauge" style="background:${c}22;color:${c}">${d.score}</span><span class="sc-row-text"><strong style="color:var(--t1)">${d.name}</strong> · ${d.co}</span><span class="sc-badge" style="background:${c}18;color:${c}">${d.tier}</span>`;
-  });
-  if(n===4){
-    const el=document.getElementById('scChatReply');if(!el)return;
-    el.textContent='';let i=0;
-    const txt=chatReply.replace(/\*\*/g,'');
-    function type(){if(i<txt.length){el.textContent+=txt[i];i++;setTimeout(type,12)}};type();
-  }
-}
-
-scSlides.forEach((_,i)=>{
-  const b=document.createElement('button');
-  b.className='sc-pip'+(i===0?' active':'');
-  b.onclick=()=>scGo(i);
-  scPipsC.appendChild(b);
-});
+scData.forEach((_,i)=>{const b=document.createElement('button');b.className='sc-pip'+(i===0?' active':'');b.onclick=()=>scGo(i);scPipsC.appendChild(b)});
 
 function scGo(n){
   scSlides[scCur].classList.remove('active');
   scPipsC.children[scCur].classList.remove('active');
   scCur=n%scSlides.length;
-  const s=scSlides[scCur];
-  s.classList.add('active');
-  const pip=scPipsC.children[scCur];
-  pip.classList.remove('active');void pip.offsetWidth;pip.classList.add('active');
-  scName.textContent=s.dataset.name;
-  scDesc.textContent=s.dataset.desc;
-  scTry.href=s.dataset.href;
-  scTitle.textContent=s.dataset.title;
-  animateSlide(scCur);
-  clearInterval(scTimer);scTimer=setInterval(()=>scGo(scCur+1),4500);
+  scSlides[scCur].classList.add('active');
+  const pip=scPipsC.children[scCur];pip.classList.remove('active');void pip.offsetWidth;pip.classList.add('active');
+  const d=scData[scCur];
+  scTag.textContent=d.tag;scH.textContent=d.h;scP.textContent=d.p;scLink.href=d.href;
+  clearInterval(scTimer);scTimer=setInterval(()=>scGo(scCur+1),5000);
 }
-scTimer=setInterval(()=>scGo(scCur+1),4500);
-document.querySelector('.sc-screen').style.cursor='pointer';
-document.querySelector('.sc-screen').addEventListener('click',()=>{window.location.href=scSlides[scCur].dataset.href});
+scTimer=setInterval(()=>scGo(scCur+1),5000);
 
 gsap.registerPlugin(ScrollTrigger);
 
