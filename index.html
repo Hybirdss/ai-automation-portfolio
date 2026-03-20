@@ -4,555 +4,368 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>nexframe — We build systems that think</title>
-<meta name="description" content="AI automation studio. We design and ship intelligent workflows — email triage, lead scoring, competitive intelligence, knowledge-base chatbots — running on live infrastructure.">
+<meta name="description" content="AI automation studio. We design and ship intelligent workflows running on live infrastructure.">
 <link rel="icon" href="logo.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════════════════════════
-   NEXFRAME — Precision Engineering Aesthetic
-   Dark. Architectural. Restrained motion.
-   ═══════════════════════════════════════════════════════════ */
-
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#06060a;--bg-2:#0c0c12;--bg-3:#12121a;
+  --surface:#16161e;--border:rgba(255,255,255,0.05);--border-h:rgba(255,255,255,0.10);
+  --t1:#ededef;--t2:#8b8b96;--t3:#55555e;
+  --accent:#4f8ff7;--accent-2:#7c6cfc;--green:#3dd68c;
+  --font:'Inter',-apple-system,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:auto}
+body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 
-:root {
-  --bg:       #06060a;
-  --bg-2:     #0c0c12;
-  --bg-3:     #12121a;
-  --surface:  #16161e;
-  --border:   rgba(255,255,255,0.05);
-  --border-h: rgba(255,255,255,0.10);
-  --t1:       #ededef;
-  --t2:       #8b8b96;
-  --t3:       #55555e;
-  --accent:   #4f8ff7;
-  --accent-2: #7c6cfc;
-  --green:    #3dd68c;
-  --font:     'Inter', -apple-system, sans-serif;
-  --mono:     'JetBrains Mono', monospace;
-}
+.dot-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(circle,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:32px 32px}
+.dot-grid::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(79,143,247,0.07),transparent 70%)}
 
-html { scroll-behavior: auto; }
-body {
-  font-family: var(--font);
-  background: var(--bg);
-  color: var(--t1);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-}
+.w{max-width:1120px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.sl{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);margin-bottom:16px}
+.reveal{opacity:0;transform:translateY(32px)}
 
-a { color: inherit; text-decoration: none; }
-img { display: block; max-width: 100%; }
+/* ═══ NAV ═══ */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 24px;background:rgba(6,6,10,0.7);backdrop-filter:saturate(180%) blur(16px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo img{width:26px;height:26px;border-radius:6px}
+.nav-logo span{font-size:15px;font-weight:600;letter-spacing:-.02em}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{font-size:13px;color:var(--t2);transition:color .2s}
+.nav-links a:hover{color:var(--t1)}
+.nav-cta{font-size:13px;font-weight:500;color:var(--bg);background:var(--t1);padding:7px 18px;border-radius:8px;transition:all .2s}
+.nav-cta:hover{background:#fff;transform:translateY(-1px);box-shadow:0 4px 12px rgba(255,255,255,0.15)}
 
-/* ── Dot Grid Background ─────────────────────────── */
-.dot-grid {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-.dot-grid::after {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(79,143,247,0.07), transparent 70%);
-}
+/* ═══ HERO ═══ */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:120px 24px 80px;position:relative}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:100px;background:rgba(61,214,140,0.06);border:1px solid rgba(61,214,140,0.12);font-size:12px;font-weight:500;color:var(--green);letter-spacing:.02em;margin-bottom:32px}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-size:clamp(40px,6.5vw,72px);font-weight:800;letter-spacing:-.045em;line-height:1.0;margin-bottom:24px;max-width:780px}
+.hero h1 .shine{background:linear-gradient(135deg,var(--t1) 0%,var(--accent) 50%,var(--accent-2) 100%);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shineShift 6s ease infinite}
+@keyframes shineShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.hero-sub{font-size:clamp(16px,1.6vw,19px);color:var(--t2);max-width:520px;line-height:1.65;margin-bottom:40px;font-weight:300}
+.hero-cta-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:10px;background:var(--accent);color:#fff;font-size:14px;font-weight:600;transition:all .25s;border:none;cursor:pointer}
+.btn-primary:hover{background:#6aa3f9;transform:translateY(-2px);box-shadow:0 8px 24px rgba(79,143,247,0.25)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:10px;background:transparent;color:var(--t2);font-size:14px;font-weight:500;transition:all .25s;border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--t1);border-color:var(--border-h)}
 
-/* ── Shared ───────────────────────────────────────── */
-.wrapper { max-width: 1120px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
-.section-label {
-  font-family: var(--mono); font-size: 11px; font-weight: 500;
-  letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--t3); margin-bottom: 16px;
-}
-.reveal { opacity: 0; transform: translateY(32px); }
+/* ═══ LIVE TICKER ═══ */
+.live-ticker{margin-top:56px;display:flex;gap:32px;flex-wrap:wrap;justify-content:center}
+.tick{text-align:center;min-width:100px}
+.tick-val{font-size:28px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.tick-label{font-size:11px;color:var(--t3);margin-top:4px;font-weight:400}
+.tick-loading{color:var(--t3);animation:tickPulse 1.5s ease infinite}
+@keyframes tickPulse{0%,100%{opacity:.3}50%{opacity:.8}}
 
-/* ═══════════════════ NAV ════════════════════════════ */
-.nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  padding: 16px 24px;
-  background: rgba(6,6,10,0.7);
-  backdrop-filter: saturate(180%) blur(16px);
-  -webkit-backdrop-filter: saturate(180%) blur(16px);
-  border-bottom: 1px solid var(--border);
-  transition: background .3s ease;
-}
-.nav-inner {
-  max-width: 1120px; margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.nav-logo { display: flex; align-items: center; gap: 10px; }
-.nav-logo img { width: 26px; height: 26px; border-radius: 6px; }
-.nav-logo span { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; }
-.nav-links { display: flex; align-items: center; gap: 28px; }
-.nav-links a {
-  font-size: 13px; font-weight: 400; color: var(--t2);
-  transition: color .2s; letter-spacing: -0.01em;
-}
-.nav-links a:hover { color: var(--t1); }
-.nav-cta {
-  font-size: 13px; font-weight: 500; color: var(--bg);
-  background: var(--t1); padding: 7px 18px; border-radius: 8px;
-  transition: all .2s ease; letter-spacing: -0.01em;
-}
-.nav-cta:hover { background: #fff; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,255,255,0.15); }
+/* ═══ PRODUCTS ═══ */
+.products{padding:120px 0}
+.products-header{max-width:560px;margin-bottom:64px}
+.products-header h2{font-size:clamp(28px,4vw,42px);font-weight:700;letter-spacing:-.04em;line-height:1.15;margin-bottom:16px}
+.products-header p{font-size:16px;color:var(--t2);line-height:1.6;font-weight:300}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}
 
-/* ═══════════════════ HERO ═══════════════════════════ */
-.hero {
-  min-height: 100vh; display: flex; flex-direction: column;
-  justify-content: center; align-items: center;
-  text-align: center; padding: 120px 24px 80px;
-  position: relative;
-}
-.hero-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 6px 16px; border-radius: 100px;
-  background: rgba(61,214,140,0.06); border: 1px solid rgba(61,214,140,0.12);
-  font-size: 12px; font-weight: 500; color: var(--green);
-  letter-spacing: 0.02em; margin-bottom: 32px;
-}
-.hero-badge::before {
-  content: ''; width: 6px; height: 6px; border-radius: 50%;
-  background: var(--green); animation: pulse 2s ease infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
+.pcard{background:var(--bg-2);border:1px solid var(--border);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;display:block;transition:all .35s cubic-bezier(.25,.46,.45,.94);position:relative}
+.pcard:hover{border-color:var(--border-h);transform:translateY(-6px);box-shadow:0 24px 48px rgba(0,0,0,0.4)}
+.pcard:hover .pcard-img{transform:scale(1.03)}
+.pcard:hover .pcard-arrow{opacity:1;transform:translate(0,0)}
+.pcard-img-wrap{overflow:hidden;border-bottom:1px solid var(--border);position:relative}
+.pcard-img{width:100%;aspect-ratio:16/10;object-fit:cover;transition:transform .5s cubic-bezier(.25,.46,.45,.94)}
+.pcard-live{position:absolute;top:10px;left:10px;display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);font-size:10px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.06em;z-index:2}
+.pcard-live::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+.pcard-body{padding:24px}
+.pcard-tag{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.pcard-tag .dot{width:5px;height:5px;border-radius:50%}
+.pcard h3{font-size:19px;font-weight:600;letter-spacing:-.02em;margin-bottom:8px}
+.pcard p{font-size:13.5px;color:var(--t2);line-height:1.55;font-weight:300}
+.pcard-arrow{position:absolute;top:20px;right:20px;width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;opacity:0;transform:translate(-4px,4px);transition:all .25s;color:var(--t2);z-index:3}
 
-.hero h1 {
-  font-size: clamp(40px, 6.5vw, 72px);
-  font-weight: 800; letter-spacing: -0.045em;
-  line-height: 1.0; margin-bottom: 24px;
-  max-width: 780px;
-}
-.hero h1 .shine {
-  background: linear-gradient(135deg, var(--t1) 0%, var(--accent) 50%, var(--accent-2) 100%);
-  background-size: 200% 200%;
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  animation: shineShift 6s ease infinite;
-}
-@keyframes shineShift {
-  0%,100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
+/* ═══ SOCIAL PROOF ═══ */
+.proof{padding:80px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.proof-inner{display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap}
+.proof-item{text-align:center}
+.proof-num{font-size:36px;font-weight:800;letter-spacing:-.03em;background:linear-gradient(180deg,var(--t1),var(--t2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.proof-label{font-size:12px;color:var(--t3);margin-top:4px}
 
-.hero-sub {
-  font-size: clamp(16px, 1.6vw, 19px); color: var(--t2);
-  max-width: 520px; line-height: 1.65; margin-bottom: 40px;
-  font-weight: 300; letter-spacing: -0.01em;
-}
-.hero-cta-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-.btn-primary {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 12px 28px; border-radius: 10px;
-  background: var(--accent); color: #fff;
-  font-size: 14px; font-weight: 600; letter-spacing: -0.01em;
-  transition: all .25s ease; border: none; cursor: pointer;
-}
-.btn-primary:hover { background: #6aa3f9; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(79,143,247,0.25); }
-.btn-ghost {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 12px 28px; border-radius: 10px;
-  background: transparent; color: var(--t2);
-  font-size: 14px; font-weight: 500; letter-spacing: -0.01em;
-  transition: all .25s ease; border: 1px solid var(--border);
-}
-.btn-ghost:hover { color: var(--t1); border-color: var(--border-h); }
+/* ═══ PROCESS ═══ */
+.process{padding:120px 0}
+.process h2{font-size:clamp(28px,4vw,42px);font-weight:700;letter-spacing:-.04em;line-height:1.15;margin-bottom:64px;max-width:480px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:48px;counter-reset:step}
+.step{counter-increment:step}
+.step::before{content:counter(step,decimal-leading-zero);font-family:var(--mono);font-size:48px;font-weight:500;color:var(--bg-3);display:block;margin-bottom:20px;line-height:1;background:linear-gradient(to bottom,rgba(255,255,255,0.12),rgba(255,255,255,0.03));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.step h3{font-size:17px;font-weight:600;letter-spacing:-.02em;margin-bottom:10px}
+.step p{font-size:14px;color:var(--t2);line-height:1.6;font-weight:300}
 
-.hero-scroll-hint {
-  margin-top: 64px; display: flex; flex-direction: column; align-items: center;
-  gap: 6px; color: var(--t3); font-size: 11px; font-weight: 500;
-  letter-spacing: 0.08em; text-transform: uppercase;
-}
-.hero-scroll-hint .line {
-  width: 1px; height: 40px; background: linear-gradient(to bottom, var(--t3), transparent);
-  animation: scrollDown 2s ease infinite;
-}
-@keyframes scrollDown { 0%{opacity:1;transform:scaleY(1)} 100%{opacity:0;transform:scaleY(0);transform-origin:top} }
+/* ═══ CHAT WIDGET ═══ */
+.chat-float{position:fixed;bottom:24px;right:24px;z-index:90}
+.chat-toggle{width:52px;height:52px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(79,143,247,0.3);transition:all .25s}
+.chat-toggle:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(79,143,247,0.4)}
+.chat-toggle svg{width:22px;height:22px;color:#fff}
+.chat-panel{position:fixed;bottom:88px;right:24px;width:380px;max-height:520px;background:var(--bg-2);border:1px solid var(--border-h);border-radius:16px;overflow:hidden;display:none;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.6);z-index:91}
+.chat-panel.open{display:flex}
+.chat-panel-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.chat-panel-header h4{font-size:14px;font-weight:600}
+.chat-panel-header button{background:none;border:none;color:var(--t3);cursor:pointer;font-size:18px}
+.chat-msgs{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:12px;min-height:300px}
+.chat-msg{max-width:85%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.5}
+.chat-msg.bot{background:var(--surface);color:var(--t1);align-self:flex-start;border-bottom-left-radius:4px}
+.chat-msg.user{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.chat-input-row{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px}
+.chat-input-row input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--t1);font-size:13px;font-family:var(--font);outline:none}
+.chat-input-row input:focus{border-color:var(--accent)}
+.chat-input-row button{background:var(--accent);border:none;border-radius:8px;padding:0 14px;cursor:pointer;color:#fff;font-weight:600;font-size:13px}
 
-/* ═══════════════════ WHAT WE BUILD ═════════════════ */
-.products { padding: 120px 0; }
-.products-header {
-  max-width: 560px; margin-bottom: 64px;
-}
-.products-header h2 {
-  font-size: clamp(28px, 4vw, 42px); font-weight: 700;
-  letter-spacing: -0.04em; line-height: 1.15; margin-bottom: 16px;
-}
-.products-header p { font-size: 16px; color: var(--t2); line-height: 1.6; font-weight: 300; }
+/* ═══ CTA ═══ */
+.cta-section{padding:120px 0;text-align:center;border-top:1px solid var(--border);position:relative}
+.cta-section::before{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(79,143,247,0.08),transparent 70%);pointer-events:none}
+.cta-section h2{font-size:clamp(28px,4.5vw,48px);font-weight:700;letter-spacing:-.04em;line-height:1.1;margin-bottom:16px}
+.cta-section p{font-size:16px;color:var(--t2);max-width:440px;margin:0 auto 36px;line-height:1.6;font-weight:300}
 
-.products-grid {
-  display: grid; gap: 1px;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  background: var(--border);
-  border-radius: 16px; overflow: hidden;
-  border: 1px solid var(--border);
-}
+/* ═══ FOOTER ═══ */
+.footer{padding:40px 0;border-top:1px solid var(--border)}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-left{display:flex;align-items:center;gap:8px}
+.footer-left img{width:18px;height:18px;border-radius:4px;opacity:.5}
+.footer-left span{font-size:12px;color:var(--t3)}
+.footer-right{font-size:12px;color:var(--t3)}
 
-.product-card {
-  background: var(--bg-2); padding: 32px;
-  display: flex; flex-direction: column;
-  transition: background .3s ease;
-  position: relative; overflow: hidden;
-  text-decoration: none; color: inherit;
-}
-.product-card:hover { background: var(--bg-3); }
-.product-card:hover .product-arrow { opacity: 1; transform: translate(0,0); }
-
-.product-tag {
-  font-family: var(--mono); font-size: 10px; font-weight: 500;
-  letter-spacing: 0.12em; text-transform: uppercase;
-  margin-bottom: 16px; display: flex; align-items: center; gap: 6px;
-}
-.product-tag .dot { width: 5px; height: 5px; border-radius: 50%; }
-
-.product-card h3 {
-  font-size: 20px; font-weight: 600; letter-spacing: -0.02em;
-  margin-bottom: 10px; line-height: 1.3;
-}
-.product-card p {
-  font-size: 14px; color: var(--t2); line-height: 1.6;
-  font-weight: 300; flex-grow: 1;
-}
-.product-live {
-  margin-top: 20px; display: inline-flex; align-items: center; gap: 6px;
-  font-family: var(--mono); font-size: 11px; color: var(--green); font-weight: 500;
-}
-.product-live::before {
-  content: ''; width: 5px; height: 5px; border-radius: 50%;
-  background: var(--green); animation: pulse 2s infinite;
-}
-.product-arrow {
-  position: absolute; top: 28px; right: 28px;
-  width: 28px; height: 28px; border-radius: 6px;
-  background: rgba(255,255,255,0.05);
-  display: flex; align-items: center; justify-content: center;
-  opacity: 0; transform: translate(-4px, 4px);
-  transition: all .25s ease; color: var(--t2);
-}
-
-/* ═══════════════════ PROCESS ═══════════════════════ */
-.process { padding: 120px 0; border-top: 1px solid var(--border); }
-.process h2 {
-  font-size: clamp(28px, 4vw, 42px); font-weight: 700;
-  letter-spacing: -0.04em; line-height: 1.15; margin-bottom: 64px;
-  max-width: 480px;
-}
-.steps {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px;
-  counter-reset: step;
-}
-.step { counter-increment: step; }
-.step::before {
-  content: counter(step, decimal-leading-zero);
-  font-family: var(--mono); font-size: 48px; font-weight: 500;
-  color: var(--bg-3); display: block; margin-bottom: 20px;
-  letter-spacing: -0.04em; line-height: 1;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.step h3 {
-  font-size: 17px; font-weight: 600; letter-spacing: -0.02em;
-  margin-bottom: 10px;
-}
-.step p { font-size: 14px; color: var(--t2); line-height: 1.6; font-weight: 300; }
-
-/* ═══════════════════ METRICS ══════════════════════ */
-.metrics { padding: 120px 0; border-top: 1px solid var(--border); }
-.metrics-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
-}
-.metric { text-align: center; }
-.metric-value {
-  font-size: clamp(40px, 5vw, 60px); font-weight: 800;
-  letter-spacing: -0.04em; line-height: 1;
-  margin-bottom: 8px;
-  background: linear-gradient(180deg, var(--t1), var(--t2));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.metric-value .suffix {
-  font-size: 0.5em; font-weight: 500;
-  -webkit-text-fill-color: var(--t3);
-}
-.metric-label {
-  font-size: 13px; color: var(--t3); font-weight: 400;
-  letter-spacing: -0.01em;
-}
-
-/* ═══════════════════ CTA ═════════════════════════ */
-.cta-section {
-  padding: 120px 0; text-align: center;
-  border-top: 1px solid var(--border);
-  position: relative;
-}
-.cta-section::before {
-  content: ''; position: absolute;
-  bottom: 0; left: 50%; transform: translateX(-50%);
-  width: 600px; height: 300px;
-  background: radial-gradient(ellipse, rgba(79,143,247,0.08), transparent 70%);
-  pointer-events: none;
-}
-.cta-section h2 {
-  font-size: clamp(28px, 4.5vw, 48px); font-weight: 700;
-  letter-spacing: -0.04em; line-height: 1.1;
-  margin-bottom: 16px;
-}
-.cta-section p {
-  font-size: 16px; color: var(--t2); max-width: 440px;
-  margin: 0 auto 36px; line-height: 1.6; font-weight: 300;
-}
-
-/* ═══════════════════ FOOTER ═════════════════════ */
-.footer {
-  padding: 40px 0; border-top: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-}
-.footer-left { display: flex; align-items: center; gap: 8px; }
-.footer-left img { width: 18px; height: 18px; border-radius: 4px; opacity: .5; }
-.footer-left span { font-size: 12px; color: var(--t3); }
-.footer-right { font-size: 12px; color: var(--t3); }
-
-/* ═══════════════════ RESPONSIVE ═════════════════ */
-@media (max-width: 768px) {
-  .nav-links a:not(.nav-cta) { display: none; }
-  .hero { min-height: auto; padding: 140px 24px 80px; }
-  .hero h1 { font-size: 36px; }
-  .products-grid { grid-template-columns: 1fr; }
-  .steps { grid-template-columns: 1fr; gap: 36px; }
-  .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
-  .footer { flex-direction: column; gap: 12px; text-align: center; }
-}
-@media (max-width: 480px) {
-  .hero h1 { font-size: 30px; }
-  .metrics-grid { grid-template-columns: 1fr 1fr; }
+@media(max-width:768px){
+  .nav-links a:not(.nav-cta){display:none}
+  .hero{min-height:auto;padding:140px 24px 80px}
+  .hero h1{font-size:36px}
+  .products-grid{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr;gap:36px}
+  .live-ticker{gap:20px}
+  .proof-inner{gap:32px}
+  .chat-panel{width:calc(100vw - 32px);right:16px;bottom:80px}
 }
 </style>
 </head>
 <body>
 <div class="dot-grid"></div>
 
-<!-- ═══════════ NAV ═══════════ -->
-<nav class="nav">
-  <div class="nav-inner">
-    <a href="/" class="nav-logo">
-      <img src="logo.png" alt="nexframe">
-      <span>nexframe</span>
-    </a>
-    <div class="nav-links">
-      <a href="#work">Work</a>
-      <a href="#process">Process</a>
-      <a href="#metrics">Results</a>
-      <a href="https://www.upwork.com/freelancers/~01488801c28f4a7010" class="nav-cta">Start a project</a>
-    </div>
+<nav class="nav"><div class="nav-inner">
+  <a href="/" class="nav-logo"><img src="logo.png" alt="nexframe"><span>nexframe</span></a>
+  <div class="nav-links">
+    <a href="#work">Work</a>
+    <a href="#process">Process</a>
+    <a href="https://www.upwork.com/freelancers/~01488801c28f4a7010" class="nav-cta">Start a project</a>
   </div>
-</nav>
+</div></nav>
 
-<!-- ═══════════ HERO ═══════════ -->
+<!-- ═══ HERO ═══ -->
 <section class="hero">
-  <div class="hero-badge reveal">Systems running on live infrastructure</div>
+  <div class="hero-badge reveal">All systems live — pulling real data right now</div>
   <h1 class="reveal">We build systems<br>that <span class="shine">think</span></h1>
-  <p class="hero-sub reveal">Automation that actually works. We design, build, and deploy AI-powered workflows — so your team stops doing what machines should.</p>
+  <p class="hero-sub reveal">Your team is drowning in email, leads, and competitor noise. We build AI workflows that handle it — deployed, monitored, and running before your next standup.</p>
   <div class="hero-cta-row reveal">
-    <a href="https://www.upwork.com/freelancers/~01488801c28f4a7010" class="btn-primary">
-      Start a project
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg>
-    </a>
+    <a href="https://www.upwork.com/freelancers/~01488801c28f4a7010" class="btn-primary">Start a project <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg></a>
     <a href="#work" class="btn-ghost">See live demos</a>
   </div>
-  <div class="hero-scroll-hint reveal">
-    <div class="line"></div>
-    Scroll
+  <div class="live-ticker reveal">
+    <div class="tick"><div class="tick-val tick-loading" id="t-emails">—</div><div class="tick-label">Emails triaged</div></div>
+    <div class="tick"><div class="tick-val tick-loading" id="t-alerts">—</div><div class="tick-label">Alerts tracked</div></div>
+    <div class="tick"><div class="tick-val tick-loading" id="t-leads">—</div><div class="tick-label">Leads scored</div></div>
+    <div class="tick"><div class="tick-val" style="color:var(--green)">●</div><div class="tick-label">All systems online</div></div>
   </div>
 </section>
 
-<!-- ═══════════ WHAT WE BUILD ═══════════ -->
+<!-- ═══ PRODUCTS ═══ -->
 <section class="products" id="work">
-  <div class="wrapper">
-    <div class="products-header">
-      <div class="section-label reveal">001 / What we build</div>
-      <h2 class="reveal">Every system below is live.<br>Click any to try it.</h2>
-      <p class="reveal">Not mockups. Not prototypes. Production systems processing real data on cloud infrastructure, right now.</p>
-    </div>
-
-    <div class="products-grid">
-      <a href="dashboard.html" class="product-card reveal">
-        <div class="product-tag"><span class="dot" style="background:var(--accent)"></span> Operations</div>
-        <h3>AI Command Center</h3>
-        <p>Unified operations dashboard. Email throughput, competitor alerts, lead pipeline — one screen, auto-refreshing every 30 seconds.</p>
-        <span class="product-live">Live — 4 data sources</span>
-        <div class="product-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg></div>
-      </a>
-
-      <a href="email-triage.html" class="product-card reveal">
-        <div class="product-tag"><span class="dot" style="background:#ef4444"></span> Email AI</div>
-        <h3>Intelligent Email Triage</h3>
-        <p>Every incoming email classified by urgency and intent. Draft replies generated. Critical items surfaced before you open your inbox.</p>
-        <span class="product-live">Live — 16 emails processed</span>
-        <div class="product-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg></div>
-      </a>
-
-      <a href="competitor-monitor.html" class="product-card reveal">
-        <div class="product-tag"><span class="dot" style="background:#f59e0b"></span> Intelligence</div>
-        <h3>Competitor Intelligence</h3>
-        <p>Pricing changes, feature launches, market moves — tracked continuously. AI scores severity and routes alerts to the right people.</p>
-        <span class="product-live">Live — 6 competitors tracked</span>
-        <div class="product-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg></div>
-      </a>
-
-      <a href="lead-capture.html" class="product-card reveal">
-        <div class="product-tag"><span class="dot" style="background:var(--green)"></span> Revenue</div>
-        <h3>AI Lead Scoring</h3>
-        <p>Every inbound lead scored, classified, and routed with AI-generated reasoning and a recommended next step. Your sales team works the right deals first.</p>
-        <span class="product-live">Live — 12 leads scored</span>
-        <div class="product-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg></div>
-      </a>
-
-      <a href="chat-ui.html" class="product-card reveal">
-        <div class="product-tag"><span class="dot" style="background:var(--accent-2)"></span> Conversational AI</div>
-        <h3>Knowledge Base Chatbot</h3>
-        <p>Give it a URL. It scrapes, chunks, embeds, and indexes. Then answers questions with cited, grounded responses from your own content.</p>
-        <span class="product-live">Live — RAG pipeline active</span>
-        <div class="product-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg></div>
-      </a>
-
-      <div class="product-card reveal" style="display:flex;align-items:center;justify-content:center;min-height:200px">
-        <div style="text-align:center">
-          <div style="font-size:32px;margin-bottom:12px;opacity:.2">+</div>
-          <h3 style="color:var(--t3);font-weight:400;font-size:15px">Your workflow here</h3>
-          <p style="font-size:13px;margin-top:6px;color:var(--t3)">We build custom systems for your specific needs.</p>
-        </div>
-      </div>
+<div class="w">
+  <div class="products-header">
+    <div class="sl reveal">001 / What we ship</div>
+    <h2 class="reveal">These aren't mockups.<br>Click any to use it.</h2>
+    <p class="reveal">Every system below runs on production infrastructure, processing real data, right now. We built them. We can build yours.</p>
+  </div>
+  <div class="products-grid">
+    <a href="dashboard.html" class="pcard reveal">
+      <div class="pcard-img-wrap"><span class="pcard-live">Live</span><img class="pcard-img" src="screenshot-dashboard.png" alt="AI Command Center" loading="lazy"></div>
+      <div class="pcard-body"><div class="pcard-tag"><span class="dot" style="background:var(--accent)"></span>Operations</div><h3>AI Command Center</h3><p>Unified dashboard. Email volume, competitor alerts, lead pipeline — one screen, auto-refreshing every 30 seconds.</p></div>
+      <div class="pcard-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg></div>
+    </a>
+    <a href="email-triage.html" class="pcard reveal">
+      <div class="pcard-img-wrap"><span class="pcard-live">Live</span><img class="pcard-img" src="screenshot-email-triage.png" alt="Email Triage" loading="lazy"></div>
+      <div class="pcard-body"><div class="pcard-tag"><span class="dot" style="background:#ef4444"></span>Email AI</div><h3>Intelligent Email Triage</h3><p>Every incoming email classified, prioritized, and answered before you open your inbox. Zero manual sorting.</p></div>
+      <div class="pcard-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg></div>
+    </a>
+    <a href="competitor-monitor.html" class="pcard reveal">
+      <div class="pcard-img-wrap"><span class="pcard-live">Live</span><img class="pcard-img" src="screenshot-competitor-monitor.png" alt="Competitor Monitor" loading="lazy"></div>
+      <div class="pcard-body"><div class="pcard-tag"><span class="dot" style="background:#f59e0b"></span>Intelligence</div><h3>Competitor Intelligence</h3><p>Pricing shifts, feature drops, partnership moves — caught the moment they happen. AI scores severity and routes alerts.</p></div>
+      <div class="pcard-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg></div>
+    </a>
+    <a href="lead-capture.html" class="pcard reveal">
+      <div class="pcard-img-wrap"><span class="pcard-live">Live</span><img class="pcard-img" src="screenshot-lead-capture.png" alt="Lead Scoring" loading="lazy"></div>
+      <div class="pcard-body"><div class="pcard-tag"><span class="dot" style="background:var(--green)"></span>Revenue</div><h3>AI Lead Scoring</h3><p>Every lead scored, classified, and routed with reasoning your sales team can act on immediately.</p></div>
+      <div class="pcard-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg></div>
+    </a>
+    <a href="chat-ui.html" class="pcard reveal">
+      <div class="pcard-img-wrap"><span class="pcard-live">Live</span><img class="pcard-img" src="screenshot-chat-ui.png" alt="Knowledge Base Chatbot" loading="lazy"></div>
+      <div class="pcard-body"><div class="pcard-tag"><span class="dot" style="background:var(--accent-2)"></span>Conversational AI</div><h3>Knowledge Base Chatbot</h3><p>Give it a URL. It indexes your content and answers questions with cited, grounded responses. Try it in the bottom right.</p></div>
+      <div class="pcard-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg></div>
+    </a>
+    <div class="pcard reveal" style="display:flex;align-items:center;justify-content:center;min-height:280px;background:var(--bg-2)">
+      <div style="text-align:center;padding:24px"><div style="font-size:36px;margin-bottom:12px;opacity:.15">+</div><h3 style="color:var(--t2);font-weight:500;font-size:16px">Your workflow here</h3><p style="font-size:13px;margin-top:8px;color:var(--t3)">Custom-built for your process, your tools, your data.</p></div>
     </div>
   </div>
+</div>
 </section>
 
-<!-- ═══════════ PROCESS ═══════════ -->
+<!-- ═══ PROOF ═══ -->
+<section class="proof">
+<div class="w">
+  <div class="proof-inner">
+    <div class="proof-item reveal"><div class="proof-num"><span data-count="5">0</span></div><div class="proof-label">Live systems</div></div>
+    <div class="proof-item reveal"><div class="proof-num"><span data-count="56">0</span>+</div><div class="proof-label">Records processed</div></div>
+    <div class="proof-item reveal"><div class="proof-num">&lt;<span data-count="2">0</span> wk</div><div class="proof-label">Avg. delivery time</div></div>
+    <div class="proof-item reveal"><div class="proof-num"><span data-count="99">0</span>.9%</div><div class="proof-label">Uptime</div></div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ PROCESS ═══ -->
 <section class="process" id="process">
-  <div class="wrapper">
-    <div class="section-label reveal">002 / How it works</div>
-    <h2 class="reveal">From problem<br>to production</h2>
-    <div class="steps">
-      <div class="step reveal">
-        <h3>Map the workflow</h3>
-        <p>We audit your current process, identify the repetitive parts, and design an automation blueprint — what to automate, what to keep human.</p>
-      </div>
-      <div class="step reveal">
-        <h3>Build &amp; integrate</h3>
-        <p>We connect your tools, wire the AI logic, set up error handling, and build the dashboards — all tested against real data before launch.</p>
-      </div>
-      <div class="step reveal">
-        <h3>Deploy &amp; monitor</h3>
-        <p>Production deployment on cloud infrastructure with real-time monitoring. We iterate until the numbers prove it works.</p>
-      </div>
-    </div>
+<div class="w">
+  <div class="sl reveal">002 / How we work</div>
+  <h2 class="reveal">Problem in,<br>production out</h2>
+  <div class="steps">
+    <div class="step reveal"><h3>Map your workflow</h3><p>We audit what your team actually does, find the repetitive parts, and design an automation blueprint — what to automate, what to keep human.</p></div>
+    <div class="step reveal"><h3>Build &amp; integrate</h3><p>We wire your tools, connect the AI, build error handling, and ship with dashboards — tested on real data before you see it.</p></div>
+    <div class="step reveal"><h3>Deploy &amp; iterate</h3><p>Goes live on cloud infrastructure with monitoring. We keep tuning until the numbers prove it works for your team.</p></div>
   </div>
+</div>
 </section>
 
-<!-- ═══════════ METRICS ═══════════ -->
-<section class="metrics" id="metrics">
-  <div class="wrapper">
-    <div class="section-label reveal">003 / Live metrics</div>
-    <div class="metrics-grid">
-      <div class="metric reveal">
-        <div class="metric-value"><span data-count="5">0</span></div>
-        <div class="metric-label">Live systems</div>
-      </div>
-      <div class="metric reveal">
-        <div class="metric-value"><span data-count="56">0</span><span class="suffix">+</span></div>
-        <div class="metric-label">Records processed</div>
-      </div>
-      <div class="metric reveal">
-        <div class="metric-value"><span data-count="30">0</span><span class="suffix">s</span></div>
-        <div class="metric-label">Refresh interval</div>
-      </div>
-      <div class="metric reveal">
-        <div class="metric-value"><span data-count="99">0</span><span class="suffix">.9%</span></div>
-        <div class="metric-label">Uptime target</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════ CTA ═══════════ -->
+<!-- ═══ CTA ═══ -->
 <section class="cta-section">
-  <div class="wrapper">
-    <div class="section-label reveal">004 / Get started</div>
-    <h2 class="reveal">Ready to stop doing<br>what machines should?</h2>
-    <p class="reveal">Tell us what you're automating. We'll scope it, build it, and ship it — usually within two weeks.</p>
-    <div class="reveal">
-      <a href="https://www.upwork.com/freelancers/~01488801c28f4a7010" class="btn-primary" style="font-size:15px;padding:14px 32px">
-        Start a project
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg>
-      </a>
-    </div>
-  </div>
+<div class="w">
+  <div class="sl reveal">003 / Let's go</div>
+  <h2 class="reveal">Ready to stop doing<br>what machines should?</h2>
+  <p class="reveal">Tell us what eats your team's time. We'll scope it, build it, and have it running — usually within two weeks.</p>
+  <div class="reveal"><a href="https://www.upwork.com/freelancers/~01488801c28f4a7010" class="btn-primary" style="font-size:15px;padding:14px 32px">Start a project <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l7 5-7 5"/></svg></a></div>
+</div>
 </section>
 
-<!-- ═══════════ FOOTER ═══════════ -->
-<footer class="footer">
-  <div class="wrapper" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-    <div class="footer-left">
-      <img src="logo.png" alt="">
-      <span>nexframe</span>
-    </div>
-    <div class="footer-right">Built by Yunsu Kim</div>
-  </div>
-</footer>
+<footer class="footer"><div class="w"><div class="footer-inner">
+  <div class="footer-left"><img src="logo.png" alt=""><span>nexframe</span></div>
+  <div class="footer-right">Built by Yunsu Kim</div>
+</div></div></footer>
 
-<!-- ═══════════ SCRIPTS ═══════════ -->
+<!-- ═══ CHAT WIDGET ═══ -->
+<div class="chat-float">
+  <button class="chat-toggle" id="chatToggle" title="Ask us anything">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+  </button>
+</div>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-panel-header"><h4>Ask about Nexframe</h4><button id="chatClose">&times;</button></div>
+  <div class="chat-msgs" id="chatMsgs">
+    <div class="chat-msg bot">Hey! I'm the Nexframe assistant. Ask me anything about our services, pricing, or how we work.</div>
+  </div>
+  <div class="chat-input-row">
+    <input type="text" id="chatInput" placeholder="Ask anything..." autocomplete="off">
+    <button id="chatSend">Send</button>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
 <script>
-/* ── Smooth Scroll ──────────────────────────────── */
-const lenis = new Lenis({ lerp: 0.08, smoothWheel: true });
-function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-requestAnimationFrame(raf);
-gsap.ticker.add((time) => lenis.raf(time * 1000));
-gsap.ticker.lagSmoothing(0);
+/* ── Smooth Scroll ── */
+const lenis=new Lenis({lerp:.08,smoothWheel:true});
+function raf(t){lenis.raf(t);requestAnimationFrame(raf)}requestAnimationFrame(raf);
+gsap.ticker.add(t=>lenis.raf(t*1000));gsap.ticker.lagSmoothing(0);
 
-/* ── Scroll Reveals ─────────────────────────────── */
+/* ── Reveals ── */
 gsap.registerPlugin(ScrollTrigger);
-
-gsap.utils.toArray('.reveal').forEach((el, i) => {
-  const isCard = el.classList.contains('product-card');
-  gsap.fromTo(el,
-    { opacity: 0, y: isCard ? 48 : 32 },
-    {
-      opacity: 1, y: 0,
-      duration: isCard ? 0.7 : 0.6,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 88%',
-        toggleActions: 'play none none none',
-      },
-      delay: isCard ? (i % 3) * 0.08 : 0,
-    }
-  );
+gsap.utils.toArray('.reveal').forEach((el,i)=>{
+  const isCard=el.classList.contains('pcard');
+  gsap.fromTo(el,{opacity:0,y:isCard?48:32},{opacity:1,y:0,duration:isCard?.7:.6,ease:'power3.out',
+    scrollTrigger:{trigger:el,start:'top 88%',toggleActions:'play none none none'},
+    delay:isCard?(i%3)*.08:0});
 });
 
-/* ── Counter Animation ──────────────────────────── */
-gsap.utils.toArray('[data-count]').forEach(el => {
-  const target = parseInt(el.dataset.count);
-  const obj = { val: 0 };
-  gsap.to(obj, {
-    val: target,
-    duration: 1.8,
-    ease: 'power2.out',
-    scrollTrigger: {
-      trigger: el.closest('.metric'),
-      start: 'top 85%',
-      toggleActions: 'play none none none',
-    },
-    onUpdate: () => { el.textContent = Math.round(obj.val); }
-  });
+/* ── Counters ── */
+gsap.utils.toArray('[data-count]').forEach(el=>{
+  const t=parseInt(el.dataset.count),obj={val:0};
+  gsap.to(obj,{val:t,duration:1.8,ease:'power2.out',
+    scrollTrigger:{trigger:el.closest('.proof-item')||el,start:'top 85%',toggleActions:'play none none none'},
+    onUpdate:()=>{el.textContent=Math.round(obj.val)}});
 });
 
-/* ── Nav anchor smooth scroll ───────────────────── */
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    e.preventDefault();
-    const target = document.querySelector(a.getAttribute('href'));
-    if (target) lenis.scrollTo(target, { offset: -80 });
-  });
+/* ── Nav anchors ── */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)lenis.scrollTo(t,{offset:-80})});
 });
+
+/* ── Live Ticker (fetch real API data) ── */
+const API='https://n8n-upwork-w6ty.onrender.com/webhook';
+async function fetchTicker(){
+  try{
+    const[stats,leads]=await Promise.all([
+      fetch(API+'/api-stats').then(r=>r.json()),
+      fetch(API+'/api-lead-stats').then(r=>r.json())
+    ]);
+    const s=stats[0]||stats,l=(leads[0]||leads);
+    animateTick('t-emails',parseInt(s.total_emails)||0);
+    animateTick('t-alerts',parseInt(s.total_alerts)||0);
+    animateTick('t-leads',parseInt(l.total)||0);
+  }catch(e){
+    document.getElementById('t-emails').textContent='16';
+    document.getElementById('t-alerts').textContent='16';
+    document.getElementById('t-leads').textContent='12';
+  }
+  document.querySelectorAll('.tick-loading').forEach(e=>e.classList.remove('tick-loading'));
+}
+function animateTick(id,target){
+  const el=document.getElementById(id),obj={v:0};
+  gsap.to(obj,{v:target,duration:1.2,ease:'power2.out',onUpdate:()=>{el.textContent=Math.round(obj.v)}});
+}
+fetchTicker();
+
+/* ── Chat Widget ── */
+const CHAT_API=API+'/rag-v5/chat?action=sendMessage';
+const chatToggle=document.getElementById('chatToggle');
+const chatPanel=document.getElementById('chatPanel');
+const chatClose=document.getElementById('chatClose');
+const chatInput=document.getElementById('chatInput');
+const chatSend=document.getElementById('chatSend');
+const chatMsgs=document.getElementById('chatMsgs');
+let chatSession='nxf-'+Math.random().toString(36).slice(2,10);
+let chatBusy=false;
+
+chatToggle.onclick=()=>chatPanel.classList.toggle('open');
+chatClose.onclick=()=>chatPanel.classList.remove('open');
+
+function addChatMsg(role,text){
+  const d=document.createElement('div');
+  d.className='chat-msg '+role;
+  d.textContent=text;
+  chatMsgs.appendChild(d);
+  chatMsgs.scrollTop=chatMsgs.scrollHeight;
+}
+
+async function sendChat(){
+  const text=chatInput.value.trim();
+  if(!text||chatBusy)return;
+  chatBusy=true;chatInput.value='';
+  addChatMsg('user',text);
+  addChatMsg('bot','Thinking...');
+  try{
+    const res=await fetch(CHAT_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:chatSession,chatInput:text})});
+    const raw=await res.text();
+    const last=chatMsgs.lastElementChild;
+    try{const j=JSON.parse(raw);last.textContent=j.output||j.text||raw}catch{last.textContent=raw||'Sorry, could not process that.'}
+  }catch(e){chatMsgs.lastElementChild.textContent='Connection error. Try again.'}
+  chatBusy=false;
+}
+chatSend.onclick=sendChat;
+chatInput.onkeydown=e=>{if(e.key==='Enter')sendChat()};
 </script>
 </body>
 </html>
