@@ -73,11 +73,22 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .sc-pip.active{background:rgba(255,255,255,0.08);width:44px}
 .sc-pip.active::after{content:'';position:absolute;left:0;top:0;height:100%;background:var(--accent);border-radius:2px;animation:pipFill 5s linear forwards}
 @keyframes pipFill{from{width:0}to{width:100%}}
-/* Phone mockup */
+/* Phone mockup — iPhone style */
 .sc-phone{flex-shrink:0;width:280px;position:relative}
-.sc-phone-frame{border-radius:32px;overflow:hidden;border:3px solid rgba(255,255,255,0.08);background:#000;box-shadow:0 30px 60px -15px rgba(0,0,0,0.6),0 0 40px var(--accent-glow),inset 0 0 0 1px rgba(255,255,255,0.04);position:relative}
-.sc-phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:100px;height:22px;background:#000;border-radius:0 0 16px 16px;z-index:3}
+.sc-phone-frame{border-radius:40px;overflow:hidden;border:4px solid #2a2a2e;background:#000;
+  box-shadow:0 30px 60px -15px rgba(0,0,0,0.6),0 0 40px var(--accent-glow),
+  inset 0 0 0 1px rgba(255,255,255,0.06),0 0 0 1px rgba(0,0,0,0.8);
+  position:relative}
+/* Dynamic Island */
+.sc-phone-island{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:90px;height:24px;background:#000;border-radius:20px;z-index:5;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,0.04)}
+/* Status bar */
+.sc-phone-status{position:absolute;top:0;left:0;right:0;z-index:4;padding:14px 20px 0;display:flex;justify-content:space-between;align-items:center;font-size:10px;font-weight:600;color:rgba(255,255,255,0.7);font-family:var(--font)}
+.sc-phone-status-r{display:flex;gap:4px;align-items:center}
+.sc-phone-status-r svg{width:14px;height:14px}
 .sc-phone-screen{position:relative;aspect-ratio:9/19.5;overflow:hidden}
+/* Home indicator */
+.sc-phone-home{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:100px;height:4px;background:rgba(255,255,255,0.2);border-radius:4px;z-index:5}
 .sc-phone-slide{position:absolute;inset:0;opacity:0;transition:opacity .5s ease;padding:28px 14px 14px;display:flex;flex-direction:column;gap:8px;background:var(--bg);font-size:10px;overflow:hidden}
 .sc-phone-slide.active{opacity:1}
 /* Mini phone UI components */
@@ -268,7 +279,14 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
     </div>
     <div class="sc-phone">
       <div class="sc-phone-frame">
-        <div class="sc-phone-notch"></div>
+        <div class="sc-phone-island"></div>
+        <div class="sc-phone-status">
+          <span>9:41</span>
+          <span class="sc-phone-status-r">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.24 4.24 0 00-6 0zm-4-4l2 2a7.07 7.07 0 0110 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 4h-3V2h-4v2H7v18h10V4zm-1 16H8V6h8v14z"/><path d="M9 7h6v4H9z" opacity=".6"/></svg>
+          </span>
+        </div>
         <div class="sc-phone-screen" id="scScreen">
           <!-- 0: Command Center -->
           <div class="sc-phone-slide active">
@@ -341,6 +359,7 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
             </div>
           </div>
         </div>
+        <div class="sc-phone-home"></div>
       </div>
     </div>
   </div>
