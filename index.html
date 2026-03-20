@@ -305,12 +305,11 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
 
 /* ── Live Ticker (fetch real API data) ── */
 const API='https://n8n-upwork-w6ty.onrender.com/webhook';
+const _c={get(k){try{const d=JSON.parse(localStorage.getItem('nxf_'+k));if(d&&Date.now()-d.t<300000)return d.v}catch{}return null},set(k,v){try{localStorage.setItem('nxf_'+k,JSON.stringify({v,t:Date.now()}))}catch{}}};
+async function cf(u){const k=u.split('/').pop();const c=_c.get(k);return fetch(u).then(r=>r.json()).then(d=>{_c.set(k,d);return d}).catch(()=>c)}
 async function fetchTicker(){
   try{
-    const[stats,leads]=await Promise.all([
-      fetch(API+'/api-stats').then(r=>r.json()),
-      fetch(API+'/api-lead-stats').then(r=>r.json())
-    ]);
+    const[stats,leads]=await Promise.all([cf(API+'/api-stats'),cf(API+'/api-lead-stats')]);
     const s=stats[0]||stats,l=(leads[0]||leads);
     animateTick('t-emails',parseInt(s.total_emails)||0);
     animateTick('t-alerts',parseInt(s.total_alerts)||0);

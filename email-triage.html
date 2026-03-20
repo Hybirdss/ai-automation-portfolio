@@ -668,6 +668,8 @@ body::before {
 var API_EMAILS = 'https://n8n-upwork-w6ty.onrender.com/webhook/api-emails';
 var API_STATS  = 'https://n8n-upwork-w6ty.onrender.com/webhook/api-stats';
 var REFRESH_SEC = 30;
+var _cache={get:function(k){try{var d=JSON.parse(localStorage.getItem('nxf_'+k));if(d&&Date.now()-d.t<300000)return d.v}catch(e){}return null},set:function(k,v){try{localStorage.setItem('nxf_'+k,JSON.stringify({v:v,t:Date.now()}))}catch(e){}}};
+function cachedFetch(url){var k=url.split('/').pop();var c=_cache.get(k);return fetch(url).then(function(r){return r.json()}).then(function(d){_cache.set(k,d);return d}).catch(function(){return c||[]})}
 
 /* ══════════════════════════════════════════
    STATE
@@ -756,8 +758,7 @@ function fetchAll(cb) {
     if (done === 2) cb(results);
   }
 
-  fetch(API_EMAILS)
-    .then(function(r) { return r.json(); })
+  cachedFetch(API_EMAILS)
     .then(function(data) {
       results.emails = Array.isArray(data) ? data : [];
       finish();
@@ -768,8 +769,7 @@ function fetchAll(cb) {
       finish();
     });
 
-  fetch(API_STATS)
-    .then(function(r) { return r.json(); })
+  cachedFetch(API_STATS)
     .then(function(data) {
       results.stats = Array.isArray(data) ? data[0] : data;
       finish();

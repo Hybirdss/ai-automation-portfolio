@@ -148,6 +148,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <script>
 const API_BASE='https://n8n-upwork-w6ty.onrender.com/webhook';
+// Stale-while-revalidate cache
+const _cache={get(k){try{const d=JSON.parse(localStorage.getItem('nxf_'+k));if(d&&Date.now()-d.t<300000)return d.v}catch{}return null},set(k,v){try{localStorage.setItem('nxf_'+k,JSON.stringify({v,t:Date.now()}))}catch{}}};
+async function cachedFetch(url){const k=url.split('/').pop();const c=_cache.get(k);const p=fetch(url).then(r=>r.json()).then(d=>{_cache.set(k,d);return d}).catch(()=>c||[]);return c||p}
 const statsEl=document.getElementById('stats');
 const emailEl=document.getElementById('emailList');
 const alertEl=document.getElementById('alertList');
@@ -300,9 +303,9 @@ async function loadAll(){
 
   try{
     const [statsRes,emailsRes,alertsRes]=await Promise.all([
-      fetch(API_BASE+'/api-stats').then(r=>r.json()).catch(()=>[{}]),
-      fetch(API_BASE+'/api-emails').then(r=>r.json()).catch(()=>[]),
-      fetch(API_BASE+'/api-alerts').then(r=>r.json()).catch(()=>[])
+      cachedFetch(API_BASE+'/api-stats').catch(()=>[{}]),
+      cachedFetch(API_BASE+'/api-emails').catch(()=>[]),
+      cachedFetch(API_BASE+'/api-alerts').catch(()=>[])
     ]);
     renderStats(statsRes);renderEmails(emailsRes);renderAlerts(alertsRes);
     lastFetch=Date.now();

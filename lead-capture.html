@@ -977,6 +977,8 @@
   const API_LEADS  = 'https://n8n-upwork-w6ty.onrender.com/webhook/api-leads';
   const API_STATS  = 'https://n8n-upwork-w6ty.onrender.com/webhook/api-lead-stats';
   const REFRESH_MS = 30_000;
+  const _cache={get(k){try{const d=JSON.parse(localStorage.getItem('nxf_'+k));if(d&&Date.now()-d.t<300000)return d.v}catch{}return null},set(k,v){try{localStorage.setItem('nxf_'+k,JSON.stringify({v,t:Date.now()}))}catch{}}};
+  async function cachedFetch(url){const k=url.split('/').pop();const c=_cache.get(k);return fetch(url).then(r=>r.json()).then(d=>{_cache.set(k,d);return d}).catch(()=>c||[])}
 
   // ── State ──────────────────────────────────────────────────────
   let allLeads     = [];
@@ -1435,23 +1437,20 @@
     showSkeleton();
 
     try {
-      const [leadsRes, statsRes] = await Promise.allSettled([
-        fetch(API_LEADS, { signal: AbortSignal.timeout(15000) }),
-        fetch(API_STATS, { signal: AbortSignal.timeout(15000) }),
+      const [leadsData, statsData] = await Promise.all([
+        cachedFetch(API_LEADS),
+        cachedFetch(API_STATS),
       ]);
 
-      if (leadsRes.status !== 'fulfilled' || !leadsRes.value.ok) {
+      allLeads = Array.isArray(leadsData) ? leadsData : [];
+      if (allLeads.length === 0) {
         showError('Could not load leads. API server may be starting up. Please wait and refresh.');
         return;
       }
 
-      const raw = await leadsRes.value.json();
-      allLeads = Array.isArray(raw) ? raw : [];
-
       let stats = null;
-      if (statsRes.status === 'fulfilled' && statsRes.value.ok) {
-        const s = await statsRes.value.json();
-        stats = Array.isArray(s) ? s[0] : s;
+      if (statsData) {
+        stats = Array.isArray(statsData) ? statsData[0] : statsData;
       }
 
       renderStats(stats, allLeads);

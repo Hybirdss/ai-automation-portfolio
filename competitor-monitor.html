@@ -364,6 +364,8 @@ body{overflow-x:hidden}
 var API_ALERTS  = 'https://n8n-upwork-w6ty.onrender.com/webhook/api-alerts';
 var API_STATS   = 'https://n8n-upwork-w6ty.onrender.com/webhook/api-stats';
 var REFRESH_MS  = 30000;
+var _cache={get:function(k){try{var d=JSON.parse(localStorage.getItem('nxf_'+k));if(d&&Date.now()-d.t<300000)return d.v}catch(e){}return null},set:function(k,v){try{localStorage.setItem('nxf_'+k,JSON.stringify({v:v,t:Date.now()}))}catch(e){}}};
+function cachedFetch(url){var k=url.split('/').pop();var c=_cache.get(k);return fetch(url).then(function(r){return r.json()}).then(function(d){_cache.set(k,d);return d}).catch(function(){return c||[]})}
 
 var SEV_COLOR = { critical:'#ef4444', high:'#f59e0b', medium:'#3b82f6', low:'#71717a' };
 var SEV_GLOW  = { critical:'rgba(239,68,68,0.18)', high:'rgba(245,158,11,0.14)', medium:'rgba(59,130,246,0.14)', low:'rgba(113,113,122,0.08)' };
@@ -806,8 +808,8 @@ function loadAll() {
   showSkeleton();
 
   Promise.all([
-    fetch(API_STATS).then(function(r) { return r.json(); }).catch(function() { return [{}]; }),
-    fetch(API_ALERTS).then(function(r) { return r.json(); }).catch(function() { return []; }),
+    cachedFetch(API_STATS).catch(function() { return [{}]; }),
+    cachedFetch(API_ALERTS).catch(function() { return []; }),
   ]).then(function(res) {
     var stats  = res[0];
     var alerts = Array.isArray(res[1]) ? res[1] : [];
