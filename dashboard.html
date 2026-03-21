@@ -25,9 +25,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .topbar-logo{display:flex;align-items:center;gap:10px}
 .topbar-logo svg{width:20px;height:20px;color:var(--blue)}
 .topbar-logo span{font-size:14px;font-weight:600;letter-spacing:-.02em}
+.topbar-badge{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#818cf8;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.2);padding:3px 8px;border-radius:4px}
+.topbar-live{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--green);font-weight:500}
+.topbar-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse-live 2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse-live{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(48,209,88,.4)}50%{opacity:.7;box-shadow:0 0 0 4px rgba(48,209,88,0)}}
 .topbar-right{display:flex;align-items:center;gap:16px}
 .topbar-time{font-family:var(--mono);font-size:12px;color:var(--t3);letter-spacing:.02em}
-.topbar-updated{font-size:11px;color:var(--t3);opacity:.7}
+.topbar-updated{font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:.03em}
 .topbar-refresh{width:30px;height:30px;border-radius:8px;background:var(--bg2);border:1px solid var(--border);color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s ease}
 .topbar-refresh:hover{background:var(--bg3);border-color:var(--border-h);color:var(--t1)}
 .topbar-refresh:active{transform:scale(.93)}
@@ -38,24 +42,41 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .content{max-width:1280px;margin:0 auto;padding:24px 28px 40px}
 
 /* ── Stats ── */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
-.stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;position:relative;overflow:hidden;animation:fadeUp .4s var(--ease) both}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;position:relative;overflow:hidden;animation:fadeUp .4s var(--ease) both;cursor:default;transition:border-color .2s ease,transform .2s ease}
+.stat:hover{border-color:rgba(255,255,255,.1);transform:translateY(-1px)}
 .stat:nth-child(1){animation-delay:.05s}.stat:nth-child(2){animation-delay:.1s}.stat:nth-child(3){animation-delay:.15s}.stat:nth-child(4){animation-delay:.2s}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+/* top-border accent line */
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--stat-color,rgba(90,200,250,1)),transparent);opacity:.65}
 .stat-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
 .stat-icon svg{width:16px;height:16px}
-.stat-num{font-size:32px;font-weight:700;letter-spacing:-.04em;line-height:1;margin-bottom:4px;font-variant-numeric:tabular-nums}
-.stat-label{font-size:12px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.05em}
-.stat-accent{position:absolute;top:0;right:0;width:80px;height:80px;border-radius:50%;filter:blur(40px);opacity:.12;pointer-events:none}
+.stat-num{font-family:var(--mono);font-size:2.4rem;font-weight:500;letter-spacing:-.03em;line-height:1;margin-bottom:4px;font-variant-numeric:tabular-nums;color:var(--t1)}
+.stat-label{font-size:12px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.stat-sub{font-size:12px;color:var(--t3);margin-top:2px}
+.stat-accent{position:absolute;top:-20px;right:-20px;width:100px;height:100px;border-radius:50%;filter:blur(40px);opacity:.12;pointer-events:none}
+/* Category bar */
+.cat-bar-section{margin-bottom:20px;animation:fadeUp .4s var(--ease) .22s both}
+.cat-bar-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cat-bar-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--t3)}
+.cat-bar-track{display:flex;height:6px;border-radius:3px;overflow:hidden;gap:2px;background:var(--bg3)}
+.cat-segment{height:100%;border-radius:2px;transition:width .8s cubic-bezier(.4,0,.2,1);min-width:0;cursor:default}
+.cat-segment:hover{filter:brightness(1.25)}
+.cat-labels{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px}
+.cat-item{display:flex;align-items:center;gap:6px;cursor:default}
+.cat-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.cat-name{font-size:12px;color:var(--t2);font-weight:500}
+.cat-count{font-family:var(--mono);font-size:11px;color:var(--t3)}
 
 /* ── Panels ── */
 .panels{display:grid;grid-template-columns:1.5fr 1fr;gap:12px}
 .panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;animation:fadeUp .45s var(--ease) .25s both}
 .panel:nth-child(2){animation-delay:.3s}
 .panel-hdr{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.panel-title{font-size:13px;font-weight:600;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
-.panel-title svg{width:14px;height:14px;color:var(--t3)}
-.panel-badge{font-family:var(--mono);font-size:10px;background:var(--bg3);color:var(--t3);padding:3px 8px;border-radius:20px;border:1px solid var(--border)}
+.panel-title{font-size:13px;font-weight:600;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;color:var(--t1)}
+.panel-title svg{width:14px;height:14px;color:var(--blue)}
+.panel-title.alerts svg{color:var(--orange)}
+.panel-badge{font-family:var(--mono);font-size:10px;background:var(--bg3);color:var(--t2);padding:3px 10px;border-radius:20px;border:1px solid var(--border);font-weight:500}
 .panel-body{max-height:520px;overflow-y:auto}
 .panel-body::-webkit-scrollbar{width:4px}.panel-body::-webkit-scrollbar-track{background:transparent}.panel-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
 
@@ -110,8 +131,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div class="topbar-logo">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26z"/></svg>
     <span>AI Command Center</span>
+    <span class="topbar-badge">AI</span>
   </div>
   <div class="topbar-right">
+    <span class="topbar-live">Live</span>
     <span class="topbar-updated" id="updated"></span>
     <span class="topbar-time" id="clock"></span>
     <button class="topbar-refresh" id="refreshBtn" title="Refresh">
@@ -122,6 +145,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <div class="content">
   <div class="stats" id="stats"></div>
+  <div class="cat-bar-section" id="catBarSection" style="display:none">
+    <div class="cat-bar-hdr">
+      <span class="cat-bar-title">Category Breakdown</span>
+    </div>
+    <div class="cat-bar-track" id="catBarTrack"></div>
+    <div class="cat-labels" id="catLabels"></div>
+  </div>
   <div class="panels">
     <div class="panel">
       <div class="panel-hdr">
@@ -135,7 +165,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div class="panel">
       <div class="panel-hdr">
-        <span class="panel-title">
+        <span class="panel-title alerts">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           Competitor Monitor
         </span>
@@ -206,16 +236,17 @@ function renderSkeleton(container,n){
 function renderStats(data){
   const s=data[0]||{};
   const items=[
-    {label:'Total Emails',key:'total_emails',color:'#5ac8fa',icon:'<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>'},
-    {label:'Critical Emails',key:'critical_emails',color:'#ff453a',icon:'<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>'},
-    {label:'Competitor Alerts',key:'total_alerts',color:'#ff9f0a',icon:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'},
-    {label:'High Priority',key:'high_alerts',color:'#30d158',icon:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'}
+    {label:'Total Emails',sub:'emails classified',key:'total_emails',color:'#5ac8fa',icon:'<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>'},
+    {label:'Critical Emails',sub:'require immediate action',key:'critical_emails',color:'#ff453a',icon:'<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>'},
+    {label:'Competitor Alerts',sub:'changes detected',key:'total_alerts',color:'#ff9f0a',icon:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'},
+    {label:'High Priority',sub:'alerts need attention',key:'high_alerts',color:'#30d158',icon:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'}
   ];
   statsEl.textContent='';
   items.forEach((it,i)=>{
     const card=document.createElement('div');
     card.className='stat';
     card.style.animationDelay=(i*0.05+0.05)+'s';
+    card.style.setProperty('--stat-color',it.color);
     const iconDiv=document.createElement('div');
     iconDiv.className='stat-icon';
     iconDiv.style.background=it.color+'18';
@@ -229,6 +260,10 @@ function renderStats(data){
     labelEl.className='stat-label';
     labelEl.textContent=it.label;
     card.appendChild(labelEl);
+    const subEl=document.createElement('div');
+    subEl.className='stat-sub';
+    subEl.textContent=it.sub;
+    card.appendChild(subEl);
     const accent=document.createElement('div');
     accent.className='stat-accent';
     accent.style.background=it.color;
@@ -238,9 +273,46 @@ function renderStats(data){
   });
 }
 
+const CAT_COLORS={
+  'Technical':'#818cf8','Billing':'#38bdf8','Sales':'#34d399',
+  'Newsletter':'#fb923c','Support':'#f472b6','Legal':'#e879f9',
+  'Finance':'#facc15','HR':'#a78bfa','Internal':'#6ee7b7',
+  'Feature Request':'#67e8f9','Other':'#6e6e73'
+};
+
+function renderCategoryBar(data){
+  const section=document.getElementById('catBarSection');
+  const track=document.getElementById('catBarTrack');
+  const labels=document.getElementById('catLabels');
+  if(!data.length){section.style.display='none';return;}
+  const counts={};
+  data.forEach(e=>{const c=e.category||'Other';counts[c]=(counts[c]||0)+1;});
+  const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  const total=data.length;
+  track.textContent='';labels.textContent='';
+  sorted.forEach(([cat,n])=>{
+    const pct=(n/total*100).toFixed(1);
+    const color=CAT_COLORS[cat]||CAT_COLORS['Other'];
+    const seg=document.createElement('div');
+    seg.className='cat-segment';
+    seg.style.width='0%';seg.style.background=color;
+    seg.title=cat+': '+n;
+    track.appendChild(seg);
+    setTimeout(()=>seg.style.width=pct+'%',50);
+    const item=document.createElement('div');item.className='cat-item';
+    const dot=document.createElement('span');dot.className='cat-dot';dot.style.background=color;
+    const name=document.createElement('span');name.className='cat-name';name.textContent=cat;
+    const count=document.createElement('span');count.className='cat-count';count.textContent=n;
+    item.appendChild(dot);item.appendChild(name);item.appendChild(count);
+    labels.appendChild(item);
+  });
+  section.style.display='block';
+}
+
 function renderEmails(data){
   emailEl.textContent='';
   emailCountEl.textContent=data.length+' items';
+  renderCategoryBar(data);
   if(!data.length){emailEl.insertAdjacentHTML('beforeend','<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><div>No emails yet</div></div>');return}
   data.forEach(e=>{
     const row=document.createElement('div');
