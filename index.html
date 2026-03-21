@@ -89,31 +89,31 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .sc-phone-screen{position:relative;aspect-ratio:9/19.5;overflow:hidden}
 /* Home indicator */
 .sc-phone-home{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:100px;height:4px;background:rgba(255,255,255,0.2);border-radius:4px;z-index:5}
-.sc-phone-slide{position:absolute;inset:0;opacity:0;transition:opacity .5s ease;padding:28px 14px 14px;display:flex;flex-direction:column;gap:8px;background:var(--bg);font-size:10px;overflow:hidden}
+.sc-phone-slide{position:absolute;inset:0;opacity:0;transition:opacity .5s ease;padding:32px 14px 20px;display:flex;flex-direction:column;gap:6px;background:var(--bg);font-size:10px;overflow:hidden}
 .sc-phone-slide.active{opacity:1}
 /* Mini phone UI — matches our actual dashboard design */
 .ph-header{display:flex;align-items:center;gap:6px;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:8px}
 .ph-header-icon{width:16px;height:16px;border-radius:4px;display:flex;align-items:center;justify-content:center}
 .ph-header-icon svg{width:10px;height:10px}
-.ph-header span{font-size:11px;font-weight:700;letter-spacing:-.02em}
-.ph-header .ph-ai-tag{font-size:6px;font-weight:600;padding:2px 5px;border-radius:3px;background:var(--accent-dim);color:var(--accent);letter-spacing:.04em}
-.ph-stats{display:grid;gap:5px;margin-bottom:8px}
-.ph-stat{background:var(--bg-3);border-radius:7px;padding:8px 9px;border:1px solid var(--border);position:relative;overflow:hidden}
+.ph-header span{font-size:13px;font-weight:700;letter-spacing:-.02em}
+.ph-header .ph-ai-tag{font-size:7px;font-weight:600;padding:2px 6px;border-radius:3px;background:var(--accent-dim);color:var(--accent);letter-spacing:.04em}
+.ph-stats{display:grid;gap:5px;margin-bottom:6px}
+.ph-stat{background:var(--bg-3);border-radius:7px;padding:10px 10px;border:1px solid var(--border);position:relative;overflow:hidden}
 .ph-stat::after{content:'';position:absolute;top:0;right:0;width:24px;height:24px;border-radius:0 0 0 12px}
-.ph-stat-label{font-size:6.5px;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;font-family:var(--mono);margin-bottom:3px}
-.ph-stat-val{font-size:20px;font-weight:800;letter-spacing:-.04em;line-height:1}
-.ph-stat-sub{font-size:6px;color:var(--t3);margin-top:2px}
+.ph-stat-label{font-size:7px;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;font-family:var(--mono);margin-bottom:3px}
+.ph-stat-val{font-size:22px;font-weight:800;letter-spacing:-.04em;line-height:1}
+.ph-stat-sub{font-size:7px;color:var(--t3);margin-top:2px}
 /* Segmented bar */
 .ph-segbar{display:flex;height:4px;border-radius:2px;overflow:hidden;gap:1px;margin-bottom:6px}
 .ph-segbar span{flex:none;border-radius:1px}
 /* Email/alert rows */
-.ph-row{display:flex;align-items:center;gap:6px;padding:6px 7px;border-bottom:1px solid rgba(255,255,255,0.03)}
-.ph-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.ph-row{display:flex;align-items:center;gap:6px;padding:7px 7px;border-bottom:1px solid rgba(255,255,255,0.03)}
+.ph-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 .ph-row-content{flex:1;min-width:0}
-.ph-row-title{font-size:9px;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ph-row-sub{font-size:7px;color:var(--t3);margin-top:1px}
-.ph-cat{font-size:6px;font-weight:600;padding:2px 5px;border-radius:3px;border:1px solid var(--border);color:var(--t2);text-transform:uppercase;letter-spacing:.04em;flex-shrink:0}
-.ph-time{font-size:7px;color:var(--t3);font-family:var(--mono);flex-shrink:0;margin-left:auto}
+.ph-row-title{font-size:10px;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ph-row-sub{font-size:8px;color:var(--t3);margin-top:1px}
+.ph-cat{font-size:7px;font-weight:600;padding:2px 6px;border-radius:3px;border:1px solid var(--border);color:var(--t2);text-transform:uppercase;letter-spacing:.04em;flex-shrink:0}
+.ph-time{font-size:8px;color:var(--t3);font-family:var(--mono);flex-shrink:0;margin-left:auto}
 /* Lead score */
 .ph-score{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0;border:2px solid}
 .ph-tier{font-size:6px;font-weight:700;padding:2px 5px;border-radius:3px;letter-spacing:.04em;flex-shrink:0}
@@ -122,8 +122,8 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .ph-bar{flex:1;border-radius:2px 2px 0 0;animation:barUp .8s ease forwards;transform-origin:bottom}
 @keyframes barUp{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 /* Chat */
-.ph-chat{display:flex;flex-direction:column;gap:5px;flex:1;justify-content:flex-end}
-.ph-chat-msg{padding:6px 9px;border-radius:10px;font-size:8px;line-height:1.4;max-width:82%}
+.ph-chat{display:flex;flex-direction:column;gap:6px;flex:1;justify-content:flex-start}
+.ph-chat-msg{padding:7px 10px;border-radius:10px;font-size:9px;line-height:1.45;max-width:85%}
 .ph-chat-user{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:2px}
 .ph-chat-bot{background:var(--bg-3);color:var(--t2);align-self:flex-start;border:1px solid var(--border);border-bottom-left-radius:2px}
 @media(max-width:768px){
@@ -306,12 +306,12 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
           <div class="sc-phone-slide active">
             <div class="ph-header"><div class="ph-header-icon" style="background:rgba(80,144,240,0.15)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div><span>Command Center</span></div>
             <div class="ph-stats" style="grid-template-columns:1fr 1fr">
-              <div class="ph-stat"><div class="ph-stat-label">Total Processed</div><div class="ph-stat-val" style="color:var(--accent)">16</div><div class="ph-stat-sub">emails classified</div></div>
-              <div class="ph-stat"><div class="ph-stat-label">Critical</div><div class="ph-stat-val" style="color:var(--red)">4</div><div class="ph-stat-sub">immediate action</div></div>
-              <div class="ph-stat"><div class="ph-stat-label">Alerts</div><div class="ph-stat-val" style="color:var(--amber)">16</div><div class="ph-stat-sub">competitor moves</div></div>
-              <div class="ph-stat"><div class="ph-stat-label">High Priority</div><div class="ph-stat-val" style="color:var(--green)">7</div><div class="ph-stat-sub">need attention</div></div>
+              <div class="ph-stat"><div class="ph-stat-label">Emails</div><div class="ph-stat-val" style="color:var(--accent)">16</div><div class="ph-stat-sub">classified</div></div>
+              <div class="ph-stat"><div class="ph-stat-label">Critical</div><div class="ph-stat-val" style="color:var(--red)">4</div><div class="ph-stat-sub">action needed</div></div>
+              <div class="ph-stat"><div class="ph-stat-label">Alerts</div><div class="ph-stat-val" style="color:var(--amber)">16</div><div class="ph-stat-sub">tracked</div></div>
+              <div class="ph-stat"><div class="ph-stat-label">High</div><div class="ph-stat-val" style="color:var(--green)">7</div><div class="ph-stat-sub">priority</div></div>
             </div>
-            <div class="ph-bars">
+            <div class="ph-bars" style="height:60px;margin-top:4px">
               <div class="ph-bar" style="height:70%;background:var(--accent)"></div>
               <div class="ph-bar" style="height:45%;background:var(--accent);opacity:.6"></div>
               <div class="ph-bar" style="height:90%;background:var(--red)"></div>
@@ -320,7 +320,12 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
               <div class="ph-bar" style="height:80%;background:var(--accent)"></div>
               <div class="ph-bar" style="height:40%;background:var(--amber)"></div>
               <div class="ph-bar" style="height:85%;background:var(--red)"></div>
+              <div class="ph-bar" style="height:60%;background:var(--green)"></div>
+              <div class="ph-bar" style="height:75%;background:var(--accent);opacity:.7"></div>
             </div>
+            <div class="ph-row"><span class="ph-dot" style="background:var(--red)"></span><div class="ph-row-content"><div class="ph-row-title">Server down in prod</div></div><span class="ph-cat">CRIT</span></div>
+            <div class="ph-row"><span class="ph-dot" style="background:var(--amber)"></span><div class="ph-row-content"><div class="ph-row-title">Chatbase Pro $99→$79</div></div><span class="ph-cat">HIGH</span></div>
+            <div class="ph-row"><span class="ph-dot" style="background:var(--green)"></span><div class="ph-row-content"><div class="ph-row-title">New lead: Emily Zhang</div></div><span class="ph-cat">HOT</span></div>
           </div>
           <!-- 1: Email Triage -->
           <div class="sc-phone-slide">
@@ -335,6 +340,9 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
             <div class="ph-row"><span class="ph-dot" style="background:var(--green)"></span><div class="ph-row-content"><div class="ph-row-title">Invoice #4521 for March services</div><div class="ph-row-sub">billing@vendor.com</div></div><span class="ph-cat">Finance</span><span class="ph-time">28m</span></div>
             <div class="ph-row"><span class="ph-dot" style="background:var(--amber)"></span><div class="ph-row-content"><div class="ph-row-title">Re: Partnership proposal</div><div class="ph-row-sub">sarah@startup.io</div></div><span class="ph-cat">Sales</span><span class="ph-time">53m</span></div>
             <div class="ph-row"><span class="ph-dot" style="background:#6b7280"></span><div class="ph-row-content"><div class="ph-row-title">Weekly newsletter - AI trends</div><div class="ph-row-sub">news@techdigest.com</div></div><span class="ph-cat">Other</span><span class="ph-time">1h</span></div>
+            <div class="ph-row"><span class="ph-dot" style="background:var(--red)"></span><div class="ph-row-content"><div class="ph-row-title">Customer complaint: Integration</div><div class="ph-row-sub">support@bigclient.com</div></div><span class="ph-cat">Support</span><span class="ph-time">1h</span></div>
+            <div class="ph-row"><span class="ph-dot" style="background:var(--amber)"></span><div class="ph-row-content"><div class="ph-row-title">Contract renewal reminder</div><div class="ph-row-sub">legal@enterprise.com</div></div><span class="ph-cat">Legal</span><span class="ph-time">2h</span></div>
+            <div class="ph-row"><span class="ph-dot" style="background:var(--red)"></span><div class="ph-row-content"><div class="ph-row-title">API rate limit exceeded on prod</div><div class="ph-row-sub">devops@saas.co</div></div><span class="ph-cat">Technical</span><span class="ph-time">3h</span></div>
           </div>
           <!-- 2: Competitor Intel -->
           <div class="sc-phone-slide">
@@ -347,6 +355,8 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
             <div class="ph-row"><span class="ph-dot" style="background:var(--red)"></span><div class="ph-row-content"><div class="ph-row-title">Intercom — Fin AI $0.99/resolution</div><div class="ph-row-sub">Pricing Change</div></div><span class="ph-cat" style="border-color:var(--red);color:var(--red)">CRIT</span></div>
             <div class="ph-row"><span class="ph-dot" style="background:var(--amber)"></span><div class="ph-row-content"><div class="ph-row-title">Chatbase — Pro $99→$79/mo</div><div class="ph-row-sub">Pricing Change</div></div><span class="ph-cat" style="border-color:var(--amber);color:var(--amber)">HIGH</span></div>
             <div class="ph-row"><span class="ph-dot" style="background:var(--amber)"></span><div class="ph-row-content"><div class="ph-row-title">Voiceflow — Twilio AI agents</div><div class="ph-row-sub">New Feature</div></div><span class="ph-cat" style="border-color:var(--amber);color:var(--amber)">HIGH</span></div>
+            <div class="ph-row"><span class="ph-dot" style="background:var(--amber)"></span><div class="ph-row-content"><div class="ph-row-title">Drift — AI lead scoring + CRM</div><div class="ph-row-sub">New Feature</div></div><span class="ph-cat" style="border-color:var(--amber);color:var(--amber)">HIGH</span></div>
+            <div class="ph-row"><span class="ph-dot" style="background:var(--red)"></span><div class="ph-row-content"><div class="ph-row-title">Voiceflow — acquired VoiceMetrics</div><div class="ph-row-sub">Acquisition</div></div><span class="ph-cat" style="border-color:var(--red);color:var(--red)">CRIT</span></div>
           </div>
           <!-- 3: Lead Scoring -->
           <div class="sc-phone-slide">
@@ -360,16 +370,21 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
             <div class="ph-row"><span class="ph-score" style="color:var(--red);border-color:var(--red)">98</span><div class="ph-row-content"><div class="ph-row-title">Emily Zhang</div><div class="ph-row-sub">Horizon Ventures · Partner</div></div><span class="ph-tier" style="background:rgba(240,96,96,.12);color:var(--red)">HOT</span></div>
             <div class="ph-row"><span class="ph-score" style="color:var(--red);border-color:var(--red)">95</span><div class="ph-row-content"><div class="ph-row-title">Lisa Thompson</div><div class="ph-row-sub">EnterpriseCorp · VP Sales</div></div><span class="ph-tier" style="background:rgba(240,96,96,.12);color:var(--red)">HOT</span></div>
             <div class="ph-row"><span class="ph-score" style="color:var(--amber);border-color:var(--amber)">65</span><div class="ph-row-content"><div class="ph-row-title">James Park</div><div class="ph-row-sub">SmallBiz Co · Owner</div></div><span class="ph-tier" style="background:rgba(232,176,64,.12);color:var(--amber)">WARM</span></div>
+            <div class="ph-row"><span class="ph-score" style="color:var(--red);border-color:var(--red)">81</span><div class="ph-row-content"><div class="ph-row-title">Carlos Mendez</div><div class="ph-row-sub">Mendez & Associates · Partner</div></div><span class="ph-tier" style="background:rgba(240,96,96,.12);color:var(--red)">HOT</span></div>
+            <div class="ph-row"><span class="ph-score" style="color:var(--amber);border-color:var(--amber)">42</span><div class="ph-row-content"><div class="ph-row-title">Alex Novak</div><div class="ph-row-sub">Downtown Bistro · Manager</div></div><span class="ph-tier" style="background:rgba(232,176,64,.12);color:var(--amber)">WARM</span></div>
             <div class="ph-row"><span class="ph-score" style="color:var(--accent);border-color:var(--accent)">15</span><div class="ph-row-content"><div class="ph-row-title">Tom Wilson</div><div class="ph-row-sub">Freelancer</div></div><span class="ph-tier" style="background:rgba(80,144,240,.1);color:var(--accent)">COLD</span></div>
           </div>
           <!-- 4: Chatbot -->
-          <div class="sc-phone-slide" style="justify-content:flex-end">
+          <div class="sc-phone-slide">
             <div class="ph-header"><div class="ph-header-icon" style="background:rgba(124,108,252,0.12)"><svg viewBox="0 0 24 24" fill="none" stroke="#7c6cfc" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><span>AI Assistant</span><span class="ph-ai-tag">AI</span></div>
             <div class="ph-chat">
+              <div class="ph-chat-msg ph-chat-bot">Hi! Ask me anything about Nexframe.</div>
               <div class="ph-chat-msg ph-chat-user">What does Nexframe do?</div>
               <div class="ph-chat-msg ph-chat-bot">We build <strong style="color:var(--accent)">AI automation</strong> — email triage, lead scoring, competitor intel, and chatbots. Every system ships with monitoring.</div>
               <div class="ph-chat-msg ph-chat-user">How fast can you ship?</div>
               <div class="ph-chat-msg ph-chat-bot">Most systems go live in <strong style="color:var(--green)">1-2 weeks</strong>. We test on real data before handoff.</div>
+              <div class="ph-chat-msg ph-chat-user">What about pricing?</div>
+              <div class="ph-chat-msg ph-chat-bot">Starting at <strong style="color:var(--amber)">$400</strong> for dashboards, <strong style="color:var(--amber)">$500</strong> for email triage. Custom workflows quoted per scope.</div>
             </div>
           </div>
         </div>
